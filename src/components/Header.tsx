@@ -4,10 +4,21 @@ import { useCart } from "@/lib/cart";
 import { useState } from "react";
 import { CartDrawer } from "./CartDrawer";
 
-export function Header() {
+interface HeaderProps {
+  onShopClick?: () => void;
+}
+
+export function Header({ onShopClick }: HeaderProps = {}) {
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
   const [open, setOpen] = useState(false);
+
+  const handleShop = (e: React.MouseEvent) => {
+    if (onShopClick) {
+      e.preventDefault();
+      onShopClick();
+    }
+  };
 
   return (
     <>
@@ -21,8 +32,8 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <Link to="/" className="hover:text-foreground transition-colors">Shop</Link>
-            <a href="#categories" className="hover:text-foreground transition-colors">Categories</a>
+            <a href="#products" onClick={handleShop} className="hover:text-foreground transition-colors">Shop</a>
+            <a href="#browse" className="hover:text-foreground transition-colors">Categories</a>
             <a href="#about" className="hover:text-foreground transition-colors">About</a>
           </nav>
 

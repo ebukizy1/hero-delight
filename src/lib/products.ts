@@ -58,14 +58,27 @@ export interface ProductInput {
   image_url: string;
 }
 
+function isMissingBonusColumn(err: unknown): boolean {
+  const msg = (err as { message?: string })?.message ?? "";
+  return /bonus_price/i.test(msg) && /(column|schema|cache)/i.test(msg);
+}
+
 export async function createProduct(p: ProductInput): Promise<Product> {
-  const { data, error } = await supabase.from("products").insert(p).select().single();
+  let { data, error } = await supabase.from("products").insert(p).select().single();
+  if (error && isMissingBonusColumn(error)) {
+    const { bonus_price: _omit, ...rest } = p;
+    ({ data, error } = await supabase.from("products").insert(rest).select().single());
+  }
   if (error) throw error;
   return dbToProduct(data as DbProduct);
 }
 
 export async function updateProduct(id: string, p: Partial<ProductInput>): Promise<Product> {
-  const { data, error } = await supabase.from("products").update(p).eq("id", id).select().single();
+  let { data, error } = await supabase.from("products").update(p).eq("id", id).select().single();
+  if (error && isMissingBonusColumn(error)) {
+    const { bonus_price: _omit, ...rest } = p;
+    ({ data, error } = await supabase.from("products").update(rest).eq("id", id).select().single());
+  }
   if (error) throw error;
   return dbToProduct(data as DbProduct);
 }

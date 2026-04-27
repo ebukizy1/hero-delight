@@ -1,7 +1,17 @@
 import { ArrowRight, Sparkles, Truck, Shield, Headset, Sun, Zap, BatteryCharging } from "lucide-react";
 import heroImage from "@/assets/hero.jpg";
 
-export function Hero() {
+interface HeroProps {
+  onShopClick?: () => void;
+}
+
+export function Hero({ onShopClick }: HeroProps = {}) {
+  const handleShop = (e: React.MouseEvent) => {
+    if (onShopClick) {
+      e.preventDefault();
+      onShopClick();
+    }
+  };
   return (
     <section className="relative overflow-hidden bg-hero-glow">
       {/* Subtle grid backdrop */}
@@ -37,12 +47,13 @@ export function Hero() {
             <div className="mt-7 flex flex-wrap items-center gap-3 animate-fade-up delay-300">
               <a
                 href="#products"
+                onClick={handleShop}
                 className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-card"
               >
                 Shop now <ArrowRight className="w-4 h-4" />
               </a>
               <a
-                href="#categories"
+                href="#browse"
                 className="inline-flex items-center h-12 px-6 rounded-xl border border-border bg-background/60 backdrop-blur font-semibold hover:bg-secondary transition-colors text-sm"
               >
                 Browse categories
