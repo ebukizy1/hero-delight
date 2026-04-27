@@ -4,7 +4,7 @@ import { CATEGORIES } from "@/lib/products";
 
 export function Footer() {
   return (
-    <footer id="about" className="border-t border-border bg-card mt-10">
+    <footer className="border-t border-border bg-card">
       <div className="container mx-auto px-4 sm:px-6 py-12 lg:py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
           {/* Brand */}
