@@ -1,8 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
+import { About } from "@/components/About";
+import { Categories } from "@/components/Categories";
 import { ProductCard } from "@/components/ProductCard";
 import { fetchProducts, CATEGORIES, type Category, type Product } from "@/lib/products";
 
@@ -30,19 +32,22 @@ const Index = () => {
   const filtered = selected === "All" ? products : products.filter((p) => p.category === selected);
   const featured = products.slice(0, 8);
 
-  const handleSelectCategory = (c: Category | "All") => {
+  const handleSelectCategory = useCallback((c: Category | "All") => {
     setSelected(c);
     requestAnimationFrame(() => {
       productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      <Hero />
+      <Header onShopClick={() => handleSelectCategory("All")} />
+      <Hero onShopClick={() => handleSelectCategory("All")} />
 
-      {/* Category pills */}
+      {/* Category cards */}
+      <Categories onSelect={handleSelectCategory} />
+
+      {/* Quick filter pills */}
       <section id="categories" className="border-y border-border bg-card/80 backdrop-blur sticky top-16 z-30">
         <div className="container mx-auto px-4 sm:px-6 py-3">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1">
@@ -67,14 +72,14 @@ const Index = () => {
           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-5">
               <div>
-                <h2 className="font-display font-bold text-2xl sm:text-3xl">Featured</h2>
+                <h2 className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight">Featured</h2>
                 <p className="text-muted-foreground text-sm mt-1">Our top picks</p>
               </div>
             </div>
             <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto scrollbar-hide">
-              <div className="flex gap-4 sm:gap-5 pb-4">
+              <div className="flex gap-3 sm:gap-5 pb-4">
                 {featured.map((p) => (
-                  <div key={p.id} className="min-w-[240px] sm:min-w-[280px] max-w-[280px]">
+                  <div key={p.id} className="min-w-[170px] w-[46vw] sm:w-auto sm:min-w-[240px] sm:max-w-[280px]">
                     <ProductCard product={p} />
                   </div>
                 ))}
@@ -89,7 +94,7 @@ const Index = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-5">
             <div>
-              <h2 className="font-display font-bold text-2xl sm:text-3xl">
+              <h2 className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight">
                 {selected === "All" ? "All Products" : selected}
               </h2>
               <p className="text-muted-foreground text-sm mt-1">{filtered.length} item{filtered.length !== 1 ? "s" : ""}</p>
@@ -123,6 +128,7 @@ const Index = () => {
         </div>
       </section>
 
+      <About />
       <Footer />
     </div>
   );
