@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import { Sun, Mail, MapPin, Phone, Shield, Instagram, Twitter, Facebook } from "lucide-react";
+import { Mail, MapPin, Phone, Shield, Instagram, Twitter, Facebook } from "lucide-react";
 import { CATEGORIES } from "@/lib/products";
+import { categoryToSlug } from "@/lib/categorySlug";
+import { Logo } from "./Logo";
 
 export function Footer() {
   return (
@@ -9,12 +11,7 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
           {/* Brand */}
           <div className="lg:col-span-5">
-            <Link to="/" className="inline-flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-sun shadow-soft">
-                <Sun className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
-              </div>
-              <span className="font-display font-extrabold text-xl">SolarHub</span>
-            </Link>
+            <Logo size="lg" />
             <p className="mt-4 text-sm text-muted-foreground max-w-sm leading-relaxed">
               Nigeria's modern solar marketplace. Reliable products, transparent prices, and easy WhatsApp ordering — delivered fast.
             </p>
@@ -31,7 +28,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               {CATEGORIES.map((c) => (
                 <li key={c}>
-                  <a href="#categories" className="hover:text-foreground transition-colors">{c}</a>
+                  <Link to={`/category/${categoryToSlug(c)}`} className="hover:text-foreground transition-colors">{c}</Link>
                 </li>
               ))}
             </ul>
