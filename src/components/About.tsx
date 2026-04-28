@@ -1,67 +1,51 @@
-import { ShieldCheck, Lightbulb, HeartHandshake, Lock, Globe, Award } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ShieldCheck, Lightbulb, HeartHandshake, ArrowRight } from "lucide-react";
 
-const VALUES = [
-  {
-    icon: ShieldCheck,
-    title: "Quality First",
-    body: "Every product undergoes rigorous testing to ensure we deliver only the best to our customers.",
-  },
-  {
-    icon: Lightbulb,
-    title: "Innovation",
-    body: "We're constantly pushing boundaries with cutting-edge technology and fresh ideas.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Customer Focus",
-    body: "Your success is our success. We listen, adapt, and evolve based on your feedback.",
-  },
-  {
-    icon: Lock,
-    title: "Trust & Security",
-    body: "Your data and privacy are protected with bank-level security measures.",
-  },
-  {
-    icon: Globe,
-    title: "Global Reach",
-    body: "Serving customers worldwide with localized experiences and support.",
-  },
-  {
-    icon: Award,
-    title: "Excellence",
-    body: "We strive for excellence in everything we do, from products to customer service.",
-  },
+const HIGHLIGHTS = [
+  { icon: ShieldCheck, title: "Quality first", body: "Every product is tested before it reaches you." },
+  { icon: Lightbulb, title: "Innovation", body: "We curate cutting-edge solar tech for everyday use." },
+  { icon: HeartHandshake, title: "Customer focus", body: "Friendly support and honest prices, always." },
 ];
 
 export function About() {
   return (
-    <section id="about" className="py-16 sm:py-20 lg:py-24 bg-secondary/40 border-y border-border">
+    <section id="about" className="py-14 sm:py-16 bg-secondary/40 border-y border-border">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="max-w-2xl mx-auto text-center mb-10 sm:mb-14">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-foreground text-xs font-semibold border border-accent/30">
-            About SolarHub
-          </span>
-          <h2 className="mt-4 font-display font-extrabold text-3xl sm:text-4xl tracking-tight">
-            Built on values that <span className="text-gradient-sun">power trust</span>.
-          </h2>
-          <p className="mt-4 text-muted-foreground text-sm sm:text-base leading-relaxed">
-            We're committed to bringing reliable, affordable solar solutions to every home and business across Nigeria.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {VALUES.map(({ icon: Icon, title, body }) => (
-            <div
-              key={title}
-              className="group bg-card border border-border/60 rounded-2xl p-5 sm:p-6 shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300"
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-5">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-foreground text-xs font-semibold border border-accent/30">
+              About SolarHub
+            </span>
+            <h2 className="mt-4 font-display font-extrabold text-3xl sm:text-4xl tracking-tight leading-[1.1]">
+              Clean energy, <span className="text-gradient-sun">made simple</span>.
+            </h2>
+            <p className="mt-4 text-muted-foreground text-sm sm:text-base leading-relaxed">
+              Nigeria's modern solar marketplace — quality products, fair prices, and fast delivery you can count on.
+            </p>
+            <Link
+              to="/about"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-accent transition-colors group"
             >
-              <div className="w-11 h-11 rounded-xl bg-gradient-sun flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
-                <Icon className="w-5 h-5 text-primary-foreground" strokeWidth={2.2} />
+              Learn more about us
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="lg:col-span-7 grid sm:grid-cols-3 gap-3 sm:gap-4">
+            {HIGHLIGHTS.map(({ icon: Icon, title, body }, i) => (
+              <div
+                key={title}
+                className="group bg-card border border-border/60 rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300 animate-fade-up"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-sun flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
+                  <Icon className="w-4 h-4 text-primary-foreground" strokeWidth={2.4} />
+                </div>
+                <h3 className="mt-3 font-display font-bold text-sm sm:text-base">{title}</h3>
+                <p className="mt-1 text-xs sm:text-[13px] text-muted-foreground leading-relaxed">{body}</p>
               </div>
-              <h3 className="mt-4 font-display font-bold text-lg">{title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{body}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
