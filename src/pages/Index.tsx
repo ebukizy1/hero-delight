@@ -44,8 +44,8 @@ const Index = () => {
       <Header onShopClick={() => handleSelectCategory("All")} />
       <Hero onShopClick={() => handleSelectCategory("All")} />
 
-      {/* Category cards */}
-      <Categories onSelect={handleSelectCategory} />
+      {/* Category cards — link to dedicated category pages */}
+      <Categories />
 
       {/* Quick filter pills */}
       <section id="categories" className="border-y border-border bg-card/80 backdrop-blur sticky top-16 z-30">

@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
-import { ShoppingBag, Sun } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useState } from "react";
 import { CartDrawer } from "./CartDrawer";
+import { Logo } from "./Logo";
 
 interface HeaderProps {
   onShopClick?: () => void;
@@ -12,11 +13,28 @@ export function Header({ onShopClick }: HeaderProps = {}) {
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onHome = location.pathname === "/";
+
+  const goSection = (id: string) => (e: React.MouseEvent) => {
+    if (!onHome) return; // allow default navigation to /#id
+    e.preventDefault();
+    if (id === "products" && onShopClick) {
+      onShopClick();
+      return;
+    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const handleShop = (e: React.MouseEvent) => {
-    if (onShopClick) {
+    if (onHome) {
       e.preventDefault();
-      onShopClick();
+      if (onShopClick) onShopClick();
+      else document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      e.preventDefault();
+      navigate("/#products");
     }
   };
 
@@ -24,17 +42,12 @@ export function Header({ onShopClick }: HeaderProps = {}) {
     <>
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/75 border-b border-border/60">
         <div className="container mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-sun shadow-soft">
-              <Sun className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
-            </div>
-            <span className="font-display font-extrabold text-lg tracking-tight">SolarHub</span>
-          </Link>
+          <Logo />
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <a href="#products" onClick={handleShop} className="hover:text-foreground transition-colors">Shop</a>
-            <a href="#browse" className="hover:text-foreground transition-colors">Categories</a>
-            <a href="#about" className="hover:text-foreground transition-colors">About</a>
+            <a href="/#products" onClick={handleShop} className="hover:text-foreground transition-colors">Shop</a>
+            <a href="/#browse" onClick={goSection("browse")} className="hover:text-foreground transition-colors">Categories</a>
+            <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
           </nav>
 
           <button
@@ -55,3 +68,4 @@ export function Header({ onShopClick }: HeaderProps = {}) {
     </>
   );
 }
+

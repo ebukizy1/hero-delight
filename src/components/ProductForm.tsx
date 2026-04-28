@@ -115,21 +115,21 @@ export function ProductForm({
       {/* Pricing */}
       <div className="grid sm:grid-cols-2 gap-4">
         <Field
-          label="Selling price (₦) *"
-          value={form.price}
-          onChange={(v) => set("price", v)}
-          type="number"
-          placeholder="65000"
-          hint="What customers pay"
-        />
-        <Field
-          label="Original price (₦)"
+          label="Normal price (₦)"
           value={form.bonusPrice}
           onChange={(v) => set("bonusPrice", v)}
           type="number"
           placeholder="85000"
           required={false}
-          hint="Shown struck-through. Leave blank for no discount."
+          hint="Original price — shown struck-through. Leave blank if no discount."
+        />
+        <Field
+          label="Selling / bonus price (₦) *"
+          value={form.price}
+          onChange={(v) => set("price", v)}
+          type="number"
+          placeholder="65000"
+          hint="What customers actually pay (the discounted price)."
         />
       </div>
 
