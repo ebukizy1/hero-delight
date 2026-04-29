@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, MessageCircle, Shield, Truck, Headset, Loader2 } from "lucide-react";
+import { ArrowLeft, ShoppingCart, MessageCircle, Shield, Truck, Headset, Loader2, Award } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { fetchProduct, formatNaira, discountPercent, type Product } from "@/lib/products";
