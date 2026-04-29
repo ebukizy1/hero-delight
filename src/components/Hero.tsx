@@ -1,21 +1,66 @@
-import { ArrowRight, Sparkles, Truck, Shield, Headset, Sun, BatteryCharging, Star } from "lucide-react";
-import heroImage from "@/assets/hero.jpg";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Sparkles, Truck, Shield, Headset, Sun, ChevronLeft, ChevronRight } from "lucide-react";
+import { fetchProducts, type Product, formatNaira, discountPercent } from "@/lib/products";
+import streetlightImg from "@/assets/products/streetlight.jpg";
+import inverterImg from "@/assets/products/inverter.jpg";
+import powerStationImg from "@/assets/products/power-station.jpg";
+import fanImg from "@/assets/products/fan.jpg";
+import cameraImg from "@/assets/products/camera.jpg";
 
 interface HeroProps {
   onShopClick?: () => void;
 }
 
+const DUMMY: Product[] = [
+  { id: "d1", name: "Solar Streetlight 300W", price: 65000, bonusPrice: 80000, category: "Solar Streetlight", image: streetlightImg, description: "All-in-one solar streetlight", featured: true, specifications: [] },
+  { id: "d2", name: "Hybrid Solar Inverter", price: 240000, bonusPrice: 295000, category: "Solar Inverter", image: inverterImg, description: "Reliable hybrid inverter", featured: true, specifications: [] },
+  { id: "d3", name: "Portable Power Station", price: 185000, bonusPrice: 220000, category: "Solar Power Station", image: powerStationImg, description: "Portable backup power", featured: true, specifications: [] },
+  { id: "d4", name: "Solar Rechargeable Fan", price: 32000, bonusPrice: 42000, category: "Solar Fan", image: fanImg, description: "Quiet rechargeable fan", featured: true, specifications: [] },
+  { id: "d5", name: "4G Solar Security Camera", price: 95000, bonusPrice: 120000, category: "Solar Camera", image: cameraImg, description: "Wireless solar camera", featured: true, specifications: [] },
+];
+
 export function Hero({ onShopClick }: HeroProps = {}) {
-  const handleShop = (e: React.MouseEvent) => {
-    if (onShopClick) {
-      e.preventDefault();
-      onShopClick();
-    }
+  const [products, setProducts] = useState<Product[] | null>(null);
+  const [index, setIndex] = useState(0);
+  const timer = useRef<number | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetchProducts()
+      .then((p) => { if (active) setProducts(p); })
+      .catch(() => { if (active) setProducts([]); });
+    return () => { active = false; };
+  }, []);
+
+  const slides = useMemo(() => {
+    if (products && products.length > 0) return products.slice(0, 6);
+    return DUMMY;
+  }, [products]);
+  const isDummy = !products || products.length === 0;
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    timer.current = window.setInterval(() => {
+      setIndex((i) => (i + 1) % slides.length);
+    }, 4500);
+    return () => { if (timer.current) window.clearInterval(timer.current); };
+  }, [slides.length]);
+
+  const goto = (i: number) => {
+    setIndex((i + slides.length) % slides.length);
+    if (timer.current) { window.clearInterval(timer.current); timer.current = null; }
   };
+
+  const handleShop = (e: React.MouseEvent) => {
+    if (onShopClick) { e.preventDefault(); onShopClick(); }
+  };
+
+  const current = slides[index];
+  const discount = discountPercent(current.price, current.bonusPrice);
 
   return (
     <section className="relative overflow-hidden bg-hero-glow">
-      {/* Soft gradient mesh background */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-60"
@@ -50,7 +95,7 @@ export function Hero({ onShopClick }: HeroProps = {}) {
             </h1>
 
             <p className="mt-5 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed animate-fade-up delay-200">
-              Premium solar streetlights, inverters, fans, cameras and more — delivered fast across Nigeria. Order in seconds via WhatsApp.
+              Premium solar streetlights, inverters, fans, cameras and more — delivered fast across Nigeria.
             </p>
 
             <div className="mt-7 flex flex-wrap items-center gap-3 animate-fade-up delay-300">
@@ -76,90 +121,137 @@ export function Hero({ onShopClick }: HeroProps = {}) {
             </div>
           </div>
 
-          {/* Visual */}
+          {/* Carousel */}
           <div className="lg:col-span-6 relative animate-fade-up delay-200">
             <div className="relative">
-              {/* Glow */}
               <div
                 aria-hidden
-                className="absolute -inset-6 rounded-[2rem] bg-gradient-sun opacity-25 blur-3xl animate-float-slow"
+                className="absolute -inset-6 rounded-[2rem] bg-gradient-sun opacity-20 blur-3xl animate-float-slow"
               />
 
-              {/* Main image card */}
-              <div className="relative rounded-3xl overflow-hidden shadow-card border border-border/40 aspect-[4/3] sm:aspect-square lg:aspect-[5/4]">
-                <img
-                  src={heroImage}
-                  alt="Solar panels at golden hour — clean, renewable energy"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  className="absolute inset-0 w-full h-full object-cover scale-105 hover:scale-110 transition-transform duration-[2000ms] ease-out"
-                />
-                {/* Subtle gradient overlay for text legibility */}
-                <div
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(to top, hsl(var(--background) / 0.55) 0%, transparent 45%)",
-                  }}
-                />
-
-                {/* Live status chip */}
-                <div className="absolute top-3 left-3 inline-flex items-center gap-2 bg-background/85 backdrop-blur rounded-full px-3 py-1.5 border border-border/60">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
-                  </span>
-                  <p className="text-[11px] font-semibold">In stock now</p>
-                </div>
-
-                {/* Bottom delivered chip */}
-                <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2.5 bg-background/85 backdrop-blur rounded-xl px-3.5 py-2.5 border border-border/60">
-                  <div className="flex -space-x-1.5">
-                    {[0, 1, 2].map((i) => (
+              <div className="relative rounded-3xl overflow-hidden shadow-card border border-border/40 aspect-[4/3] sm:aspect-square lg:aspect-[5/4] bg-card">
+                {/* Slides */}
+                {slides.map((p, i) => (
+                  <div
+                    key={p.id}
+                    className="absolute inset-0 transition-all duration-700 ease-out"
+                    style={{
+                      opacity: i === index ? 1 : 0,
+                      transform: i === index ? "scale(1)" : "scale(1.04)",
+                      pointerEvents: i === index ? "auto" : "none",
+                    }}
+                  >
+                    <Link to={isDummy ? "#products" : `/product/${p.id}`} onClick={isDummy ? handleShop : undefined} className="block w-full h-full">
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        loading={i === 0 ? "eager" : "lazy"}
+                        fetchPriority={i === 0 ? "high" : "auto"}
+                        decoding="async"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ animation: i === index ? "kenburns 8s ease-out both" : undefined }}
+                      />
                       <div
-                        key={i}
-                        className="w-6 h-6 rounded-full bg-gradient-sun border-2 border-background flex items-center justify-center"
-                      >
-                        <Star className="w-3 h-3 text-primary-foreground fill-primary-foreground" />
+                        aria-hidden
+                        className="absolute inset-0"
+                        style={{
+                          background:
+                            "linear-gradient(to top, hsl(var(--background) / 0.85) 0%, hsl(var(--background) / 0.15) 45%, transparent 70%)",
+                        }}
+                      />
+
+                      {/* Discount badge */}
+                      {discountPercent(p.price, p.bonusPrice) > 0 && (
+                        <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-xs font-extrabold px-3 py-1.5 rounded-xl bg-gradient-to-r from-destructive to-[hsl(var(--sun-to))] text-destructive-foreground shadow-glow">
+                          −{discountPercent(p.price, p.bonusPrice)}%
+                        </span>
+                      )}
+
+                      {/* Category chip */}
+                      <span className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-background/90 backdrop-blur border border-border/60">
+                        {p.category.replace("Solar ", "")}
+                      </span>
+
+                      {/* Info */}
+                      <div className="absolute left-4 right-4 bottom-4 sm:left-5 sm:right-5 sm:bottom-5">
+                        <h3 className="font-display font-bold text-base sm:text-lg leading-tight line-clamp-2 text-foreground">
+                          {p.name}
+                        </h3>
+                        <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
+                          <span className="font-display font-extrabold text-xl sm:text-2xl text-foreground">
+                            {formatNaira(p.price)}
+                          </span>
+                          {discountPercent(p.price, p.bonusPrice) > 0 && (
+                            <span className="text-sm font-medium text-muted-foreground line-through decoration-destructive/70">
+                              {formatNaira(p.bonusPrice!)}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    ))}
+                    </Link>
                   </div>
-                  <p className="text-[11px] font-semibold leading-tight">
-                    2,400+ orders delivered <span className="text-muted-foreground font-medium">across Nigeria</span>
-                  </p>
-                </div>
+                ))}
+
+                {/* Controls */}
+                {slides.length > 1 && (
+                  <>
+                    <button
+                      aria-label="Previous"
+                      onClick={() => goto(index - 1)}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/85 backdrop-blur border border-border/60 flex items-center justify-center hover:bg-background transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      aria-label="Next"
+                      onClick={() => goto(index + 1)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/85 backdrop-blur border border-border/60 flex items-center justify-center hover:bg-background transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
               </div>
 
-              {/* Floating stat - bottom-left */}
-              <div className="absolute -bottom-4 -left-3 sm:-left-6 bg-card rounded-2xl px-3.5 py-2.5 border border-border shadow-card flex items-center gap-3 animate-float-slow">
-                <div className="w-9 h-9 rounded-xl bg-gradient-sun flex items-center justify-center shrink-0">
-                  <Sun className="w-4 h-4 text-primary-foreground animate-sun-rotate" />
+              {/* Dots */}
+              {slides.length > 1 && (
+                <div className="mt-4 flex items-center justify-center gap-2">
+                  {slides.map((_, i) => (
+                    <button
+                      key={i}
+                      aria-label={`Go to slide ${i + 1}`}
+                      onClick={() => goto(i)}
+                      className={`h-1.5 rounded-full transition-all ${i === index ? "w-7 bg-foreground" : "w-2 bg-foreground/25 hover:bg-foreground/50"}`}
+                    />
+                  ))}
                 </div>
-                <div>
-                  <p className="text-[10px] text-muted-foreground leading-none">Save up to</p>
-                  <p className="font-display font-extrabold text-lg leading-tight">80%</p>
-                </div>
-              </div>
+              )}
 
-              {/* Floating stat - top-right */}
-              <div
-                className="hidden sm:flex absolute -top-3 -right-3 bg-card rounded-2xl px-3.5 py-2.5 border border-border shadow-card items-center gap-2.5 animate-float-slow"
-                style={{ animationDelay: "1.5s" }}
-              >
-                <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center shrink-0">
-                  <BatteryCharging className="w-4 h-4 text-accent" />
+              {/* Floating save chip */}
+              {discount > 0 && (
+                <div className="absolute -bottom-3 -left-3 sm:-left-5 bg-card rounded-2xl px-3.5 py-2.5 border border-border shadow-card flex items-center gap-3 animate-float-slow">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-sun flex items-center justify-center shrink-0">
+                    <Sun className="w-4 h-4 text-primary-foreground animate-sun-rotate" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground leading-none">You save</p>
+                    <p className="font-display font-extrabold text-base leading-tight">
+                      {formatNaira((current.bonusPrice ?? current.price) - current.price)}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] text-muted-foreground leading-none">Reliable</p>
-                  <p className="font-display font-bold text-sm leading-tight">Clean power</p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes kenburns {
+          from { transform: scale(1.08) translate3d(0,0,0); }
+          to   { transform: scale(1) translate3d(0,0,0); }
+        }
+      `}</style>
     </section>
   );
 }

@@ -65,19 +65,19 @@ export function ProductCard({ product }: Props) {
               {product.description}
             </p>
           )}
-          <div className="mt-2 flex items-baseline gap-2 flex-wrap">
-            <p className="font-display font-extrabold text-base sm:text-lg text-foreground">
+          <div className="mt-2">
+            <p className="font-display font-extrabold text-base sm:text-lg text-foreground leading-none">
               {formatNaira(product.price)}
             </p>
             {hasBonus && (
-              <>
-                <p className="text-xs font-medium text-muted-foreground line-through decoration-destructive/70">
+              <div className="mt-1 flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-medium text-muted-foreground line-through decoration-destructive/70">
                   {formatNaira(product.bonusPrice!)}
-                </p>
+                </span>
                 <span className="text-[10px] font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-md">
                   Save {formatNaira(product.bonusPrice! - product.price)}
                 </span>
-              </>
+              </div>
             )}
           </div>
         </Link>
