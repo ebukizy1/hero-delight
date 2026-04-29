@@ -1,40 +1,36 @@
 import { Link } from "react-router-dom";
+import logoMark from "@/assets/logo-mark.png";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
   withText?: boolean;
+  variant?: "default" | "light";
   className?: string;
 }
 
 const SIZES = {
-  sm: { box: "w-8 h-8", text: "text-base" },
-  md: { box: "w-9 h-9", text: "text-lg" },
-  lg: { box: "w-11 h-11", text: "text-xl" },
+  sm: { mark: "w-7 h-7", text: "text-base" },
+  md: { mark: "w-9 h-9", text: "text-lg" },
+  lg: { mark: "w-11 h-11", text: "text-xl" },
 };
 
-export function Logo({ size = "md", withText = true, className = "" }: LogoProps) {
+export function Logo({ size = "md", withText = true, variant = "default", className = "" }: LogoProps) {
   const s = SIZES[size];
+  const textColor = variant === "light" ? "text-white" : "text-foreground";
+  const accentColor = variant === "light" ? "text-accent" : "text-accent";
+
   return (
-    <Link to="/" className={`flex items-center gap-2.5 group ${className}`}>
-      <span className={`relative ${s.box} rounded-xl bg-gradient-sun shadow-soft flex items-center justify-center overflow-hidden group-hover:shadow-glow transition-shadow`}>
-        {/* Sun mark — clean SVG */}
-        <svg viewBox="0 0 32 32" className="w-[60%] h-[60%] text-primary-foreground" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
-          <circle cx="16" cy="16" r="5" fill="currentColor" stroke="none" />
-          <g className="origin-center animate-sun-rotate">
-            <path d="M16 3v3" />
-            <path d="M16 26v3" />
-            <path d="M3 16h3" />
-            <path d="M26 16h3" />
-            <path d="M6.7 6.7l2.1 2.1" />
-            <path d="M23.2 23.2l2.1 2.1" />
-            <path d="M6.7 25.3l2.1-2.1" />
-            <path d="M23.2 8.8l2.1-2.1" />
-          </g>
-        </svg>
-      </span>
+    <Link to="/" className={`flex items-center gap-2 group ${className}`}>
+      <img
+        src={logoMark}
+        alt="OnlineSolarStore"
+        width={64}
+        height={64}
+        className={`${s.mark} object-contain transition-transform group-hover:scale-105`}
+      />
       {withText && (
-        <span className={`font-display font-extrabold ${s.text} tracking-tight leading-none`}>
-          Solar<span className="text-gradient-sun">Hub</span>
+        <span className={`font-display font-extrabold ${s.text} tracking-tight leading-none ${textColor}`}>
+          Online<span className={accentColor}>Solar</span>Store
         </span>
       )}
     </Link>
