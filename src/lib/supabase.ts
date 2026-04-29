@@ -15,5 +15,6 @@ export type DbProduct = {
   category: string;
   description: string;
   image_url: string;
+  featured?: boolean | null;
   created_at: string;
 };

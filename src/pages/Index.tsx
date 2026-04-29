@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun } from "lucide-react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ChevronLeft, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
@@ -16,10 +16,13 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   "Solar Camera": Camera,
 };
 
+const PAGE_SIZE = 12;
+
 const Index = () => {
   const [selected, setSelected] = useState<Category | "All">("All");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const productsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,8 +32,17 @@ const Index = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = selected === "All" ? products : products.filter((p) => p.category === selected);
-  const featured = products.slice(0, 8);
+  const filtered = useMemo(
+    () => (selected === "All" ? products : products.filter((p) => p.category === selected)),
+    [selected, products],
+  );
+  const featured = useMemo(() => products.filter((p) => p.featured).slice(0, 12), [products]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [selected]);
 
   const handleSelectCategory = useCallback((c: Category | "All") => {
     setSelected(c);
@@ -38,6 +50,13 @@ const Index = () => {
       productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }, []);
+
+  const goToPage = (p: number) => {
+    setPage(p);
+    requestAnimationFrame(() => {
+      productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,7 +87,7 @@ const Index = () => {
 
       {/* Featured */}
       {featured.length > 0 && (
-        <section id="products" className="py-10 lg:py-14">
+        <section className="py-10 lg:py-14">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-5">
               <div>
@@ -90,7 +109,7 @@ const Index = () => {
       )}
 
       {/* Grid */}
-      <section ref={productsRef} className="pb-16 scroll-mt-32">
+      <section id="products" ref={productsRef} className="pb-16 scroll-mt-32">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-5">
             <div>
@@ -119,11 +138,14 @@ const Index = () => {
               <p className="text-sm">No products in this category yet.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-              {filtered.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+                {pageItems.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+              <Pagination page={safePage} totalPages={totalPages} onChange={goToPage} />
+            </>
           )}
         </div>
       </section>
@@ -151,6 +173,52 @@ function CategoryPill({
       {icon}
       {children}
     </button>
+  );
+}
+
+export function Pagination({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (p: number) => void }) {
+  if (totalPages <= 1) return null;
+  const pages: (number | "…")[] = [];
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || Math.abs(i - page) <= 1) pages.push(i);
+    else if (pages[pages.length - 1] !== "…") pages.push("…");
+  }
+  return (
+    <nav className="mt-8 flex items-center justify-center gap-1.5" aria-label="Pagination">
+      <button
+        onClick={() => onChange(page - 1)}
+        disabled={page === 1}
+        className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30 disabled:opacity-40 disabled:hover:text-muted-foreground transition-colors"
+        aria-label="Previous page"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+      {pages.map((p, i) =>
+        p === "…" ? (
+          <span key={`e${i}`} className="px-2 text-muted-foreground text-sm">…</span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onChange(p)}
+            className={`min-w-9 h-9 px-3 rounded-lg text-sm font-semibold transition-colors ${
+              p === page
+                ? "bg-primary text-primary-foreground shadow-soft"
+                : "bg-background border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+            }`}
+          >
+            {p}
+          </button>
+        ),
+      )}
+      <button
+        onClick={() => onChange(page + 1)}
+        disabled={page === totalPages}
+        className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30 disabled:opacity-40 disabled:hover:text-muted-foreground transition-colors"
+        aria-label="Next page"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </nav>
   );
 }
 

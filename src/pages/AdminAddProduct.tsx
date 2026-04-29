@@ -35,6 +35,7 @@ const AdminAddProduct = () => {
                 category: form.category,
                 description: form.description.trim(),
                 image_url: imageUrl,
+                featured: form.featured,
               });
               setTimeout(() => navigate("/admin/dashboard"), 1200);
             }}

@@ -4,14 +4,18 @@ import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
+import { Pagination } from "@/pages/Index";
 import { fetchProducts, type Product } from "@/lib/products";
 import { slugToCategory } from "@/lib/categorySlug";
+
+const PAGE_SIZE = 12;
 
 const CategoryPage = () => {
   const { slug = "" } = useParams<{ slug: string }>();
   const category = useMemo(() => slugToCategory(slug), [slug]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetchProducts()
@@ -24,15 +28,19 @@ const CategoryPage = () => {
     if (category) document.title = `${category} — SolarHub`;
   }, [category]);
 
+  useEffect(() => { setPage(1); }, [slug]);
+
   if (!category) return <Navigate to="/" replace />;
 
   const items = products.filter((p) => p.category === category);
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageItems = items.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1">
-        {/* Banner */}
         <section className="relative overflow-hidden bg-hero-glow border-b border-border/60">
           <div className="container mx-auto px-4 sm:px-6 py-10 lg:py-14">
             <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-5 transition-colors">
@@ -64,11 +72,14 @@ const CategoryPage = () => {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-              {items.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+                {pageItems.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+              <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
+            </>
           )}
         </section>
       </main>

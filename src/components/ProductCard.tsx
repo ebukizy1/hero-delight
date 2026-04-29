@@ -49,8 +49,8 @@ export function ProductCard({ product }: Props) {
           {product.category.replace("Solar ", "")}
         </span>
         {hasBonus && (
-          <span className="absolute top-2 right-2 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground shadow-soft">
-            -{discount}%
+          <span className="absolute top-2 right-2 inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-gradient-to-r from-destructive to-[hsl(var(--sun-to))] text-destructive-foreground shadow-glow animate-fade-up">
+            <span>−{discount}%</span>
           </span>
         )}
       </Link>
@@ -66,13 +66,18 @@ export function ProductCard({ product }: Props) {
             </p>
           )}
           <div className="mt-2 flex items-baseline gap-2 flex-wrap">
-            <p className="font-display font-extrabold text-base text-foreground">
+            <p className="font-display font-extrabold text-base sm:text-lg text-foreground">
               {formatNaira(product.price)}
             </p>
             {hasBonus && (
-              <p className="text-xs font-medium text-muted-foreground line-through">
-                {formatNaira(product.bonusPrice!)}
-              </p>
+              <>
+                <p className="text-xs font-medium text-muted-foreground line-through decoration-destructive/70">
+                  {formatNaira(product.bonusPrice!)}
+                </p>
+                <span className="text-[10px] font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-md">
+                  Save {formatNaira(product.bonusPrice! - product.price)}
+                </span>
+              </>
             )}
           </div>
         </Link>

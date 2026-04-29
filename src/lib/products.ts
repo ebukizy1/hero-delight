@@ -20,6 +20,7 @@ export interface Product {
   category: string;
   image: string;
   description: string;
+  featured: boolean;
 }
 
 export function dbToProduct(p: DbProduct): Product {
@@ -31,6 +32,7 @@ export function dbToProduct(p: DbProduct): Product {
     category: p.category,
     image: p.image_url,
     description: p.description,
+    featured: Boolean(p.featured),
   };
 }
 
@@ -56,31 +58,61 @@ export interface ProductInput {
   category: string;
   description: string;
   image_url: string;
+  featured?: boolean;
 }
 
-function isMissingBonusColumn(err: unknown): boolean {
+function isMissingColumn(err: unknown, col: string): boolean {
   const msg = (err as { message?: string })?.message ?? "";
-  return /bonus_price/i.test(msg) && /(column|schema|cache)/i.test(msg);
+  const re = new RegExp(col, "i");
+  return re.test(msg) && /(column|schema|cache)/i.test(msg);
+}
+
+function stripField<T extends Record<string, unknown>>(p: T, field: string): Omit<T, typeof field> {
+  const { [field]: _omit, ...rest } = p as Record<string, unknown>;
+  return rest as Omit<T, typeof field>;
+}
+
+async function safeWrite<T>(
+  fn: (payload: Record<string, unknown>) => Promise<{ data: T | null; error: unknown }>,
+  payload: Record<string, unknown>,
+): Promise<T> {
+  let p = { ...payload };
+  for (const col of ["bonus_price", "featured"]) {
+    let res = await fn(p);
+    if (res.error && isMissingColumn(res.error, col)) {
+      p = stripField(p, col);
+      res = await fn(p);
+    }
+    if (!res.error) return res.data as T;
+    if (res.error && isMissingColumn(res.error, col === "bonus_price" ? "featured" : "bonus_price")) continue;
+    if (res.error) throw res.error;
+  }
+  // Final attempt
+  const res = await fn(p);
+  if (res.error) throw res.error;
+  return res.data as T;
 }
 
 export async function createProduct(p: ProductInput): Promise<Product> {
-  let { data, error } = await supabase.from("products").insert(p).select().single();
-  if (error && isMissingBonusColumn(error)) {
-    const { bonus_price: _omit, ...rest } = p;
-    ({ data, error } = await supabase.from("products").insert(rest).select().single());
-  }
-  if (error) throw error;
-  return dbToProduct(data as DbProduct);
+  const data = await safeWrite<DbProduct>(
+    async (payload) => {
+      const r = await supabase.from("products").insert(payload).select().single();
+      return { data: r.data as DbProduct | null, error: r.error };
+    },
+    p as unknown as Record<string, unknown>,
+  );
+  return dbToProduct(data);
 }
 
 export async function updateProduct(id: string, p: Partial<ProductInput>): Promise<Product> {
-  let { data, error } = await supabase.from("products").update(p).eq("id", id).select().single();
-  if (error && isMissingBonusColumn(error)) {
-    const { bonus_price: _omit, ...rest } = p;
-    ({ data, error } = await supabase.from("products").update(rest).eq("id", id).select().single());
-  }
-  if (error) throw error;
-  return dbToProduct(data as DbProduct);
+  const data = await safeWrite<DbProduct>(
+    async (payload) => {
+      const r = await supabase.from("products").update(payload).eq("id", id).select().single();
+      return { data: r.data as DbProduct | null, error: r.error };
+    },
+    p as Record<string, unknown>,
+  );
+  return dbToProduct(data);
 }
 
 export async function deleteProduct(id: string): Promise<void> {

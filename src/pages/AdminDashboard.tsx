@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag, ArrowLeft } from "lucide-react";
+import { LogOut, Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag, ArrowLeft, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { fetchProducts, deleteProduct, formatNaira, type Product } from "@/lib/products";
+import { fetchProducts, deleteProduct, updateProduct, formatNaira, type Product } from "@/lib/products";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -39,6 +39,17 @@ const AdminDashboard = () => {
       alert("Failed to delete product");
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const toggleFeatured = async (p: Product) => {
+    const next = !p.featured;
+    setProducts((prev) => prev.map((x) => (x.id === p.id ? { ...x, featured: next } : x)));
+    try {
+      await updateProduct(p.id, { featured: next });
+    } catch {
+      setProducts((prev) => prev.map((x) => (x.id === p.id ? { ...x, featured: !next } : x)));
+      alert("Failed to update featured status. Make sure the 'featured' column exists.");
     }
   };
 
@@ -124,6 +135,18 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => toggleFeatured(p)}
+                        className={`inline-flex items-center justify-center w-9 h-9 rounded-lg transition-colors ${
+                          p.featured
+                            ? "text-accent bg-accent/10 hover:bg-accent/20"
+                            : "text-muted-foreground hover:text-accent hover:bg-secondary"
+                        }`}
+                        aria-label={p.featured ? "Unfeature" : "Feature"}
+                        title={p.featured ? "Featured on homepage" : "Mark as featured"}
+                      >
+                        <Star className={`w-4 h-4 ${p.featured ? "fill-accent" : ""}`} />
+                      </button>
                       <Link
                         to={`/admin/edit-product/${p.id}`}
                         className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
