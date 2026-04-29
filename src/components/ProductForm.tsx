@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
-import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag, Star } from "lucide-react";
+import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag, Star, Plus, Trash2 } from "lucide-react";
 import { CATEGORIES, formatNaira, discountPercent } from "@/lib/products";
 
 export interface ProductFormValue {
@@ -9,6 +9,7 @@ export interface ProductFormValue {
   category: string;
   description: string;
   featured: boolean;
+  specifications: Array<{ label: string; value: string }>;
 }
 
 interface Props {
@@ -36,11 +37,16 @@ export function ProductForm({
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [form, setForm] = useState<ProductFormValue>(
-    initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "", featured: false }
+    initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "", featured: false, specifications: [] }
   );
 
   const set = <K extends keyof ProductFormValue>(k: K, v: ProductFormValue[K]) =>
     setForm((p) => ({ ...p, [k]: v }));
+
+  const addSpec = () => set("specifications", [...form.specifications, { label: "", value: "" }]);
+  const updateSpec = (i: number, key: "label" | "value", v: string) =>
+    set("specifications", form.specifications.map((s, idx) => (idx === i ? { ...s, [key]: v } : s)));
+  const removeSpec = (i: number) => set("specifications", form.specifications.filter((_, idx) => idx !== i));
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
