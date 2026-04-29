@@ -21,6 +21,7 @@ export interface Product {
   image: string;
   description: string;
   featured: boolean;
+  specifications: Array<{ label: string; value: string }>;
 }
 
 export function dbToProduct(p: DbProduct): Product {
@@ -33,6 +34,9 @@ export function dbToProduct(p: DbProduct): Product {
     image: p.image_url,
     description: p.description,
     featured: Boolean(p.featured),
+    specifications: Array.isArray(p.specifications)
+      ? p.specifications.filter((s) => s && s.label && s.value)
+      : [],
   };
 }
 
@@ -59,6 +63,7 @@ export interface ProductInput {
   description: string;
   image_url: string;
   featured?: boolean;
+  specifications?: Array<{ label: string; value: string }>;
 }
 
 function isMissingColumn(err: unknown, col: string): boolean {
@@ -76,21 +81,17 @@ async function safeWrite<T>(
   fn: (payload: Record<string, unknown>) => Promise<{ data: T | null; error: unknown }>,
   payload: Record<string, unknown>,
 ): Promise<T> {
+  const optional = ["bonus_price", "featured", "specifications"];
   let p = { ...payload };
-  for (const col of ["bonus_price", "featured"]) {
-    let res = await fn(p);
-    if (res.error && isMissingColumn(res.error, col)) {
-      p = stripField(p, col);
-      res = await fn(p);
-    }
+  // Try up to optional.length+1 times, stripping a missing optional column each retry
+  for (let i = 0; i <= optional.length; i++) {
+    const res = await fn(p);
     if (!res.error) return res.data as T;
-    if (res.error && isMissingColumn(res.error, col === "bonus_price" ? "featured" : "bonus_price")) continue;
-    if (res.error) throw res.error;
+    const missing = optional.find((c) => isMissingColumn(res.error, c) && c in p);
+    if (!missing) throw res.error;
+    p = stripField(p, missing);
   }
-  // Final attempt
-  const res = await fn(p);
-  if (res.error) throw res.error;
-  return res.data as T;
+  throw new Error("Failed to save product");
 }
 
 export async function createProduct(p: ProductInput): Promise<Product> {

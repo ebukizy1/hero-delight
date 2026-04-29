@@ -36,6 +36,9 @@ const AdminAddProduct = () => {
                 description: form.description.trim(),
                 image_url: imageUrl,
                 featured: form.featured,
+                specifications: form.specifications
+                  .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))
+                  .filter((s) => s.label && s.value),
               });
               setTimeout(() => navigate("/admin/dashboard"), 1200);
             }}
