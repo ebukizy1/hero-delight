@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
-import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag } from "lucide-react";
+import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag, Star } from "lucide-react";
 import { CATEGORIES, formatNaira, discountPercent } from "@/lib/products";
 
 export interface ProductFormValue {
@@ -8,6 +8,7 @@ export interface ProductFormValue {
   bonusPrice: string;
   category: string;
   description: string;
+  featured: boolean;
 }
 
 interface Props {
@@ -35,7 +36,7 @@ export function ProductForm({
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [form, setForm] = useState<ProductFormValue>(
-    initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "" }
+    initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "", featured: false }
   );
 
   const set = <K extends keyof ProductFormValue>(k: K, v: ProductFormValue[K]) =>
