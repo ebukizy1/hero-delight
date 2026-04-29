@@ -34,10 +34,11 @@ export function Hero({ onShopClick }: HeroProps = {}) {
   }, []);
 
   const slides = useMemo(() => {
-    if (products && products.length > 0) return products.slice(0, 6);
+    const featured = (products ?? []).filter((p) => p.featured);
+    if (featured.length > 0) return featured.slice(0, 6);
     return DUMMY;
   }, [products]);
-  const isDummy = !products || products.length === 0;
+  const isDummy = !products || products.filter((p) => p.featured).length === 0;
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -151,38 +152,39 @@ export function Hero({ onShopClick }: HeroProps = {}) {
                         className="absolute inset-0 w-full h-full object-cover"
                         style={{ animation: i === index ? "kenburns 8s ease-out both" : undefined }}
                       />
+                      {/* Bottom-blend gradient using brand tones */}
                       <div
                         aria-hidden
                         className="absolute inset-0"
                         style={{
                           background:
-                            "linear-gradient(to top, hsl(var(--background) / 0.85) 0%, hsl(var(--background) / 0.15) 45%, transparent 70%)",
+                            "linear-gradient(to top, hsl(220 40% 8% / 0.92) 0%, hsl(220 40% 8% / 0.55) 35%, hsl(220 40% 8% / 0.05) 65%, transparent 85%)",
                         }}
                       />
 
                       {/* Discount badge */}
                       {discountPercent(p.price, p.bonusPrice) > 0 && (
-                        <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-xs font-extrabold px-3 py-1.5 rounded-xl bg-gradient-to-r from-destructive to-[hsl(var(--sun-to))] text-destructive-foreground shadow-glow">
+                        <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-xs font-extrabold px-3 py-1.5 rounded-xl bg-gradient-to-r from-destructive to-[hsl(var(--sun-to))] text-white shadow-glow">
                           −{discountPercent(p.price, p.bonusPrice)}%
                         </span>
                       )}
 
                       {/* Category chip */}
-                      <span className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-background/90 backdrop-blur border border-border/60">
+                      <span className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/15 text-white backdrop-blur-md border border-white/20">
                         {p.category.replace("Solar ", "")}
                       </span>
 
                       {/* Info */}
-                      <div className="absolute left-4 right-4 bottom-4 sm:left-5 sm:right-5 sm:bottom-5">
-                        <h3 className="font-display font-bold text-base sm:text-lg leading-tight line-clamp-2 text-foreground">
+                      <div className="absolute left-4 right-4 bottom-4 sm:left-6 sm:right-6 sm:bottom-6 text-white">
+                        <h3 className="font-display font-bold text-lg sm:text-xl leading-tight line-clamp-2 drop-shadow-sm">
                           {p.name}
                         </h3>
-                        <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
-                          <span className="font-display font-extrabold text-xl sm:text-2xl text-foreground">
+                        <div className="mt-2 flex items-baseline gap-2 flex-wrap">
+                          <span className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight">
                             {formatNaira(p.price)}
                           </span>
                           {discountPercent(p.price, p.bonusPrice) > 0 && (
-                            <span className="text-sm font-medium text-muted-foreground line-through decoration-destructive/70">
+                            <span className="text-sm font-medium text-white/70 line-through decoration-white/50">
                               {formatNaira(p.bonusPrice!)}
                             </span>
                           )}
