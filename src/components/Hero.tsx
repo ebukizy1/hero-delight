@@ -34,10 +34,11 @@ export function Hero({ onShopClick }: HeroProps = {}) {
   }, []);
 
   const slides = useMemo(() => {
-    if (products && products.length > 0) return products.slice(0, 6);
+    const featured = (products ?? []).filter((p) => p.featured);
+    if (featured.length > 0) return featured.slice(0, 6);
     return DUMMY;
   }, [products]);
-  const isDummy = !products || products.length === 0;
+  const isDummy = !products || products.filter((p) => p.featured).length === 0;
 
   useEffect(() => {
     if (slides.length <= 1) return;
