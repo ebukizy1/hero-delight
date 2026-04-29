@@ -21,6 +21,7 @@ export interface Product {
   image: string;
   description: string;
   featured: boolean;
+  specifications: Array<{ label: string; value: string }>;
 }
 
 export function dbToProduct(p: DbProduct): Product {
@@ -33,6 +34,9 @@ export function dbToProduct(p: DbProduct): Product {
     image: p.image_url,
     description: p.description,
     featured: Boolean(p.featured),
+    specifications: Array.isArray(p.specifications)
+      ? p.specifications.filter((s) => s && s.label && s.value)
+      : [],
   };
 }
 
@@ -59,6 +63,7 @@ export interface ProductInput {
   description: string;
   image_url: string;
   featured?: boolean;
+  specifications?: Array<{ label: string; value: string }>;
 }
 
 function isMissingColumn(err: unknown, col: string): boolean {

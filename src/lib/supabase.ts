@@ -16,5 +16,6 @@ export type DbProduct = {
   description: string;
   image_url: string;
   featured?: boolean | null;
+  specifications?: Array<{ label: string; value: string }> | null;
   created_at: string;
 };
