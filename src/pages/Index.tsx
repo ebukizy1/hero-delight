@@ -138,11 +138,14 @@ const Index = () => {
               <p className="text-sm">No products in this category yet.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-              {filtered.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+                {pageItems.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+              <Pagination page={safePage} totalPages={totalPages} onChange={goToPage} />
+            </>
           )}
         </div>
       </section>
@@ -170,6 +173,52 @@ function CategoryPill({
       {icon}
       {children}
     </button>
+  );
+}
+
+export function Pagination({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (p: number) => void }) {
+  if (totalPages <= 1) return null;
+  const pages: (number | "…")[] = [];
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || Math.abs(i - page) <= 1) pages.push(i);
+    else if (pages[pages.length - 1] !== "…") pages.push("…");
+  }
+  return (
+    <nav className="mt-8 flex items-center justify-center gap-1.5" aria-label="Pagination">
+      <button
+        onClick={() => onChange(page - 1)}
+        disabled={page === 1}
+        className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30 disabled:opacity-40 disabled:hover:text-muted-foreground transition-colors"
+        aria-label="Previous page"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+      {pages.map((p, i) =>
+        p === "…" ? (
+          <span key={`e${i}`} className="px-2 text-muted-foreground text-sm">…</span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onChange(p)}
+            className={`min-w-9 h-9 px-3 rounded-lg text-sm font-semibold transition-colors ${
+              p === page
+                ? "bg-primary text-primary-foreground shadow-soft"
+                : "bg-background border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+            }`}
+          >
+            {p}
+          </button>
+        ),
+      )}
+      <button
+        onClick={() => onChange(page + 1)}
+        disabled={page === totalPages}
+        className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30 disabled:opacity-40 disabled:hover:text-muted-foreground transition-colors"
+        aria-label="Next page"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </nav>
   );
 }
 
