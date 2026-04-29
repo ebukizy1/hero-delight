@@ -53,6 +53,7 @@ const AdminEditProduct = () => {
                 bonusPrice: product.bonusPrice ? product.bonusPrice.toString() : "",
                 category: product.category,
                 description: product.description,
+                featured: product.featured,
               }}
               onCancel={() => navigate("/admin/dashboard")}
               onSubmit={async (form, file) => {
@@ -65,6 +66,7 @@ const AdminEditProduct = () => {
                   category: form.category,
                   description: form.description.trim(),
                   image_url: imageUrl,
+                  featured: form.featured,
                 });
                 setTimeout(() => navigate("/admin/dashboard"), 1200);
               }}
