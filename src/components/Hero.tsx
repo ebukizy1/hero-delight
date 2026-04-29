@@ -63,7 +63,9 @@ export function Hero({ onShopClick }: HeroProps = {}) {
     if (onShopClick) { e.preventDefault(); onShopClick(); }
   };
 
-  const current = slides[index];
+  const safeIndex = slides.length > 0 ? index % slides.length : 0;
+  const current = slides[safeIndex] ?? DUMMY[0];
+  if (!current) return null;
 
   return (
     <section className="relative overflow-hidden bg-[hsl(var(--hero-bg))] text-white">
