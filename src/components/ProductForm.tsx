@@ -171,6 +171,25 @@ export function ProductForm({
         />
       </div>
 
+      {/* Featured toggle */}
+      <label className="flex items-start gap-3 rounded-xl border border-border bg-secondary/40 px-4 py-3 cursor-pointer hover:bg-secondary/60 transition-colors">
+        <input
+          type="checkbox"
+          checked={form.featured}
+          onChange={(e) => set("featured", e.target.checked)}
+          className="mt-0.5 w-4 h-4 accent-accent cursor-pointer"
+        />
+        <div className="flex-1">
+          <div className="flex items-center gap-2 font-semibold text-sm">
+            <Star className={`w-4 h-4 ${form.featured ? "fill-accent text-accent" : "text-muted-foreground"}`} />
+            Show as Featured on homepage
+          </div>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Toggle on to highlight this product in the homepage Featured carousel.
+          </p>
+        </div>
+      </label>
+
       {error && (
         <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
           <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" /> {error}
