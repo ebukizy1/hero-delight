@@ -46,6 +46,8 @@ export function Hero({ onShopClick }: HeroProps = {}) {
   }, [products]);
   const isDummy = !products || products.filter((p) => p.featured).length === 0;
 
+  useEffect(() => { setIndex(0); }, [slides.length]);
+
   useEffect(() => {
     if (slides.length <= 1) return;
     timer.current = window.setInterval(() => {
