@@ -130,6 +130,28 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
+
+        {product.specifications.length > 0 && (
+          <section className="mt-12 lg:mt-16">
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 rounded-lg bg-gradient-sun flex items-center justify-center">
+                <Award className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <h2 className="font-display font-extrabold text-xl sm:text-2xl">Technical Specifications</h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3">
+              {product.specifications.map((s, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-border bg-secondary/40 px-4 py-3"
+                >
+                  <span className="font-semibold text-sm text-foreground shrink-0">{s.label}:</span>
+                  <span className="text-sm text-muted-foreground text-right">{s.value}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
     </div>
