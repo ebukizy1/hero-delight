@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun } from "lucide-react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ChevronLeft, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
@@ -16,10 +16,13 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   "Solar Camera": Camera,
 };
 
+const PAGE_SIZE = 12;
+
 const Index = () => {
   const [selected, setSelected] = useState<Category | "All">("All");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const productsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,8 +32,17 @@ const Index = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = selected === "All" ? products : products.filter((p) => p.category === selected);
-  const featured = products.slice(0, 8);
+  const filtered = useMemo(
+    () => (selected === "All" ? products : products.filter((p) => p.category === selected)),
+    [selected, products],
+  );
+  const featured = useMemo(() => products.filter((p) => p.featured).slice(0, 12), [products]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [selected]);
 
   const handleSelectCategory = useCallback((c: Category | "All") => {
     setSelected(c);
@@ -38,6 +50,13 @@ const Index = () => {
       productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }, []);
+
+  const goToPage = (p: number) => {
+    setPage(p);
+    requestAnimationFrame(() => {
+      productsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
