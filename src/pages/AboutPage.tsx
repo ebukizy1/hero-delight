@@ -17,27 +17,27 @@ const STATS = [
 ];
 
 const AboutPage = () => {
-  useEffect(() => { document.title = "About — SolarHub"; }, []);
+  useEffect(() => { document.title = "About — OnlineSolarStore"; }, []);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-hero-glow border-b border-border/60">
-          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-gradient-sun opacity-20 blur-3xl animate-float-slow" aria-hidden />
+        <section className="relative overflow-hidden bg-hero-glow border-b border-border/60 text-white">
+          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-accent/30 blur-3xl animate-glow-pulse" aria-hidden />
           <div className="container mx-auto px-4 sm:px-6 py-12 lg:py-16 relative">
-            <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+            <Link to="/" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white mb-6 transition-colors">
               <ArrowLeft className="w-4 h-4" /> Back to home
             </Link>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-foreground text-xs font-semibold border border-accent/30 animate-fade-up">
-              <Sparkles className="w-3.5 h-3.5 text-accent" /> About SolarHub
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/15 text-accent text-xs font-bold uppercase tracking-wider border border-accent/30 animate-fade-up">
+              <Sparkles className="w-3.5 h-3.5" /> About OnlineSolarStore
             </span>
             <h1 className="mt-4 font-display font-extrabold text-3xl sm:text-5xl tracking-tight max-w-2xl leading-[1.05] animate-fade-up delay-100">
-              Clean energy, <span className="text-gradient-sun">made simple</span>.
+              Smart power, <span className="text-gradient-brand">reliable future</span>.
             </h1>
-            <p className="mt-4 text-base text-muted-foreground max-w-xl leading-relaxed animate-fade-up delay-200">
-              Nigeria's modern solar marketplace — quality streetlights, inverters, fans, cameras and power stations, delivered fast.
+            <p className="mt-4 text-base text-white/70 max-w-xl leading-relaxed animate-fade-up delay-200">
+              Premium solar street lights, power stations and security cameras — built for reliability, efficiency, and long-term savings.
             </p>
           </div>
         </section>

@@ -18,7 +18,7 @@ const ProductDetail = () => {
     fetchProduct(id).then((p) => {
       setProduct(p);
       setLoading(false);
-      if (p) document.title = `${p.name} — SolarHub`;
+      if (p) document.title = `${p.name} — OnlineSolarStore`;
     });
   }, [id]);
 

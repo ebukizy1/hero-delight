@@ -13,7 +13,7 @@ export function Footer() {
           <div className="lg:col-span-5">
             <Logo size="lg" />
             <p className="mt-4 text-sm text-muted-foreground max-w-sm leading-relaxed">
-              Nigeria's modern solar marketplace. Reliable products, transparent prices, and easy WhatsApp ordering — delivered fast.
+              Smart Power. Reliable Future. Premium solar street lights, power stations and security cameras — delivered nationwide.
             </p>
             <div className="mt-5 flex items-center gap-2">
               <SocialLink href="#" label="Instagram"><Instagram className="w-4 h-4" /></SocialLink>
@@ -54,14 +54,14 @@ export function Footer() {
                 <span className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-foreground shrink-0">
                   <Mail className="w-3.5 h-3.5" />
                 </span>
-                <a href="mailto:hello@solarhub.ng" className="hover:text-foreground transition-colors">hello@solarhub.ng</a>
+                <a href="mailto:hello@onlinesolarstore.com" className="hover:text-foreground transition-colors">hello@onlinesolarstore.com</a>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} SolarHub. Powered by the sun ☀️</p>
+          <p>© {new Date().getFullYear()} OnlineSolarStore. Smart Power. Reliable Future.</p>
           <div className="flex items-center gap-5">
             <a href="#" className="hover:text-foreground transition-colors">Warranty</a>
             <a href="#" className="hover:text-foreground transition-colors">Delivery</a>
