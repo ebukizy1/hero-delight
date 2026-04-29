@@ -87,7 +87,7 @@ const Index = () => {
 
       {/* Featured */}
       {featured.length > 0 && (
-        <section id="products" className="py-10 lg:py-14">
+        <section className="py-10 lg:py-14">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-5">
               <div>
@@ -109,7 +109,7 @@ const Index = () => {
       )}
 
       {/* Grid */}
-      <section ref={productsRef} className="pb-16 scroll-mt-32">
+      <section id="products" ref={productsRef} className="pb-16 scroll-mt-32">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-5">
             <div>
