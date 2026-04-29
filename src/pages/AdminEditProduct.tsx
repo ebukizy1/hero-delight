@@ -54,6 +54,7 @@ const AdminEditProduct = () => {
                 category: product.category,
                 description: product.description,
                 featured: product.featured,
+                specifications: product.specifications,
               }}
               onCancel={() => navigate("/admin/dashboard")}
               onSubmit={async (form, file) => {
@@ -67,6 +68,9 @@ const AdminEditProduct = () => {
                   description: form.description.trim(),
                   image_url: imageUrl,
                   featured: form.featured,
+                  specifications: form.specifications
+                    .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))
+                    .filter((s) => s.label && s.value),
                 });
                 setTimeout(() => navigate("/admin/dashboard"), 1200);
               }}
