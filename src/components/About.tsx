@@ -13,14 +13,14 @@ export function About() {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-5">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-foreground text-xs font-semibold border border-accent/30">
-              About SolarHub
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/15 text-foreground text-xs font-bold uppercase tracking-wider border border-accent/40">
+              About OnlineSolarStore
             </span>
             <h2 className="mt-4 font-display font-extrabold text-3xl sm:text-4xl tracking-tight leading-[1.1]">
-              Clean energy, <span className="text-gradient-sun">made simple</span>.
+              Smart power, <span className="text-gradient-brand">made reliable</span>.
             </h2>
             <p className="mt-4 text-muted-foreground text-sm sm:text-base leading-relaxed">
-              Nigeria's modern solar marketplace — quality products, fair prices, and fast delivery you can count on.
+              High-performance solar solutions for modern living — built for reliability, efficiency, and long-term savings.
             </p>
             <Link
               to="/about"

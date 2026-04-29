@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Sun, Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { Logo } from "@/components/Logo";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -37,12 +38,9 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-hero-glow px-4 py-10">
       <div className="w-full max-w-sm">
-        <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-sun shadow-soft">
-            <Sun className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
-          </div>
-          <span className="font-display font-extrabold text-xl">SolarHub</span>
-        </Link>
+        <div className="flex items-center justify-center mb-8">
+          <Logo size="lg" />
+        </div>
 
         <div className="bg-card rounded-2xl p-6 border border-border shadow-card">
           <h1 className="font-display font-bold text-xl">Admin Sign In</h1>

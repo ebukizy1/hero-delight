@@ -25,7 +25,7 @@ const CategoryPage = () => {
   }, []);
 
   useEffect(() => {
-    if (category) document.title = `${category} — SolarHub`;
+    if (category) document.title = `${category} — OnlineSolarStore`;
   }, [category]);
 
   useEffect(() => { setPage(1); }, [slug]);

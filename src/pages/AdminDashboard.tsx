@@ -63,7 +63,7 @@ const AdminDashboard = () => {
         <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2 font-display font-extrabold text-lg">
             <ArrowLeft className="w-4 h-4 text-muted-foreground" />
-            SolarHub Admin
+            OnlineSolarStore Admin
           </Link>
           <button
             onClick={logout}
