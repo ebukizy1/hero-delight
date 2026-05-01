@@ -49,8 +49,8 @@ export function ProductCard({ product }: Props) {
           {product.category.replace("Solar ", "")}
         </span>
         {hasBonus && (
-          <span className="absolute top-2 right-2 inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-gradient-to-r from-destructive to-[hsl(var(--sun-to))] text-destructive-foreground shadow-glow animate-fade-up">
-            <span>−{discount}%</span>
+          <span className="absolute top-2 right-2 inline-flex items-center gap-1 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-destructive text-destructive-foreground shadow-lg ring-2 ring-background/80 animate-fade-up">
+            −{discount}%
           </span>
         )}
       </Link>
