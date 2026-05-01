@@ -18,7 +18,7 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   "Solar Camera": Camera,
 };
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 8;
 
 const Index = () => {
   const [selected, setSelected] = useState<Category | "All">("All");

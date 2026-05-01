@@ -8,7 +8,7 @@ import { Pagination } from "@/pages/Index";
 import { fetchProducts, type Product } from "@/lib/products";
 import { slugToCategory } from "@/lib/categorySlug";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 8;
 
 const CategoryPage = () => {
   const { slug = "" } = useParams<{ slug: string }>();
