@@ -85,12 +85,22 @@ async function safeWrite<T>(
 ): Promise<T> {
   const optional = ["bonus_price", "featured", "specifications"];
   let p = { ...payload };
-  // Try up to optional.length+1 times, stripping a missing optional column each retry
+  const stripped: string[] = [];
   for (let i = 0; i <= optional.length; i++) {
     const res = await fn(p);
-    if (!res.error) return res.data as T;
+    if (!res.error) {
+      if (stripped.length) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[products] Saved without columns: ${stripped.join(", ")}. ` +
+            `Run the SQL migration to add them so this data is persisted.`,
+        );
+      }
+      return res.data as T;
+    }
     const missing = optional.find((c) => isMissingColumn(res.error, c) && c in p);
     if (!missing) throw res.error;
+    stripped.push(missing);
     p = stripField(p, missing);
   }
   throw new Error("Failed to save product");
