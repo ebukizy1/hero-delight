@@ -74,37 +74,25 @@ export function Hero({ onShopClick }: HeroProps = {}) {
       {/* Ambient gradient layer */}
       <div aria-hidden className="absolute inset-0 bg-hero-glow" />
 
-      {/* Subtle grid */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-          maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%)",
-        }}
-      />
+      {/* Soft accent glow blobs — single, subtle */}
+      <div aria-hidden className="absolute -top-40 -right-32 w-[34rem] h-[34rem] rounded-full bg-accent/15 blur-[120px] animate-glow-pulse" />
+      <div aria-hidden className="absolute -bottom-48 -left-32 w-[30rem] h-[30rem] rounded-full bg-accent/5 blur-[120px]" />
 
-      {/* Soft accent glow blobs */}
-      <div aria-hidden className="absolute -top-32 -right-24 w-[28rem] h-[28rem] rounded-full bg-accent/20 blur-3xl animate-glow-pulse" />
-      <div aria-hidden className="absolute -bottom-40 -left-24 w-[28rem] h-[28rem] rounded-full bg-success/10 blur-3xl animate-glow-pulse" style={{ animationDelay: "1.5s" }} />
-
-      <div className="container mx-auto px-4 sm:px-6 pt-12 pb-16 lg:pt-20 lg:pb-28 relative">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <div className="container mx-auto px-4 sm:px-6 pt-12 pb-16 lg:pt-20 lg:pb-24 relative">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           {/* Copy */}
           <div className="lg:col-span-6 relative z-10">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/15 text-accent text-xs font-bold uppercase tracking-wider border border-accent/30 animate-fade-up">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-bold uppercase tracking-wider border border-accent/20 animate-fade-up">
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               Smart Power Solutions
             </span>
 
-            <h1 className="mt-5 font-display font-extrabold text-4xl sm:text-5xl lg:text-[3.75rem] leading-[1.05] tracking-tight animate-fade-up delay-100">
+            <h1 className="mt-5 font-display font-extrabold text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.05] tracking-tight animate-fade-up delay-100">
               No More Darkness.{" "}
               <span className="text-gradient-brand">Just Reliable Power.</span>
             </h1>
 
-            <p className="mt-5 text-base sm:text-lg text-white/70 max-w-xl leading-relaxed animate-fade-up delay-200">
+            <p className="mt-5 text-base sm:text-lg text-white/65 max-w-xl leading-relaxed animate-fade-up delay-200">
               Shop high-performance solar street lights, power stations, and security cameras built for reliability, efficiency, and long-term savings.
             </p>
 
@@ -118,7 +106,7 @@ export function Hero({ onShopClick }: HeroProps = {}) {
               </a>
               <a
                 href="#browse"
-                className="inline-flex items-center h-12 px-6 rounded-xl border border-white/25 text-white font-semibold hover:bg-white/10 transition-colors text-sm"
+                className="inline-flex items-center h-12 px-6 rounded-xl border border-white/15 text-white font-semibold hover:bg-white/5 transition-colors text-sm"
               >
                 Browse Products
               </a>
@@ -128,73 +116,75 @@ export function Hero({ onShopClick }: HeroProps = {}) {
             <div className="mt-9 grid grid-cols-2 sm:grid-cols-4 gap-3 animate-fade-up delay-400">
               {TRUST.map(({ icon: Icon, label }) => (
                 <div key={label} className="flex items-center gap-2.5">
-                  <span className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-accent shrink-0">
+                  <span className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-center text-accent shrink-0">
                     <Icon className="w-4 h-4" />
                   </span>
-                  <span className="text-xs font-medium text-white/80 leading-tight">{label}</span>
+                  <span className="text-xs font-medium text-white/75 leading-tight">{label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Visual — hero image + featured product carousel */}
+          {/* Visual — featured product carousel, blended with background */}
           <div className="lg:col-span-6 relative animate-fade-up delay-200">
             <div className="relative">
-              {/* Glow ring */}
-              <div aria-hidden className="absolute -inset-6 rounded-[2rem] bg-gradient-brand opacity-20 blur-3xl animate-float-slow" />
+              {/* Soft halo behind the card — blends with hero bg */}
+              <div aria-hidden className="absolute -inset-10 rounded-[2.5rem] bg-accent/10 blur-3xl" />
 
-              {/* Main visual card */}
-              <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-[hsl(var(--hero-surface))] aspect-[4/3] sm:aspect-square lg:aspect-[5/4] shadow-glow-soft">
-                {/* Background hero photo */}
+              {/* Main visual — borderless, blended */}
+              <div className="relative rounded-3xl overflow-hidden aspect-[4/3] sm:aspect-square lg:aspect-[5/4] ring-1 ring-white/5">
                 <img
                   src={heroNight}
                   alt="Solar street light illuminating a modern home at night"
                   width={1536}
                   height={1280}
                   fetchPriority="high"
-                  className="absolute inset-0 w-full h-full object-cover opacity-90"
-                  style={{ animation: "kenburns 20s ease-out both infinite alternate" }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ animation: "kenburns 24s ease-out both infinite alternate" }}
                 />
-                {/* Bottom gradient for legibility */}
+                {/* Edge fade — blends image into hero background on all sides */}
                 <div
                   aria-hidden
                   className="absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(to top, hsl(215 60% 6% / 0.95) 0%, hsl(215 60% 6% / 0.55) 40%, hsl(215 60% 6% / 0.0) 75%)",
+                      "radial-gradient(ellipse 110% 90% at 50% 40%, transparent 30%, hsl(var(--hero-bg) / 0.65) 75%, hsl(var(--hero-bg)) 100%)",
+                  }}
+                />
+                {/* Bottom legibility gradient */}
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-2/3"
+                  style={{
+                    background:
+                      "linear-gradient(to top, hsl(var(--hero-bg)) 0%, hsl(var(--hero-bg) / 0.7) 35%, transparent 100%)",
                   }}
                 />
 
-                {/* Featured product chip — top */}
+                {/* Top chips */}
                 <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-accent text-accent-foreground shadow-glow">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-accent/95 text-accent-foreground backdrop-blur-sm">
                     Featured
                   </span>
                   {discountPercent(current.price, current.bonusPrice) > 0 && (
-                    <span className="inline-flex items-center text-xs font-extrabold px-3 py-1.5 rounded-xl bg-success text-success-foreground">
+                    <span className="inline-flex items-center text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg bg-success/95 text-success-foreground backdrop-blur-sm">
                       Save {discountPercent(current.price, current.bonusPrice)}%
                     </span>
                   )}
                 </div>
 
-                {/* Product info */}
+                {/* Product info — sits inside the faded zone */}
                 <Link
                   to={isDummy ? "#products" : `/product/${current.id}`}
                   onClick={isDummy ? handleShop : undefined}
                   className="absolute left-4 right-4 bottom-4 sm:left-6 sm:right-6 sm:bottom-6 group/info"
                 >
                   <div className="flex items-end gap-3">
-                    {/* Product thumb */}
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-white/15 bg-white/5 shrink-0 backdrop-blur">
-                      <img
-                        src={current.image}
-                        alt=""
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-xl overflow-hidden ring-1 ring-white/10 bg-white/[0.04] shrink-0">
+                      <img src={current.image} alt="" loading="lazy" className="w-full h-full object-cover" />
                     </div>
                     <div className="min-w-0 flex-1 text-white">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-accent">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/90">
                         {current.category.replace("Solar ", "")}
                       </p>
                       <h3 className="font-display font-bold text-base sm:text-lg leading-tight line-clamp-1 group-hover/info:text-accent transition-colors">
@@ -205,7 +195,7 @@ export function Hero({ onShopClick }: HeroProps = {}) {
                           {formatNaira(current.price)}
                         </span>
                         {discountPercent(current.price, current.bonusPrice) > 0 && (
-                          <span className="text-xs font-medium text-white/50 line-through">
+                          <span className="text-xs font-medium text-white/45 line-through">
                             {formatNaira(current.bonusPrice!)}
                           </span>
                         )}
@@ -214,20 +204,20 @@ export function Hero({ onShopClick }: HeroProps = {}) {
                   </div>
                 </Link>
 
-                {/* Controls */}
+                {/* Controls — minimal, only on hover-capable area */}
                 {slides.length > 1 && (
                   <>
                     <button
                       aria-label="Previous"
                       onClick={() => goto(index - 1)}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur border border-white/15 text-white flex items-center justify-center transition-colors"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-md ring-1 ring-white/10 text-white flex items-center justify-center transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       aria-label="Next"
                       onClick={() => goto(index + 1)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur border border-white/15 text-white flex items-center justify-center transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-md ring-1 ring-white/10 text-white flex items-center justify-center transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -237,13 +227,13 @@ export function Hero({ onShopClick }: HeroProps = {}) {
 
               {/* Dots */}
               {slides.length > 1 && (
-                <div className="mt-4 flex items-center justify-center gap-2">
+                <div className="mt-5 flex items-center justify-center gap-2">
                   {slides.map((_, i) => (
                     <button
                       key={i}
                       aria-label={`Go to slide ${i + 1}`}
                       onClick={() => goto(i)}
-                      className={`h-1.5 rounded-full transition-all ${i === index ? "w-7 bg-accent" : "w-2 bg-white/25 hover:bg-white/50"}`}
+                      className={`h-1.5 rounded-full transition-all ${i === safeIndex ? "w-7 bg-accent" : "w-2 bg-white/20 hover:bg-white/40"}`}
                     />
                   ))}
                 </div>
