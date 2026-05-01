@@ -242,7 +242,6 @@ export function Hero({ onShopClick }: HeroProps = {}) {
           </div>
         </div>
       </div>
-      </div>
 
       <style>{`
         @keyframes kenburns {
