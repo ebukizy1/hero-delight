@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ArrowRight } from "lucide-react";
+import { Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ArrowRight, FlashlightIcon, LightbulbIcon } from "lucide-react";
 import { CATEGORIES } from "@/lib/products";
 import { categoryToSlug } from "@/lib/categorySlug";
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "Solar Streetlight": Lightbulb,
+  "Solar Floodlight": FlashlightIcon,
+  "Solar LED Light": LightbulbIcon,
   "Solar Power Station": BatteryCharging,
   "Solar Inverter": Zap,
   "Solar Fan": Fan,

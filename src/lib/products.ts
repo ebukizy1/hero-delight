@@ -2,6 +2,8 @@ import { supabase, type DbProduct } from "./supabase";
 
 export const CATEGORIES = [
   "Solar Streetlight",
+  "Solar Floodlight",
+  "Solar LED Light",
   "Solar Power Station",
   "Solar Inverter",
   "Solar Fan",
