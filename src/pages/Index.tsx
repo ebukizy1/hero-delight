@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ChevronLeft, ChevronRight, FlashlightIcon, LightbulbIcon } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
@@ -10,6 +10,8 @@ import { fetchProducts, CATEGORIES, type Category, type Product } from "@/lib/pr
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "Solar Streetlight": Lightbulb,
+  "Solar Floodlight": FlashlightIcon,
+  "Solar LED Light": LightbulbIcon,
   "Solar Power Station": BatteryCharging,
   "Solar Inverter": Zap,
   "Solar Fan": Fan,
