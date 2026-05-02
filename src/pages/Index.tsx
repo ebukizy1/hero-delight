@@ -108,13 +108,13 @@ const Index = () => {
       <section id="categories" className="border-y border-border bg-card/80 backdrop-blur sticky top-16 z-30">
         <div className="container mx-auto px-4 sm:px-6 py-3">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1">
-            <CategoryPill active={selected === "All"} onClick={() => handleSelectCategory("All")} icon={<Sparkles className="w-3.5 h-3.5" />}>
+            <CategoryPill active={selected === "All"} onClick={() => handleSelectCategory("All")} icon={<Sparkles className="w-3.5 h-3.5" />} colorKey="All">
               All
             </CategoryPill>
             {CATEGORIES.map((c) => {
               const Icon = CATEGORY_ICONS[c] ?? Sun;
               return (
-                <CategoryPill key={c} active={selected === c} onClick={() => handleSelectCategory(c)} icon={<Icon className="w-3.5 h-3.5" />}>
+                <CategoryPill key={c} active={selected === c} onClick={() => handleSelectCategory(c)} icon={<Icon className="w-3.5 h-3.5" />} colorKey={c}>
                   {c.replace("Solar ", "")}
                 </CategoryPill>
               );
