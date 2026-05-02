@@ -18,6 +18,42 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   "Solar Camera": Camera,
 };
 
+// Distinct color identity per category — helps users spot the right pill at a glance
+const CATEGORY_COLORS: Record<string, { idle: string; active: string }> = {
+  "All": {
+    idle: "bg-background border-foreground/20 text-foreground",
+    active: "bg-primary text-primary-foreground border-primary shadow-soft",
+  },
+  "Solar Streetlight": {
+    idle: "bg-amber-50 border-amber-300 text-amber-800",
+    active: "bg-amber-500 text-white border-amber-500 shadow-soft",
+  },
+  "Solar Floodlight": {
+    idle: "bg-orange-50 border-orange-300 text-orange-800",
+    active: "bg-orange-500 text-white border-orange-500 shadow-soft",
+  },
+  "Solar LED Light": {
+    idle: "bg-yellow-50 border-yellow-300 text-yellow-800",
+    active: "bg-yellow-500 text-white border-yellow-500 shadow-soft",
+  },
+  "Solar Power Station": {
+    idle: "bg-emerald-50 border-emerald-300 text-emerald-800",
+    active: "bg-emerald-600 text-white border-emerald-600 shadow-soft",
+  },
+  "Solar Inverter": {
+    idle: "bg-blue-50 border-blue-300 text-blue-800",
+    active: "bg-blue-600 text-white border-blue-600 shadow-soft",
+  },
+  "Solar Fan": {
+    idle: "bg-sky-50 border-sky-300 text-sky-800",
+    active: "bg-sky-600 text-white border-sky-600 shadow-soft",
+  },
+  "Solar Camera": {
+    idle: "bg-violet-50 border-violet-300 text-violet-800",
+    active: "bg-violet-600 text-white border-violet-600 shadow-soft",
+  },
+};
+
 const PAGE_SIZE = 8;
 
 const Index = () => {
@@ -72,13 +108,13 @@ const Index = () => {
       <section id="categories" className="border-y border-border bg-card/80 backdrop-blur sticky top-16 z-30">
         <div className="container mx-auto px-4 sm:px-6 py-3">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1">
-            <CategoryPill active={selected === "All"} onClick={() => handleSelectCategory("All")} icon={<Sparkles className="w-3.5 h-3.5" />}>
+            <CategoryPill active={selected === "All"} onClick={() => handleSelectCategory("All")} icon={<Sparkles className="w-3.5 h-3.5" />} colorKey="All">
               All
             </CategoryPill>
             {CATEGORIES.map((c) => {
               const Icon = CATEGORY_ICONS[c] ?? Sun;
               return (
-                <CategoryPill key={c} active={selected === c} onClick={() => handleSelectCategory(c)} icon={<Icon className="w-3.5 h-3.5" />}>
+                <CategoryPill key={c} active={selected === c} onClick={() => handleSelectCategory(c)} icon={<Icon className="w-3.5 h-3.5" />} colorKey={c}>
                   {c.replace("Solar ", "")}
                 </CategoryPill>
               );
@@ -168,17 +204,16 @@ const Index = () => {
 };
 
 function CategoryPill({
-  active, onClick, children, icon,
+  active, onClick, children, icon, colorKey,
 }: {
-  active: boolean; onClick: () => void; children: React.ReactNode; icon?: React.ReactNode;
+  active: boolean; onClick: () => void; children: React.ReactNode; icon?: React.ReactNode; colorKey?: string;
 }) {
+  const palette = (colorKey && CATEGORY_COLORS[colorKey]) || CATEGORY_COLORS["All"];
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 h-9 rounded-full text-sm font-semibold transition-all ${
-        active
-          ? "bg-primary text-primary-foreground shadow-soft"
-          : "bg-background border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+      className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 h-9 rounded-full text-sm font-semibold border transition-all ${
+        active ? palette.active : `${palette.idle} hover:brightness-95`
       }`}
     >
       {icon}
