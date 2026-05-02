@@ -223,12 +223,6 @@ export function Hero({ onShopClick }: HeroProps = {}) {
         </div>
       </div>
 
-      <style>{`
-        @keyframes kenburns {
-          from { transform: scale(1) translate3d(0,0,0); }
-          to   { transform: scale(1.08) translate3d(0,0,0); }
-        }
-      `}</style>
     </section>
   );
 }
