@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Truck, Zap, Headset, ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchProducts, type Product, formatNaira, discountPercent } from "@/lib/products";
-import heroNight from "@/assets/hero-night.jpg";
+
 import streetlightImg from "@/assets/products/streetlight.jpg";
 import inverterImg from "@/assets/products/inverter.jpg";
 import powerStationImg from "@/assets/products/power-station.jpg";
