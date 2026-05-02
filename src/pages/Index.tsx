@@ -204,17 +204,16 @@ const Index = () => {
 };
 
 function CategoryPill({
-  active, onClick, children, icon,
+  active, onClick, children, icon, colorKey,
 }: {
-  active: boolean; onClick: () => void; children: React.ReactNode; icon?: React.ReactNode;
+  active: boolean; onClick: () => void; children: React.ReactNode; icon?: React.ReactNode; colorKey?: string;
 }) {
+  const palette = (colorKey && CATEGORY_COLORS[colorKey]) || CATEGORY_COLORS["All"];
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 h-9 rounded-full text-sm font-semibold transition-all ${
-        active
-          ? "bg-primary text-primary-foreground shadow-soft"
-          : "bg-background border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+      className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 h-9 rounded-full text-sm font-semibold border transition-all ${
+        active ? palette.active : `${palette.idle} hover:brightness-95`
       }`}
     >
       {icon}
