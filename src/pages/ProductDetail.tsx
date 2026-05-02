@@ -1,26 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, MessageCircle, Shield, Truck, Headset, Loader2, Award } from "lucide-react";
+import { ArrowLeft, ShoppingCart, MessageCircle, Shield, Truck, Headset, Loader2, Award, Zap } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { fetchProduct, formatNaira, discountPercent, type Product } from "@/lib/products";
+import { ProductCard } from "@/components/ProductCard";
+import { fetchProduct, fetchProducts, formatNaira, discountPercent, type Product } from "@/lib/products";
+import { categoryToSlug } from "@/lib/categorySlug";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     if (!id) return;
-    fetchProduct(id).then((p) => {
+    setLoading(true);
+    setImgError(false);
+    Promise.all([fetchProduct(id), fetchProducts().catch(() => [])]).then(([p, all]) => {
       setProduct(p);
+      setAllProducts(all);
       setLoading(false);
       if (p) document.title = `${p.name} — OnlineSolarStore`;
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
     });
   }, [id]);
+
+  const related = useMemo(() => {
+    if (!product) return [];
+    return allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 8);
+  }, [product, allProducts]);
 
   if (loading) {
     return (
@@ -148,6 +160,32 @@ const ProductDetail = () => {
                   <span className="font-semibold text-sm text-foreground shrink-0">{s.label}:</span>
                   <span className="text-sm text-muted-foreground text-right">{s.value}</span>
                 </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {related.length > 0 && (
+          <section className="mt-14 lg:mt-20">
+            <div className="flex items-end justify-between mb-5 sm:mb-6 gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-sun flex items-center justify-center shrink-0">
+                  <Zap className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <h2 className="font-display font-extrabold text-xl sm:text-2xl lg:text-3xl tracking-tight">
+                  Related Products
+                </h2>
+              </div>
+              <Link
+                to={`/category/${categoryToSlug(product.category)}`}
+                className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:text-accent/80 transition-colors whitespace-nowrap"
+              >
+                View All <ArrowLeft className="w-4 h-4 rotate-180" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+              {related.map((p) => (
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </section>

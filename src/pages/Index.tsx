@@ -87,9 +87,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured */}
+      {/* Featured — auto-scrolling marquee carousel */}
       {featured.length > 0 && (
-        <section className="py-10 lg:py-14">
+        <section className="py-10 lg:py-14 overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-5">
               <div>
@@ -97,14 +97,23 @@ const Index = () => {
                 <p className="text-muted-foreground text-sm mt-1">Our top picks</p>
               </div>
             </div>
-            <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-auto scrollbar-hide">
-              <div className="flex gap-3 sm:gap-5 pb-4">
-                {featured.map((p) => (
-                  <div key={p.id} className="min-w-[170px] w-[46vw] sm:w-auto sm:min-w-[240px] sm:max-w-[280px]">
-                    <ProductCard product={p} />
-                  </div>
-                ))}
-              </div>
+          </div>
+          <div
+            className="relative group"
+            style={{
+              maskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+              WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+            }}
+          >
+            <div
+              className="flex gap-3 sm:gap-5 w-max animate-marquee group-hover:[animation-play-state:paused] py-2"
+              style={{ animationDuration: `${Math.max(25, featured.length * 6)}s` }}
+            >
+              {[...featured, ...featured].map((p, i) => (
+                <div key={`${p.id}-${i}`} className="w-[170px] sm:w-[230px] lg:w-[250px] shrink-0">
+                  <ProductCard product={p} />
+                </div>
+              ))}
             </div>
           </div>
         </section>

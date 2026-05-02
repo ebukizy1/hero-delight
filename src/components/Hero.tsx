@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Truck, Zap, Headset, ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchProducts, type Product, formatNaira, discountPercent } from "@/lib/products";
-import heroNight from "@/assets/hero-night.jpg";
+
 import streetlightImg from "@/assets/products/streetlight.jpg";
 import inverterImg from "@/assets/products/inverter.jpg";
 import powerStationImg from "@/assets/products/power-station.jpg";
@@ -125,99 +125,79 @@ export function Hero({ onShopClick }: HeroProps = {}) {
             </div>
           </div>
 
-          {/* Visual — featured product carousel, blended with background */}
+          {/* Visual — clean product showcase card */}
           <div className="lg:col-span-6 relative animate-fade-up delay-200">
             <div className="relative">
-              {/* Soft halo behind the card — blends with hero bg */}
-              <div aria-hidden className="absolute -inset-10 rounded-[2.5rem] bg-accent/10 blur-3xl" />
+              {/* Soft halo */}
+              <div aria-hidden className="absolute -inset-6 sm:-inset-10 rounded-[2.5rem] bg-accent/10 blur-3xl" />
 
-              {/* Main visual — borderless, blended */}
-              <div className="relative rounded-3xl overflow-hidden aspect-[4/3] sm:aspect-square lg:aspect-[5/4] ring-1 ring-white/5">
-                <img
-                  src={heroNight}
-                  alt="Solar street light illuminating a modern home at night"
-                  width={1536}
-                  height={1280}
-                  fetchPriority="high"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  style={{ animation: "kenburns 24s ease-out both infinite alternate" }}
-                />
-                {/* Edge fade — blends image into hero background on all sides */}
-                <div
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse 110% 90% at 50% 40%, transparent 30%, hsl(var(--hero-bg) / 0.65) 75%, hsl(var(--hero-bg)) 100%)",
-                  }}
-                />
-                {/* Bottom legibility gradient */}
-                <div
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-2/3"
-                  style={{
-                    background:
-                      "linear-gradient(to top, hsl(var(--hero-bg)) 0%, hsl(var(--hero-bg) / 0.7) 35%, transparent 100%)",
-                  }}
-                />
-
-                {/* Top chips */}
-                <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-accent/95 text-accent-foreground backdrop-blur-sm">
-                    Featured
-                  </span>
-                  {discountPercent(current.price, current.bonusPrice) > 0 && (
-                    <span className="inline-flex items-center text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg bg-success/95 text-success-foreground backdrop-blur-sm">
-                      Save {discountPercent(current.price, current.bonusPrice)}%
-                    </span>
-                  )}
-                </div>
-
-                {/* Product info — sits inside the faded zone */}
+              {/* Clean product card — white surface, business-like */}
+              <div className="relative rounded-3xl overflow-hidden bg-white shadow-2xl ring-1 ring-white/10">
+                {/* Product image area */}
                 <Link
                   to={isDummy ? "#products" : `/product/${current.id}`}
                   onClick={isDummy ? handleShop : undefined}
-                  className="absolute left-4 right-4 bottom-4 sm:left-6 sm:right-6 sm:bottom-6 group/info"
+                  className="block relative aspect-[4/3] sm:aspect-[5/4] bg-gradient-to-br from-slate-50 to-slate-100 overflow-hidden"
                 >
-                  <div className="flex items-end gap-3">
-                    <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-xl overflow-hidden ring-1 ring-white/10 bg-white/[0.04] shrink-0">
-                      <img src={current.image} alt="" loading="lazy" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="min-w-0 flex-1 text-white">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-accent/90">
-                        {current.category.replace("Solar ", "")}
-                      </p>
-                      <h3 className="font-display font-bold text-base sm:text-lg leading-tight line-clamp-1 group-hover/info:text-accent transition-colors">
-                        {current.name}
-                      </h3>
-                      <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                        <span className="font-display font-extrabold text-lg sm:text-xl">
-                          {formatNaira(current.price)}
-                        </span>
-                        {discountPercent(current.price, current.bonusPrice) > 0 && (
-                          <span className="text-xs font-medium text-white/45 line-through">
-                            {formatNaira(current.bonusPrice!)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                  <img
+                    key={current.id}
+                    src={current.image}
+                    alt={current.name}
+                    fetchPriority="high"
+                    className="absolute inset-0 w-full h-full object-contain p-6 sm:p-10 transition-transform duration-700 ease-out hover:scale-105 animate-fade-in"
+                  />
+
+                  {/* Top chips */}
+                  <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3 pointer-events-none">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-accent text-accent-foreground shadow-md">
+                      Featured
+                    </span>
+                    {discountPercent(current.price, current.bonusPrice) > 0 && (
+                      <span className="inline-flex items-center text-[11px] font-extrabold px-2.5 py-1.5 rounded-lg bg-destructive text-destructive-foreground shadow-md">
+                        −{discountPercent(current.price, current.bonusPrice)}%
+                      </span>
+                    )}
                   </div>
                 </Link>
 
-                {/* Controls — minimal, only on hover-capable area */}
+                {/* Info bar — clean white footer */}
+                <Link
+                  to={isDummy ? "#products" : `/product/${current.id}`}
+                  onClick={isDummy ? handleShop : undefined}
+                  className="block px-4 sm:px-6 py-4 sm:py-5 border-t border-slate-100 group/info bg-white"
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
+                    {current.category.replace("Solar ", "")}
+                  </p>
+                  <h3 className="mt-1 font-display font-bold text-base sm:text-lg leading-tight line-clamp-1 text-slate-900 group-hover/info:text-accent transition-colors">
+                    {current.name}
+                  </h3>
+                  <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
+                    <span className="font-display font-extrabold text-lg sm:text-xl text-slate-900">
+                      {formatNaira(current.price)}
+                    </span>
+                    {discountPercent(current.price, current.bonusPrice) > 0 && (
+                      <span className="text-xs font-medium text-slate-400 line-through">
+                        {formatNaira(current.bonusPrice!)}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+
+                {/* Controls */}
                 {slides.length > 1 && (
                   <>
                     <button
                       aria-label="Previous"
                       onClick={() => goto(index - 1)}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-md ring-1 ring-white/10 text-white flex items-center justify-center transition-colors"
+                      className="absolute left-2 sm:left-3 top-[40%] -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md ring-1 ring-slate-200 text-slate-700 flex items-center justify-center transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       aria-label="Next"
                       onClick={() => goto(index + 1)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-md ring-1 ring-white/10 text-white flex items-center justify-center transition-colors"
+                      className="absolute right-2 sm:right-3 top-[40%] -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md ring-1 ring-slate-200 text-slate-700 flex items-center justify-center transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -243,12 +223,6 @@ export function Hero({ onShopClick }: HeroProps = {}) {
         </div>
       </div>
 
-      <style>{`
-        @keyframes kenburns {
-          from { transform: scale(1) translate3d(0,0,0); }
-          to   { transform: scale(1.08) translate3d(0,0,0); }
-        }
-      `}</style>
     </section>
   );
 }

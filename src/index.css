@@ -140,6 +140,10 @@
   0%, 100% { opacity: 0.5; transform: scale(1); }
   50% { opacity: 0.85; transform: scale(1.05); }
 }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 
 @layer utilities {
   .animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
@@ -148,6 +152,7 @@
   .animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
   .animate-sun-rotate { animation: sun-rotate 30s linear infinite; }
   .animate-glow-pulse { animation: glow-pulse 4s ease-in-out infinite; }
+  .animate-marquee { animation: marquee linear infinite; }
   .delay-100 { animation-delay: 0.1s; }
   .delay-200 { animation-delay: 0.2s; }
   .delay-300 { animation-delay: 0.3s; }
