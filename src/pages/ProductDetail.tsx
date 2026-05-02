@@ -11,18 +11,28 @@ import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     if (!id) return;
-    fetchProduct(id).then((p) => {
+    setLoading(true);
+    setImgError(false);
+    Promise.all([fetchProduct(id), fetchProducts().catch(() => [])]).then(([p, all]) => {
       setProduct(p);
+      setAllProducts(all);
       setLoading(false);
       if (p) document.title = `${p.name} — OnlineSolarStore`;
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
     });
   }, [id]);
+
+  const related = useMemo(() => {
+    if (!product) return [];
+    return allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 8);
+  }, [product, allProducts]);
 
   if (loading) {
     return (
