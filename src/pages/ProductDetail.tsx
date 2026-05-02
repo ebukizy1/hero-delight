@@ -164,6 +164,32 @@ const ProductDetail = () => {
             </div>
           </section>
         )}
+
+        {related.length > 0 && (
+          <section className="mt-14 lg:mt-20">
+            <div className="flex items-end justify-between mb-5 sm:mb-6 gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-sun flex items-center justify-center shrink-0">
+                  <Zap className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <h2 className="font-display font-extrabold text-xl sm:text-2xl lg:text-3xl tracking-tight">
+                  Related Products
+                </h2>
+              </div>
+              <Link
+                to={`/category/${categoryToSlug(product.category)}`}
+                className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:text-accent/80 transition-colors whitespace-nowrap"
+              >
+                View All <ArrowLeft className="w-4 h-4 rotate-180" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+              {related.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
     </div>
