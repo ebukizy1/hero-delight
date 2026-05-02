@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, MessageCircle, Shield, Truck, Headset, Loader2, Award } from "lucide-react";
+import { ArrowLeft, ShoppingCart, MessageCircle, Shield, Truck, Headset, Loader2, Award, Zap } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { fetchProduct, formatNaira, discountPercent, type Product } from "@/lib/products";
+import { ProductCard } from "@/components/ProductCard";
+import { fetchProduct, fetchProducts, formatNaira, discountPercent, type Product } from "@/lib/products";
+import { categoryToSlug } from "@/lib/categorySlug";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 
 const ProductDetail = () => {
