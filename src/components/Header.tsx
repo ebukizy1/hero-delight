@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useState } from "react";
 import { CartDrawer } from "./CartDrawer";
@@ -13,12 +13,18 @@ export function Header({ onShopClick }: HeaderProps = {}) {
   const items = useCart();
   const count = items.reduce((s, i) => s + i.qty, 0);
   const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const onHome = location.pathname === "/";
 
   const goSection = (id: string) => (e: React.MouseEvent) => {
-    if (!onHome) return; // allow default navigation to /#id
+    setMobileOpen(false);
+    if (!onHome) {
+      e.preventDefault();
+      navigate(`/#${id}`);
+      return;
+    }
     e.preventDefault();
     if (id === "products" && onShopClick) {
       onShopClick();
@@ -28,6 +34,7 @@ export function Header({ onShopClick }: HeaderProps = {}) {
   };
 
   const handleShop = (e: React.MouseEvent) => {
+    setMobileOpen(false);
     if (onHome) {
       e.preventDefault();
       if (onShopClick) onShopClick();
@@ -50,22 +57,61 @@ export function Header({ onShopClick }: HeaderProps = {}) {
             <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
           </nav>
 
-          <button
-            onClick={() => setOpen(true)}
-            className="relative inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-secondary transition-colors"
-            aria-label="Open cart"
-          >
-            <ShoppingBag className="w-5 h-5" />
-            {count > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 px-1 rounded-full bg-accent text-accent-foreground text-[11px] font-bold flex items-center justify-center">
-                {count}
-              </span>
-            )}
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setOpen(true)}
+              className="relative inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-secondary transition-colors"
+              aria-label="Open cart"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {count > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 px-1 rounded-full bg-accent text-accent-foreground text-[11px] font-bold flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setMobileOpen((v) => !v)}
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-secondary transition-colors"
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile dropdown nav */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-border/60 bg-background/95 backdrop-blur-xl animate-fade-in">
+            <nav className="container mx-auto px-4 sm:px-6 py-3 flex flex-col">
+              <a
+                href="/#products"
+                onClick={handleShop}
+                className="py-3 px-2 text-sm font-semibold text-foreground hover:text-accent transition-colors border-b border-border/40"
+              >
+                Shop
+              </a>
+              <a
+                href="/#browse"
+                onClick={goSection("browse")}
+                className="py-3 px-2 text-sm font-semibold text-foreground hover:text-accent transition-colors border-b border-border/40"
+              >
+                Categories
+              </a>
+              <Link
+                to="/about"
+                onClick={() => setMobileOpen(false)}
+                className="py-3 px-2 text-sm font-semibold text-foreground hover:text-accent transition-colors"
+              >
+                About
+              </Link>
+            </nav>
+          </div>
+        )}
       </header>
       <CartDrawer open={open} onClose={() => setOpen(false)} />
     </>
   );
 }
-

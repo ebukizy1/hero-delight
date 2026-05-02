@@ -128,16 +128,17 @@ export function Hero({ onShopClick }: HeroProps = {}) {
           {/* Visual — clean product showcase card */}
           <div className="lg:col-span-6 relative animate-fade-up delay-200">
             <div className="relative">
-              {/* Soft halo */}
-              <div aria-hidden className="absolute -inset-6 sm:-inset-10 rounded-[2.5rem] bg-accent/10 blur-3xl" />
+              {/* Warm accent halo — blends card into hero */}
+              <div aria-hidden className="absolute -inset-8 sm:-inset-12 rounded-[2.5rem] bg-accent/20 blur-[80px]" />
+              <div aria-hidden className="absolute -inset-1 rounded-[1.75rem] bg-gradient-to-br from-accent/40 via-accent/10 to-transparent blur-md" />
 
-              {/* Clean product card — white surface, business-like */}
-              <div className="relative rounded-3xl overflow-hidden bg-white shadow-2xl ring-1 ring-white/10">
+              {/* Clean product card — soft surface that blends with the navy hero */}
+              <div className="relative rounded-3xl overflow-hidden bg-[hsl(45_40%_97%)] shadow-2xl ring-1 ring-accent/30">
                 {/* Product image area */}
                 <Link
                   to={isDummy ? "#products" : `/product/${current.id}`}
                   onClick={isDummy ? handleShop : undefined}
-                  className="block relative aspect-[4/3] sm:aspect-[5/4] bg-gradient-to-br from-slate-50 to-slate-100 overflow-hidden"
+                  className="block relative aspect-[4/3] sm:aspect-[5/4] bg-gradient-to-br from-[hsl(45_50%_96%)] to-[hsl(215_20%_92%)] overflow-hidden"
                 >
                   <img
                     key={current.id}
@@ -164,7 +165,7 @@ export function Hero({ onShopClick }: HeroProps = {}) {
                 <Link
                   to={isDummy ? "#products" : `/product/${current.id}`}
                   onClick={isDummy ? handleShop : undefined}
-                  className="block px-4 sm:px-6 py-4 sm:py-5 border-t border-slate-100 group/info bg-white"
+                  className="block px-4 sm:px-6 py-4 sm:py-5 border-t border-[hsl(45_30%_90%)] group/info bg-[hsl(45_40%_97%)]"
                 >
                   <p className="text-[10px] font-bold uppercase tracking-wider text-accent">
                     {current.category.replace("Solar ", "")}
