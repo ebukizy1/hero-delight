@@ -8,6 +8,7 @@ export const CATEGORIES = [
   "Solar Inverter",
   "Solar Fan",
   "Solar Camera",
+  "AI Smart Glasses",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
@@ -21,6 +22,8 @@ export interface Product {
   bonusPrice?: number | null;
   category: string;
   image: string;
+  image2?: string | null;
+  image3?: string | null;
   description: string;
   featured: boolean;
   specifications: Array<{ label: string; value: string }>;
@@ -34,6 +37,8 @@ export function dbToProduct(p: DbProduct): Product {
     bonusPrice: p.bonus_price ?? null,
     category: p.category,
     image: p.image_url,
+    image2: p.image_url_2 ?? null,
+    image3: p.image_url_3 ?? null,
     description: p.description,
     featured: Boolean(p.featured),
     specifications: Array.isArray(p.specifications)

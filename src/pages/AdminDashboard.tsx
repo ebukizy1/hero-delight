@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag, ArrowLeft, Star } from "lucide-react";
+import { LogOut, Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag, ArrowLeft, Star, FileText, Scale } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { fetchProducts, deleteProduct, updateProduct, formatNaira, type Product } from "@/lib/products";
+import { fetchArticles, deleteArticle, fetchComparisonArticles, deleteComparisonArticle, type Article, type ComparisonArticle } from "@/lib/articles";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<"products" | "articles" | "comparisons">("products");
   const [products, setProducts] = useState<Product[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [comparisons, setComparisons] = useState<ComparisonArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -14,9 +18,16 @@ const AdminDashboard = () => {
   const load = async () => {
     try {
       setLoading(true);
-      setProducts(await fetchProducts());
+      const [productsData, articlesData, comparisonsData] = await Promise.all([
+        fetchProducts(),
+        fetchArticles(),
+        fetchComparisonArticles(),
+      ]);
+      setProducts(productsData);
+      setArticles(articlesData);
+      setComparisons(comparisonsData);
     } catch {
-      setError("Failed to load products");
+      setError("Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -29,7 +40,7 @@ const AdminDashboard = () => {
     navigate("/admin/login");
   };
 
-  const handleDelete = async (id: string, name: string) => {
+  const handleDeleteProduct = async (id: string, name: string) => {
     if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
     setDeletingId(id);
     try {
@@ -37,6 +48,32 @@ const AdminDashboard = () => {
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch {
       alert("Failed to delete product");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleDeleteArticle = async (id: string, title: string) => {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      await deleteArticle(id);
+      setArticles((prev) => prev.filter((a) => a.id !== id));
+    } catch {
+      alert("Failed to delete article");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleDeleteComparison = async (id: string, title: string) => {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      await deleteComparisonArticle(id);
+      setComparisons((prev) => prev.filter((c) => c.id !== id));
+    } catch {
+      alert("Failed to delete comparison");
     } finally {
       setDeletingId(null);
     }
@@ -63,7 +100,7 @@ const AdminDashboard = () => {
         <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2 font-display font-extrabold text-lg">
             <ArrowLeft className="w-4 h-4 text-muted-foreground" />
-            OnlineSolarStore Admin
+            E-maxsolarstore Admin
           </Link>
           <button
             onClick={logout}
@@ -78,101 +115,356 @@ const AdminDashboard = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <h1 className="font-display font-bold text-2xl">Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Manage your product catalog</p>
+            <p className="text-sm text-muted-foreground">Manage your store</p>
           </div>
-          <Link
-            to="/admin/add-product"
-            className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-soft"
+        </div>
+
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          <button
+            onClick={() => setActiveTab("products")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              activeTab === "products"
+                ? "bg-primary text-primary-foreground"
+                : "bg-card text-muted-foreground hover:text-foreground border border-border"
+            }`}
           >
-            <Plus className="w-4 h-4" /> Add Product
-          </Link>
+            <Package className="w-4 h-4" /> Products
+          </button>
+          <button
+            onClick={() => setActiveTab("articles")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              activeTab === "articles"
+                ? "bg-primary text-primary-foreground"
+                : "bg-card text-muted-foreground hover:text-foreground border border-border"
+            }`}
+          >
+            <FileText className="w-4 h-4" /> Articles
+          </button>
+          <button
+            onClick={() => setActiveTab("comparisons")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              activeTab === "comparisons"
+                ? "bg-primary text-primary-foreground"
+                : "bg-card text-muted-foreground hover:text-foreground border border-border"
+            }`}
+          >
+            <Scale className="w-4 h-4" /> Comparisons
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <StatCard icon={<Package className="w-4 h-4" />} label="Total Products" value={products.length.toString()} />
-          <StatCard icon={<TrendingUp className="w-4 h-4" />} label="Categories" value={categories.toString()} />
-          <StatCard icon={<Tag className="w-4 h-4" />} label="On Sale" value={onSale.toString()} />
-          <StatCard icon={<DollarSign className="w-4 h-4" />} label="Catalog Value" value={formatNaira(totalValue)} />
-        </div>
-
-        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-soft">
-          <div className="p-4 sm:p-5 border-b border-border flex items-center gap-2">
-            <Package className="w-4 h-4 text-muted-foreground" />
-            <h2 className="font-semibold">All Products</h2>
-          </div>
-
-          {error && (
-            <div className="flex items-center gap-2 m-4 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
-              <AlertCircle className="w-4 h-4" /> {error}
-            </div>
-          )}
-
-          {loading ? (
-            <div className="p-10 text-center text-muted-foreground text-sm">Loading products…</div>
-          ) : products.length === 0 ? (
-            <div className="p-10 text-center text-muted-foreground text-sm">
-              No products yet.{" "}
-              <Link to="/admin/add-product" className="text-foreground underline font-medium">Add your first product</Link>
-            </div>
-          ) : (
-            <ul className="divide-y divide-border">
-              {products.map((p) => {
-                const hasBonus = p.bonusPrice && p.bonusPrice > p.price;
-                return (
-                  <li key={p.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-secondary/40 transition-colors">
-                    <img
-                      src={p.image} alt={p.name}
-                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{p.name}</p>
-                      <p className="text-xs text-muted-foreground">{p.category}</p>
-                      <div className="flex items-baseline gap-2 mt-0.5">
-                        <p className="text-sm font-semibold">{formatNaira(p.price)}</p>
-                        {hasBonus && (
-                          <p className="text-xs text-muted-foreground line-through">{formatNaira(p.bonusPrice!)}</p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        onClick={() => toggleFeatured(p)}
-                        className={`inline-flex items-center justify-center w-9 h-9 rounded-lg transition-colors ${
-                          p.featured
-                            ? "text-accent bg-accent/10 hover:bg-accent/20"
-                            : "text-muted-foreground hover:text-accent hover:bg-secondary"
-                        }`}
-                        aria-label={p.featured ? "Unfeature" : "Feature"}
-                        title={p.featured ? "Featured on homepage" : "Mark as featured"}
-                      >
-                        <Star className={`w-4 h-4 ${p.featured ? "fill-accent" : ""}`} />
-                      </button>
-                      <Link
-                        to={`/admin/edit-product/${p.id}`}
-                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                        aria-label="Edit"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(p.id, p.name)}
-                        disabled={deletingId === p.id}
-                        className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
-                        aria-label="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
+        {activeTab === "products" && (
+          <ProductsTab
+            products={products}
+            loading={loading}
+            error={error}
+            deletingId={deletingId}
+            onDelete={handleDeleteProduct}
+            onToggleFeatured={toggleFeatured}
+            totalValue={totalValue}
+            onSale={onSale}
+            categories={categories}
+          />
+        )}
+        {activeTab === "articles" && (
+          <ArticlesTab
+            articles={articles}
+            loading={loading}
+            error={error}
+            deletingId={deletingId}
+            onDelete={handleDeleteArticle}
+          />
+        )}
+        {activeTab === "comparisons" && (
+          <ComparisonsTab
+            comparisons={comparisons}
+            loading={loading}
+            error={error}
+            deletingId={deletingId}
+            onDelete={handleDeleteComparison}
+          />
+        )}
       </main>
     </div>
   );
 };
+
+function ProductsTab({
+  products,
+  loading,
+  error,
+  deletingId,
+  onDelete,
+  onToggleFeatured,
+  totalValue,
+  onSale,
+  categories,
+}: any) {
+  return (
+    <>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 className="font-display font-bold text-xl">Product Management</h2>
+        </div>
+        <Link
+          to="/admin/add-product"
+          className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-soft"
+        >
+          <Plus className="w-4 h-4" /> Add Product
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <StatCard icon={<Package className="w-4 h-4" />} label="Total Products" value={products.length.toString()} />
+        <StatCard icon={<TrendingUp className="w-4 h-4" />} label="Categories" value={categories.toString()} />
+        <StatCard icon={<Tag className="w-4 h-4" />} label="On Sale" value={onSale.toString()} />
+        <StatCard icon={<DollarSign className="w-4 h-4" />} label="Catalog Value" value={formatNaira(totalValue)} />
+      </div>
+
+      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-soft">
+        <div className="p-4 sm:p-5 border-b border-border flex items-center gap-2">
+          <Package className="w-4 h-4 text-muted-foreground" />
+          <h2 className="font-semibold">All Products</h2>
+        </div>
+
+        {error && (
+          <div className="flex items-center gap-2 m-4 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
+            <AlertCircle className="w-4 h-4" /> {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">Loading products…</div>
+        ) : products.length === 0 ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">
+            No products yet.{" "}
+            <Link to="/admin/add-product" className="text-foreground underline font-medium">Add your first product</Link>
+          </div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {products.map((p) => {
+              const hasBonus = p.bonusPrice && p.bonusPrice > p.price;
+              return (
+                <li key={p.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-secondary/40 transition-colors">
+                  <img
+                    src={p.image} alt={p.name}
+                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">{p.category}</p>
+                    <div className="flex items-baseline gap-2 mt-0.5">
+                      <p className="text-sm font-semibold">{formatNaira(p.price)}</p>
+                      {hasBonus && (
+                        <p className="text-xs text-muted-foreground line-through">{formatNaira(p.bonusPrice!)}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => onToggleFeatured(p)}
+                      className={`inline-flex items-center justify-center w-9 h-9 rounded-lg transition-colors ${
+                        p.featured
+                          ? "text-accent bg-accent/10 hover:bg-accent/20"
+                          : "text-muted-foreground hover:text-accent hover:bg-secondary"
+                      }`}
+                      aria-label={p.featured ? "Unfeature" : "Feature"}
+                      title={p.featured ? "Featured on homepage" : "Mark as featured"}
+                    >
+                      <Star className={`w-4 h-4 ${p.featured ? "fill-accent" : ""}`} />
+                    </button>
+                    <Link
+                      to={`/admin/edit-product/${p.id}`}
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                      aria-label="Edit"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Link>
+                    <button
+                      onClick={() => onDelete(p.id, p.name)}
+                      disabled={deletingId === p.id}
+                      className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+                      aria-label="Delete"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </>
+  );
+}
+
+function ArticlesTab({ articles, loading, error, deletingId, onDelete }: any) {
+  return (
+    <>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 className="font-display font-bold text-xl">Article Management</h2>
+        </div>
+        <Link
+          to="/admin/add-article"
+          className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-soft"
+        >
+          <Plus className="w-4 h-4" /> Add Article
+        </Link>
+      </div>
+
+      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-soft">
+        <div className="p-4 sm:p-5 border-b border-border flex items-center gap-2">
+          <FileText className="w-4 h-4 text-muted-foreground" />
+          <h2 className="font-semibold">All Articles</h2>
+        </div>
+
+        {error && (
+          <div className="flex items-center gap-2 m-4 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
+            <AlertCircle className="w-4 h-4" /> {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">Loading articles…</div>
+        ) : articles.length === 0 ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">
+            No articles yet.{" "}
+            <Link to="/admin/add-article" className="text-foreground underline font-medium">Add your first article</Link>
+          </div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {articles.map((a) => (
+              <li key={a.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-secondary/40 transition-colors">
+                <img
+                  src={a.featuredImage}
+                  alt={a.title}
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{a.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {a.publishedDate} • {a.published ? "Published" : "Draft"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Link
+                    to={`/admin/edit-article/${a.slug}`}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                    aria-label="Edit"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    to={`/article/${a.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                    aria-label="View"
+                  >
+                    <FileText className="w-4 h-4" />
+                  </Link>
+                  <button
+                    onClick={() => onDelete(a.id, a.title)}
+                    disabled={deletingId === a.id}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+                    aria-label="Delete"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </>
+  );
+}
+
+function ComparisonsTab({ comparisons, loading, error, deletingId, onDelete }: any) {
+  return (
+    <>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 className="font-display font-bold text-xl">Comparison Management</h2>
+        </div>
+        <Link
+          to="/admin/add-comparison"
+          className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-soft"
+        >
+          <Plus className="w-4 h-4" /> Add Comparison
+        </Link>
+      </div>
+
+      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-soft">
+        <div className="p-4 sm:p-5 border-b border-border flex items-center gap-2">
+          <Scale className="w-4 h-4 text-muted-foreground" />
+          <h2 className="font-semibold">All Comparisons</h2>
+        </div>
+
+        {error && (
+          <div className="flex items-center gap-2 m-4 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
+            <AlertCircle className="w-4 h-4" /> {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">Loading comparisons…</div>
+        ) : comparisons.length === 0 ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">
+            No comparisons yet.{" "}
+            <Link to="/admin/add-comparison" className="text-foreground underline font-medium">Add your first comparison</Link>
+          </div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {comparisons.map((c) => (
+              <li key={c.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-secondary/40 transition-colors">
+                <img
+                  src={c.bannerImage}
+                  alt={c.title}
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{c.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {c.publishedDate} • {c.published ? "Published" : "Draft"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Link
+                    to={`/admin/edit-comparison/${c.slug}`}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                    aria-label="Edit"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    to={`/comparison/${c.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                    aria-label="View"
+                  >
+                    <Scale className="w-4 h-4" />
+                  </Link>
+                  <button
+                    onClick={() => onDelete(c.id, c.title)}
+                    disabled={deletingId === c.id}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+                    aria-label="Delete"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </>
+  );
+}
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (

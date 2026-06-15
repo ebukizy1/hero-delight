@@ -14,7 +14,7 @@ export function About() {
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-5">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/15 text-foreground text-xs font-bold uppercase tracking-wider border border-accent/40">
-              About OnlineSolarStore
+              About E-maxsolarstore
             </span>
             <h2 className="mt-4 font-display font-extrabold text-3xl sm:text-4xl tracking-tight leading-[1.1]">
               Smart power, <span className="text-gradient-brand">made reliable</span>.

@@ -17,7 +17,7 @@ const STATS = [
 ];
 
 const AboutPage = () => {
-  useEffect(() => { document.title = "About — OnlineSolarStore"; }, []);
+  useEffect(() => { document.title = "About — E-maxsolarstore"; }, []);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -31,7 +31,7 @@ const AboutPage = () => {
               <ArrowLeft className="w-4 h-4" /> Back to home
             </Link>
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/15 text-accent text-xs font-bold uppercase tracking-wider border border-accent/30 animate-fade-up">
-              <Sparkles className="w-3.5 h-3.5" /> About OnlineSolarStore
+              <Sparkles className="w-3.5 h-3.5" /> About E-maxsolarstore
             </span>
             <h1 className="mt-4 font-display font-extrabold text-3xl sm:text-5xl tracking-tight max-w-2xl leading-[1.05] animate-fade-up delay-100">
               Smart power, <span className="text-gradient-brand">reliable future</span>.

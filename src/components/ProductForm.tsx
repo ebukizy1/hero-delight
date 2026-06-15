@@ -14,27 +14,37 @@ export interface ProductFormValue {
 
 interface Props {
   initialValue?: ProductFormValue;
-  initialPreview?: string | null;
+  initialPreview1?: string | null;
+  initialPreview2?: string | null;
+  initialPreview3?: string | null;
   submitLabel: string;
-  onSubmit: (value: ProductFormValue, imageFile: File | null) => Promise<void>;
+  onSubmit: (value: ProductFormValue, imageFile1: File | null, imageFile2: File | null, imageFile3: File | null) => Promise<void>;
   onCancel?: () => void;
   imageRequired?: boolean;
 }
 
 export function ProductForm({
   initialValue,
-  initialPreview = null,
+  initialPreview1 = null,
+  initialPreview2 = null,
+  initialPreview3 = null,
   submitLabel,
   onSubmit,
   onCancel,
   imageRequired = false,
 }: Props) {
-  const fileRef = useRef<HTMLInputElement>(null);
+  const file1Ref = useRef<HTMLInputElement>(null);
+  const file2Ref = useRef<HTMLInputElement>(null);
+  const file3Ref = useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
-  const [preview, setPreview] = useState<string | null>(initialPreview);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [preview1, setPreview1] = useState<string | null>(initialPreview1);
+  const [preview2, setPreview2] = useState<string | null>(initialPreview2);
+  const [preview3, setPreview3] = useState<string | null>(initialPreview3);
+  const [imageFile1, setImageFile1] = useState<File | null>(null);
+  const [imageFile2, setImageFile2] = useState<File | null>(null);
+  const [imageFile3, setImageFile3] = useState<File | null>(null);
 
   const [form, setForm] = useState<ProductFormValue>(
     initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "", featured: false, specifications: [] }
@@ -48,17 +58,29 @@ export function ProductForm({
     set("specifications", form.specifications.map((s, idx) => (idx === i ? { ...s, [key]: v } : s)));
   const removeSpec = (i: number) => set("specifications", form.specifications.filter((_, idx) => idx !== i));
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage1 = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setImageFile(file);
-    setPreview(URL.createObjectURL(file));
+    setImageFile1(file);
+    setPreview1(URL.createObjectURL(file));
+  };
+  const handleImage2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile2(file);
+    setPreview2(URL.createObjectURL(file));
+  };
+  const handleImage3 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile3(file);
+    setPreview3(URL.createObjectURL(file));
   };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (imageRequired && !imageFile && !initialPreview) {
-      setError("Please upload a product image");
+    if (imageRequired && !imageFile1 && !initialPreview1) {
+      setError("Please upload at least product image 1");
       return;
     }
     const priceNum = parseInt(form.price, 10);
@@ -70,7 +92,7 @@ export function ProductForm({
     setError("");
     setSaving(true);
     try {
-      await onSubmit(form, imageFile);
+      await onSubmit(form, imageFile1, imageFile2, imageFile3);
       setDone(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save product");
@@ -83,38 +105,73 @@ export function ProductForm({
   const bonusNum = parseInt(form.bonusPrice, 10) || 0;
   const discount = discountPercent(priceNum, bonusNum);
 
+  const ImageUpload = ({
+    label,
+    preview,
+    onUpload,
+    ref,
+    required,
+  }: {
+    label: string;
+    preview: string | null;
+    onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    ref: React.RefObject<HTMLInputElement>;
+    required?: boolean;
+  }) => (
+    <div>
+      <label className="text-sm font-medium block mb-1.5">
+        {label}{required ? " *" : ""}
+      </label>
+      <div
+        onClick={() => ref.current?.click()}
+        className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
+        style={{ minHeight: preview ? "auto" : "6rem" }}
+      >
+        {preview ? (
+          <img src={preview} alt="Preview" className="w-full max-h-40 object-cover" />
+        ) : (
+          <div className="flex flex-col items-center gap-2 py-6">
+            <ImageIcon className="w-5 h-5 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Click to upload</span>
+          </div>
+        )}
+        <input ref={ref} type="file" accept="image/*" className="hidden" onChange={onUpload} />
+      </div>
+      {preview && (
+        <button
+          type="button"
+          onClick={() => ref.current?.click()}
+          className="mt-2 text-xs text-muted-foreground underline hover:text-foreground"
+        >
+          Change image
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-5 shadow-soft">
-      {/* Image */}
-      <div>
-        <label className="text-sm font-medium block mb-1.5">
-          Product image{imageRequired ? " *" : ""}
-        </label>
-        <div
-          onClick={() => fileRef.current?.click()}
-          className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
-          style={{ minHeight: preview ? "auto" : "8rem" }}
-        >
-          {preview ? (
-            <img src={preview} alt="Preview" className="w-full max-h-56 object-cover" />
-          ) : (
-            <div className="flex flex-col items-center gap-2 py-8">
-              <ImageIcon className="w-6 h-6 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Click to upload image</span>
-              <span className="text-xs text-muted-foreground">JPG, PNG, WEBP up to 10MB</span>
-            </div>
-          )}
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImage} />
-        </div>
-        {preview && (
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className="mt-2 text-xs text-muted-foreground underline hover:text-foreground"
-          >
-            Change image
-          </button>
-        )}
+      {/* Images */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <ImageUpload
+          label="Product image 1"
+          preview={preview1}
+          onUpload={handleImage1}
+          ref={file1Ref}
+          required={imageRequired}
+        />
+        <ImageUpload
+          label="Product image 2"
+          preview={preview2}
+          onUpload={handleImage2}
+          ref={file2Ref}
+        />
+        <ImageUpload
+          label="Product image 3"
+          preview={preview3}
+          onUpload={handleImage3}
+          ref={file3Ref}
+        />
       </div>
 
       <Field label="Product name *" value={form.name} onChange={(v) => set("name", v)} placeholder="e.g. Solar Streetlight 60W" />

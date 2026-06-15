@@ -12,6 +12,12 @@ import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminAddProduct from "./pages/AdminAddProduct.tsx";
 import AdminEditProduct from "./pages/AdminEditProduct.tsx";
+import AdminAddArticle from "./pages/AdminAddArticle.tsx";
+import AdminEditArticle from "./pages/AdminEditArticle.tsx";
+import AdminAddComparison from "./pages/AdminAddComparison.tsx";
+import AdminEditComparison from "./pages/AdminEditComparison.tsx";
+import ArticleDetail from "./pages/ArticleDetail.tsx";
+import ComparisonDetail from "./pages/ComparisonDetail.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +37,12 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
           <Route path="/admin/add-product" element={<AdminGuard><AdminAddProduct /></AdminGuard>} />
           <Route path="/admin/edit-product/:id" element={<AdminGuard><AdminEditProduct /></AdminGuard>} />
+          <Route path="/admin/add-article" element={<AdminGuard><AdminAddArticle /></AdminGuard>} />
+          <Route path="/admin/edit-article/:slug" element={<AdminGuard><AdminEditArticle /></AdminGuard>} />
+          <Route path="/admin/add-comparison" element={<AdminGuard><AdminAddComparison /></AdminGuard>} />
+          <Route path="/admin/edit-comparison/:slug" element={<AdminGuard><AdminEditComparison /></AdminGuard>} />
+          <Route path="/article/:slug" element={<ArticleDetail />} />
+          <Route path="/comparison/:slug" element={<ComparisonDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

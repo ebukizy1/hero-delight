@@ -23,14 +23,14 @@ export function Logo({ size = "md", withText = true, variant = "default", classN
     <Link to="/" className={`flex items-center gap-2 group ${className}`}>
       <img
         src={logoMark}
-        alt="OnlineSolarStore"
+        alt="E-maxsolarstore"
         width={64}
         height={64}
         className={`${s.mark} object-contain transition-transform group-hover:scale-105`}
       />
       {withText && (
         <span className={`font-display font-extrabold ${s.text} tracking-tight leading-none ${textColor}`}>
-          Online<span className={accentColor}>Solar</span>Store
+          E-max<span className={accentColor}>solar</span>store
         </span>
       )}
     </Link>

@@ -25,7 +25,7 @@ const CategoryPage = () => {
   }, []);
 
   useEffect(() => {
-    if (category) document.title = `${category} — OnlineSolarStore`;
+    if (category) document.title = `${category} — E-maxsolarstore`;
   }, [category]);
 
   useEffect(() => { setPage(1); }, [slug]);

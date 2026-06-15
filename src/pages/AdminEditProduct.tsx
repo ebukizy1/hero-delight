@@ -46,7 +46,9 @@ const AdminEditProduct = () => {
           ) : (
             <ProductForm
               submitLabel="Update Product"
-              initialPreview={product.image}
+              initialPreview1={product.image}
+              initialPreview2={product.image2}
+              initialPreview3={product.image3}
               initialValue={{
                 name: product.name,
                 price: product.price.toString(),
@@ -57,9 +59,13 @@ const AdminEditProduct = () => {
                 specifications: product.specifications,
               }}
               onCancel={() => navigate("/admin/dashboard")}
-              onSubmit={async (form, file) => {
+              onSubmit={async (form, file1, file2, file3) => {
                 let imageUrl = product.image;
-                if (file) imageUrl = await uploadProductImage(file);
+                let imageUrl2 = product.image2;
+                let imageUrl3 = product.image3;
+                if (file1) imageUrl = await uploadProductImage(file1);
+                if (file2) imageUrl2 = await uploadProductImage(file2);
+                if (file3) imageUrl3 = await uploadProductImage(file3);
                 await updateProduct(product.id, {
                   name: form.name.trim(),
                   price: parseInt(form.price, 10),
@@ -67,6 +73,8 @@ const AdminEditProduct = () => {
                   category: form.category,
                   description: form.description.trim(),
                   image_url: imageUrl,
+                  image_url_2: imageUrl2,
+                  image_url_3: imageUrl3,
                   featured: form.featured,
                   specifications: form.specifications
                     .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))

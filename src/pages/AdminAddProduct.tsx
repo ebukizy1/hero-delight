@@ -25,9 +25,13 @@ const AdminAddProduct = () => {
             submitLabel="Save Product"
             imageRequired
             onCancel={() => navigate("/admin/dashboard")}
-            onSubmit={async (form, file) => {
-              if (!file) throw new Error("Image is required");
-              const imageUrl = await uploadProductImage(file);
+            onSubmit={async (form, file1, file2, file3) => {
+              if (!file1) throw new Error("Image 1 is required");
+              const imageUrl = await uploadProductImage(file1);
+              let imageUrl2: string | null = null;
+              let imageUrl3: string | null = null;
+              if (file2) imageUrl2 = await uploadProductImage(file2);
+              if (file3) imageUrl3 = await uploadProductImage(file3);
               await createProduct({
                 name: form.name.trim(),
                 price: parseInt(form.price, 10),
@@ -35,6 +39,8 @@ const AdminAddProduct = () => {
                 category: form.category,
                 description: form.description.trim(),
                 image_url: imageUrl,
+                image_url_2: imageUrl2,
+                image_url_3: imageUrl3,
                 featured: form.featured,
                 specifications: form.specifications
                   .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))

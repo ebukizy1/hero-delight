@@ -83,12 +83,12 @@ export const buildWhatsAppLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
 export const productShareMessage = (p: { name: string; price: number }, url: string) =>
-  `Hello! I'm interested in ordering this product from OnlineSolarStore:\n\n*${p.name}*\nPrice: ${formatNaira(p.price)}\n\nLink: ${url}\n\nPlease let me know if it's available. Thank you!`;
+  `Hello! I'm interested in ordering this product from E-maxsolarstore:\n\n*${p.name}*\nPrice: ${formatNaira(p.price)}\n\nLink: ${url}\n\nPlease let me know if it's available. Thank you!`;
 
 export const cartOrderMessage = (items: CartItem[]) => {
   const lines = items
     .map((i) => `• ${i.name} x${i.qty} — ${formatNaira(i.price * i.qty)}`)
     .join("\n");
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-  return `Hello! I'd like to order the following from OnlineSolarStore:\n\n${lines}\n\n*Total: ${formatNaira(total)}*\n\nPlease confirm availability and delivery details. Thank you!`;
+  return `Hello! I'd like to order the following from E-maxsolarstore:\n\n${lines}\n\n*Total: ${formatNaira(total)}*\n\nPlease confirm availability and delivery details. Thank you!`;
 };

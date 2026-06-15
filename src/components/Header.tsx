@@ -54,6 +54,8 @@ export function Header({ onShopClick }: HeaderProps = {}) {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="/#products" onClick={handleShop} className="hover:text-foreground transition-colors">Shop</a>
             <a href="/#browse" onClick={goSection("browse")} className="hover:text-foreground transition-colors">Categories</a>
+            <a href="/#insights" onClick={goSection("insights")} className="hover:text-foreground transition-colors">Blog</a>
+            <a href="/#comparisons" onClick={goSection("comparisons")} className="hover:text-foreground transition-colors">Compare</a>
             <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
           </nav>
 
@@ -99,6 +101,20 @@ export function Header({ onShopClick }: HeaderProps = {}) {
                 className="py-3 px-2 text-sm font-semibold text-foreground hover:text-accent transition-colors border-b border-border/40"
               >
                 Categories
+              </a>
+              <a
+                href="/#insights"
+                onClick={goSection("insights")}
+                className="py-3 px-2 text-sm font-semibold text-foreground hover:text-accent transition-colors border-b border-border/40"
+              >
+                Blog
+              </a>
+              <a
+                href="/#comparisons"
+                onClick={goSection("comparisons")}
+                className="py-3 px-2 text-sm font-semibold text-foreground hover:text-accent transition-colors border-b border-border/40"
+              >
+                Compare
               </a>
               <Link
                 to="/about"

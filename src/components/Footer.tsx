@@ -61,7 +61,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} OnlineSolarStore. Smart Power. Reliable Future.</p>
+          <p>© {new Date().getFullYear()} E-maxsolarstore. Smart Power. Reliable Future.</p>
           <div className="flex items-center gap-5">
             <a href="#" className="hover:text-foreground transition-colors">Warranty</a>
             <a href="#" className="hover:text-foreground transition-colors">Delivery</a>
