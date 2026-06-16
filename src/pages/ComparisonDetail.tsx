@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, Loader2, Scale } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { fetchComparisonArticles, fetchComparisonBySlug, type ComparisonArticle } from "@/lib/articles";
@@ -135,7 +136,7 @@ const ComparisonDetail = () => {
               </div>
               <div className="mt-6 space-y-5 text-base leading-8 text-slate-300 sm:text-lg">
                 {splitContent(comparison.comparisonContent).map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
+                  <ReactMarkdown key={index}>{paragraph}</ReactMarkdown>
                 ))}
               </div>
             </div>
@@ -145,7 +146,7 @@ const ComparisonDetail = () => {
               <h2 className="mt-2 font-display text-2xl font-bold">Which one should you choose?</h2>
               <div className="mt-4 space-y-5 text-base leading-8 text-slate-200 sm:text-lg">
                 {splitContent(comparison.conclusion).map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
+                  <ReactMarkdown key={index}>{paragraph}</ReactMarkdown>
                 ))}
               </div>
             </div>
@@ -243,7 +244,7 @@ function ProductPanel({
         <h2 className="mt-4 font-display text-2xl font-bold sm:text-3xl">{title}</h2>
         <div className="mt-4 space-y-4 text-base leading-8 text-slate-300 sm:text-lg">
           {splitContent(details).map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
+            <ReactMarkdown key={index}>{paragraph}</ReactMarkdown>
           ))}
         </div>
       </div>

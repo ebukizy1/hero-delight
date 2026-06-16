@@ -152,16 +152,16 @@ export function ArticleForm({
       <Field label="Title *" value={form.title} onChange={(v) => set("title", v)} placeholder="Enter article title" />
       <Field label="Slug *" value={form.slug} onChange={(v) => set("slug", v)} placeholder="e.g., 100w-solar-streetlight-guide" />
       <div>
-        <label className="text-sm font-medium block mb-1.5">Content *</label>
-        <textarea
-          rows={12}
-          required
-          value={form.content}
-          onChange={(e) => set("content", e.target.value)}
-          placeholder="Write your article here…"
-          className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none text-base"
-        />
-      </div>
+                <label className="text-sm font-medium block mb-1.5">Content * (Markdown supported)</label>
+                <textarea
+                  rows={12}
+                  required
+                  value={form.content}
+                  onChange={(e) => set("content", e.target.value)}
+                  placeholder="Write your article here using Markdown…"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none text-base"
+                />
+              </div>
       <Field label="Sales Page URL" value={form.salesPageUrl} onChange={(v) => set("salesPageUrl", v)} placeholder="https://example.com/sales-page" required={false} />
       <Field label="Published Date *" type="date" value={form.publishedDate} onChange={(v) => set("publishedDate", v)} />
       <label className="flex items-start gap-3 rounded-xl border border-border bg-secondary/40 px-4 py-3 cursor-pointer hover:bg-secondary/60 transition-colors">
