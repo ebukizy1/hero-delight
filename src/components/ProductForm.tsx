@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react";
+import React, { useRef, useState, type FormEvent } from "react";
 import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag, Star, Plus, Trash2 } from "lucide-react";
 import { CATEGORIES, formatNaira, discountPercent } from "@/lib/products";
 
@@ -22,6 +22,46 @@ interface Props {
   onCancel?: () => void;
   imageRequired?: boolean;
 }
+
+const ImageUpload = React.forwardRef<HTMLInputElement, {
+  label: string;
+  preview: string | null;
+  onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+}>(({ label, preview, onUpload, required }, ref) => {
+  return (
+    <div>
+      <label className="text-sm font-medium block mb-1.5">
+        {label}{required ? " *" : ""}
+      </label>
+      <div
+        onClick={() => (ref as React.RefObject<HTMLInputElement>).current?.click()}
+        className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
+        style={{ minHeight: preview ? "auto" : "6rem" }}
+      >
+        {preview ? (
+          <img src={preview} alt="Preview" className="w-full max-h-40 object-cover" />
+        ) : (
+          <div className="flex flex-col items-center gap-2 py-6">
+            <ImageIcon className="w-5 h-5 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Click to upload</span>
+          </div>
+        )}
+        <input ref={ref} type="file" accept="image/*" className="hidden" onChange={onUpload} />
+      </div>
+      {preview && (
+        <button
+          type="button"
+          onClick={() => (ref as React.RefObject<HTMLInputElement>).current?.click()}
+          className="mt-2 text-xs text-muted-foreground underline hover:text-foreground"
+        >
+          Change image
+        </button>
+      )}
+    </div>
+  );
+});
+ImageUpload.displayName = "ImageUpload";
 
 export function ProductForm({
   initialValue,
@@ -105,50 +145,6 @@ export function ProductForm({
   const bonusNum = parseInt(form.bonusPrice, 10) || 0;
   const discount = discountPercent(priceNum, bonusNum);
 
-  const ImageUpload = ({
-    label,
-    preview,
-    onUpload,
-    ref,
-    required,
-  }: {
-    label: string;
-    preview: string | null;
-    onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    ref: React.RefObject<HTMLInputElement>;
-    required?: boolean;
-  }) => (
-    <div>
-      <label className="text-sm font-medium block mb-1.5">
-        {label}{required ? " *" : ""}
-      </label>
-      <div
-        onClick={() => ref.current?.click()}
-        className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
-        style={{ minHeight: preview ? "auto" : "6rem" }}
-      >
-        {preview ? (
-          <img src={preview} alt="Preview" className="w-full max-h-40 object-cover" />
-        ) : (
-          <div className="flex flex-col items-center gap-2 py-6">
-            <ImageIcon className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Click to upload</span>
-          </div>
-        )}
-        <input ref={ref} type="file" accept="image/*" className="hidden" onChange={onUpload} />
-      </div>
-      {preview && (
-        <button
-          type="button"
-          onClick={() => ref.current?.click()}
-          className="mt-2 text-xs text-muted-foreground underline hover:text-foreground"
-        >
-          Change image
-        </button>
-      )}
-    </div>
-  );
-
   return (
     <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-5 shadow-soft">
       {/* Images */}
@@ -157,8 +153,8 @@ export function ProductForm({
           label="Product image 1"
           preview={preview1}
           onUpload={handleImage1}
-          ref={file1Ref}
           required={imageRequired}
+          ref={file1Ref}
         />
         <ImageUpload
           label="Product image 2"
