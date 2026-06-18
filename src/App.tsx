@@ -1,5 +1,24 @@
+// import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+// Function to track page view with Meta Pixel (commented out)
+// const trackPageView = () => {
+//   if (typeof window !== "undefined" && (window as any).fbq) {
+//     (window as any).fbq("track", "PageView");
+//   }
+// };
+
+// Component to handle route changes and track page views (commented out)
+// function PageViewTracker() {
+//   const location = useLocation();
+
+//   useEffect(() => {
+//     trackPageView();
+//   }, [location]);
+
+//   return null;
+// }
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
