@@ -2,6 +2,7 @@ import { X, Minus, Plus, Trash2, MessageCircle } from "lucide-react";
 import { cart, useCart, buildWhatsAppLink, cartOrderMessage } from "@/lib/cart";
 import { formatNaira } from "@/lib/products";
 import { useEffect } from "react";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 interface Props {
   open: boolean;
@@ -99,6 +100,7 @@ export function CartDrawer({ open, onClose }: Props) {
               href={buildWhatsAppLink(cartOrderMessage(items))}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick("WhatsApp_Cart_Checkout", { itemCount: items.length, total: items.reduce((s, i) => s + i.price * i.qty, 0) })}
               className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-xl bg-whatsapp text-whatsapp-foreground font-semibold hover:opacity-90 transition-opacity text-sm"
             >
               <MessageCircle className="w-4 h-4" />

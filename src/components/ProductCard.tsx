@@ -4,6 +4,7 @@ import type { Product } from "@/lib/products";
 import { formatNaira, discountPercent } from "@/lib/products";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 import { useState } from "react";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 interface Props {
   product: Product;
@@ -94,7 +95,10 @@ export function ProductCard({ product }: Props) {
             href={whatsappHref()}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              trackWhatsAppClick("WhatsApp_ProductCard_Click", { productName: product.name, productId: product.id });
+            }}
             aria-label="Order via WhatsApp"
             className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-whatsapp text-whatsapp-foreground hover:opacity-90 active:scale-[0.97] transition-all"
           >

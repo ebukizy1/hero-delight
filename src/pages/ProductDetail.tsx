@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { fetchProduct, fetchProducts, formatNaira, discountPercent, type Product } from "@/lib/products";
 import { categoryToSlug } from "@/lib/categorySlug";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -178,6 +179,7 @@ const ProductDetail = () => {
                 href={whatsappHref()}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackWhatsAppClick("WhatsApp_Product_Order", { productName: product.name, productId: product.id })}
                 className="inline-flex items-center justify-center gap-2 h-12 px-4 sm:px-6 rounded-xl bg-whatsapp text-whatsapp-foreground font-semibold hover:opacity-90 transition-opacity text-sm"
               >
                 <MessageCircle className="w-4 h-4" />
