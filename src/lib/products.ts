@@ -21,12 +21,14 @@ export interface Product {
   bonusPrice?: number | null;
   category: string;
   image: string;
+  images: string[];
   description: string;
   featured: boolean;
   specifications: Array<{ label: string; value: string }>;
 }
 
 export function dbToProduct(p: DbProduct): Product {
+  const images = [p.image_url, p.image_url_2, p.image_url_3].filter((u): u is string => Boolean(u));
   return {
     id: p.id,
     name: p.name,
@@ -34,6 +36,7 @@ export function dbToProduct(p: DbProduct): Product {
     bonusPrice: p.bonus_price ?? null,
     category: p.category,
     image: p.image_url,
+    images,
     description: p.description,
     featured: Boolean(p.featured),
     specifications: Array.isArray(p.specifications)
@@ -64,6 +67,8 @@ export interface ProductInput {
   category: string;
   description: string;
   image_url: string;
+  image_url_2?: string | null;
+  image_url_3?: string | null;
   featured?: boolean;
   specifications?: Array<{ label: string; value: string }>;
 }
@@ -83,7 +88,7 @@ async function safeWrite<T>(
   fn: (payload: Record<string, unknown>) => Promise<{ data: T | null; error: unknown }>,
   payload: Record<string, unknown>,
 ): Promise<T> {
-  const optional = ["bonus_price", "featured", "specifications"];
+  const optional = ["bonus_price", "featured", "specifications", "image_url_2", "image_url_3"];
   let p = { ...payload };
   const stripped: string[] = [];
   for (let i = 0; i <= optional.length; i++) {

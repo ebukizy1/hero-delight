@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ChevronLeft, ChevronRight, FlashlightIcon, LightbulbIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Loader2, Sparkles, Lightbulb, BatteryCharging, Zap, Fan, Camera, Sun, ChevronLeft, ChevronRight, FlashlightIcon, LightbulbIcon, Newspaper, BookOpen, Scale, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
@@ -7,6 +8,7 @@ import { About } from "@/components/About";
 import { Categories } from "@/components/Categories";
 import { ProductCard } from "@/components/ProductCard";
 import { fetchProducts, CATEGORIES, type Category, type Product } from "@/lib/products";
+import { fetchArticlePreviews, type ArticlePreview } from "@/lib/articles";
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "Solar Streetlight": Lightbulb,
@@ -61,6 +63,7 @@ const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [articles, setArticles] = useState<ArticlePreview[]>([]);
   const productsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,6 +71,12 @@ const Index = () => {
       .then(setProducts)
       .catch(console.error)
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetchArticlePreviews({ publishedOnly: true, limit: 3 })
+      .then(setArticles)
+      .catch(() => setArticles([]));
   }, []);
 
   const filtered = useMemo(
@@ -196,6 +205,84 @@ const Index = () => {
           )}
         </div>
       </section>
+
+      {/* Solar Insights — latest guides & comparisons */}
+      {articles.length > 0 && (
+        <section className="py-14 lg:py-20 bg-secondary/30 border-y border-border">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="flex items-end justify-between mb-7">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent">
+                  <Newspaper className="w-3.5 h-3.5" /> Solar Insights
+                </div>
+                <h2 className="mt-1.5 font-display font-extrabold text-2xl sm:text-3xl tracking-tight">Guides &amp; comparisons</h2>
+                <p className="text-muted-foreground text-sm mt-1">Everything you need to know before you buy</p>
+              </div>
+              <Link
+                to="/insights"
+                className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-accent transition-colors shrink-0"
+              >
+                View all <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+              {articles.map((a) => {
+                const isComparison = a.article_type === "comparison";
+                return (
+                  <Link
+                    key={a.id}
+                    to={`/insights/${a.slug}`}
+                    className="group flex flex-col rounded-2xl bg-card overflow-hidden border border-border/60 hover:-translate-y-1 hover:shadow-card transition-all duration-300 shadow-soft"
+                  >
+                    <div className="relative aspect-video overflow-hidden bg-muted">
+                      {a.featured_image ? (
+                        <img
+                          src={a.featured_image}
+                          alt={a.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-secondary/50">
+                          <Newspaper className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      )}
+                      <span
+                        className={`absolute top-3 left-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md ${
+                          isComparison ? "bg-blue-600 text-white" : "bg-accent text-accent-foreground"
+                        }`}
+                      >
+                        {isComparison ? <Scale className="w-3 h-3" /> : <BookOpen className="w-3 h-3" />}
+                        {isComparison ? "Comparison" : "Guide"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col flex-1 p-4 sm:p-5 gap-2">
+                      <h3 className="font-display font-bold text-base leading-snug line-clamp-2 group-hover:text-accent transition-colors">
+                        {a.title}
+                      </h3>
+                      {a.meta_description && (
+                        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{a.meta_description}</p>
+                      )}
+                      <span className="mt-auto pt-1 inline-flex items-center gap-1 text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
+                        Read article <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+
+            <Link
+              to="/insights"
+              className="sm:hidden mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-accent transition-colors"
+            >
+              View all Solar Insights <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </section>
+      )}
 
       <About />
       <Footer />

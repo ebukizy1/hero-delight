@@ -9,8 +9,8 @@ export interface CartItem {
   qty: number;
 }
 
-const WHATSAPP_NUMBER = "2348141221934";
-const KEY = "onlinesolarstore.cart";
+const WHATSAPP_NUMBER = "2348037477275";
+const KEY = "emaxsolarstore.cart";
 const EMPTY: CartItem[] = [];
 const listeners = new Set<() => void>();
 
@@ -83,12 +83,23 @@ export const buildWhatsAppLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
 export const productShareMessage = (p: { name: string; price: number }, url: string) =>
-  `Hello! I'm interested in ordering this product from OnlineSolarStore:\n\n*${p.name}*\nPrice: ${formatNaira(p.price)}\n\nLink: ${url}\n\nPlease let me know if it's available. Thank you!`;
+  `Hello! I'm interested in ordering this product from Emax Solar Store:\n\n*${p.name}*\nPrice: ${formatNaira(p.price)}\n\nLink: ${url}\n\nPlease let me know if it's available. Thank you!`;
 
 export const cartOrderMessage = (items: CartItem[]) => {
   const lines = items
     .map((i) => `• ${i.name} x${i.qty} — ${formatNaira(i.price * i.qty)}`)
     .join("\n");
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-  return `Hello! I'd like to order the following from OnlineSolarStore:\n\n${lines}\n\n*Total: ${formatNaira(total)}*\n\nPlease confirm availability and delivery details. Thank you!`;
+  return `Hello! I'd like to order the following from Emax Solar Store:\n\n${lines}\n\n*Total: ${formatNaira(total)}*\n\nPlease confirm availability and delivery details. Thank you!`;
+};
+
+export const checkoutOrderMessage = (
+  order: { id: string; items: CartItem[]; total: number; paymentMethod: "cod" | "card"; customerName: string; address: string },
+) => {
+  const lines = order.items
+    .map((i) => `• ${i.name} x${i.qty} — ${formatNaira(i.price * i.qty)}`)
+    .join("\n");
+  const shortId = order.id.slice(0, 8).toUpperCase();
+  const paymentLine = order.paymentMethod === "cod" ? "Cash on Delivery" : "Paid by Card";
+  return `Hello! I just placed an order on Emax Solar Store 🧾\n\n*Order #${shortId}*\nName: ${order.customerName}\nDelivery address: ${order.address}\nPayment: ${paymentLine}\n\n${lines}\n\n*Total: ${formatNaira(order.total)}*\n\nPlease confirm and let me know next steps. Thank you!`;
 };

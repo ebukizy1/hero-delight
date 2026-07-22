@@ -1,5 +1,6 @@
-import { X, Minus, Plus, Trash2, MessageCircle } from "lucide-react";
-import { cart, useCart, buildWhatsAppLink, cartOrderMessage } from "@/lib/cart";
+import { X, Minus, Plus, Trash2, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { cart, useCart } from "@/lib/cart";
 import { formatNaira } from "@/lib/products";
 import { useEffect } from "react";
 
@@ -10,7 +11,13 @@ interface Props {
 
 export function CartDrawer({ open, onClose }: Props) {
   const items = useCart();
+  const navigate = useNavigate();
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+  const goToCheckout = () => {
+    onClose();
+    navigate("/checkout");
+  };
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -51,6 +58,8 @@ export function CartDrawer({ open, onClose }: Props) {
                   <img
                     src={item.image}
                     alt={item.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover bg-muted shrink-0"
                   />
                   <div className="flex-1 min-w-0">
@@ -95,15 +104,13 @@ export function CartDrawer({ open, onClose }: Props) {
               <span className="text-muted-foreground text-sm">Total</span>
               <span className="font-display font-extrabold text-xl">{formatNaira(total)}</span>
             </div>
-            <a
-              href={buildWhatsAppLink(cartOrderMessage(items))}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-xl bg-whatsapp text-whatsapp-foreground font-semibold hover:opacity-90 transition-opacity text-sm"
+            <button
+              onClick={goToCheckout}
+              className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 active:scale-[0.98] transition-all text-sm"
             >
-              <MessageCircle className="w-4 h-4" />
-              Checkout via WhatsApp
-            </a>
+              Proceed to Checkout
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         )}
       </aside>

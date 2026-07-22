@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Loader2, AlertCircle } from "lucide-react";
+import { AdminNav } from "@/components/AdminNav";
 import { ProductForm } from "@/components/ProductForm";
 import { fetchProduct, updateProduct, uploadProductImage, type Product } from "@/lib/products";
 
@@ -22,13 +23,7 @@ const AdminEditProduct = () => {
 
   return (
     <div className="min-h-screen bg-secondary/40">
-      <header className="bg-background border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center">
-          <Link to="/admin/dashboard" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to dashboard
-          </Link>
-        </div>
-      </header>
+      <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-2xl">
         <h1 className="font-display font-bold text-2xl">Edit product</h1>
@@ -47,6 +42,7 @@ const AdminEditProduct = () => {
             <ProductForm
               submitLabel="Update Product"
               initialPreview={product.image}
+              initialExtraPreviews={[product.images[1] ?? null, product.images[2] ?? null]}
               initialValue={{
                 name: product.name,
                 price: product.price.toString(),
@@ -57,9 +53,14 @@ const AdminEditProduct = () => {
                 specifications: product.specifications,
               }}
               onCancel={() => navigate("/admin/dashboard")}
-              onSubmit={async (form, file) => {
+              onSubmit={async (form, file, extraFiles) => {
                 let imageUrl = product.image;
                 if (file) imageUrl = await uploadProductImage(file);
+                const [existingExtra1, existingExtra2] = [product.images[1] ?? null, product.images[2] ?? null];
+                const [extra1, extra2] = await Promise.all([
+                  extraFiles[0] ? uploadProductImage(extraFiles[0]) : Promise.resolve(existingExtra1),
+                  extraFiles[1] ? uploadProductImage(extraFiles[1]) : Promise.resolve(existingExtra2),
+                ]);
                 await updateProduct(product.id, {
                   name: form.name.trim(),
                   price: parseInt(form.price, 10),
@@ -67,6 +68,8 @@ const AdminEditProduct = () => {
                   category: form.category,
                   description: form.description.trim(),
                   image_url: imageUrl,
+                  image_url_2: extra1,
+                  image_url_3: extra2,
                   featured: form.featured,
                   specifications: form.specifications
                     .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))

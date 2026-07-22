@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag, ArrowLeft, Star } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { Link } from "react-router-dom";
+import { Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag, Star } from "lucide-react";
+import { AdminNav } from "@/components/AdminNav";
 import { fetchProducts, deleteProduct, updateProduct, formatNaira, type Product } from "@/lib/products";
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,11 +22,6 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => { load(); }, []);
-
-  const logout = async () => {
-    await supabase.auth.signOut();
-    navigate("/admin/login");
-  };
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
@@ -59,20 +53,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-secondary/40">
-      <header className="bg-background border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="inline-flex items-center gap-2 font-display font-extrabold text-lg">
-            <ArrowLeft className="w-4 h-4 text-muted-foreground" />
-            OnlineSolarStore Admin
-          </Link>
-          <button
-            onClick={logout}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LogOut className="w-4 h-4" /> Sign out
-          </button>
-        </div>
-      </header>
+      <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -122,6 +103,8 @@ const AdminDashboard = () => {
                   <li key={p.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-secondary/40 transition-colors">
                     <img
                       src={p.image} alt={p.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted shrink-0"
                     />
                     <div className="flex-1 min-w-0">

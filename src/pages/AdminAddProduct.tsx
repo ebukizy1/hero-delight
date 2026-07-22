@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { AdminNav } from "@/components/AdminNav";
 import { ProductForm } from "@/components/ProductForm";
 import { createProduct, uploadProductImage } from "@/lib/products";
 
@@ -8,13 +8,7 @@ const AdminAddProduct = () => {
 
   return (
     <div className="min-h-screen bg-secondary/40">
-      <header className="bg-background border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center">
-          <Link to="/admin/dashboard" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to dashboard
-          </Link>
-        </div>
-      </header>
+      <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-2xl">
         <h1 className="font-display font-bold text-2xl">Add a new product</h1>
@@ -25,9 +19,12 @@ const AdminAddProduct = () => {
             submitLabel="Save Product"
             imageRequired
             onCancel={() => navigate("/admin/dashboard")}
-            onSubmit={async (form, file) => {
+            onSubmit={async (form, file, extraFiles) => {
               if (!file) throw new Error("Image is required");
               const imageUrl = await uploadProductImage(file);
+              const [extra1, extra2] = await Promise.all(
+                extraFiles.map((f) => (f ? uploadProductImage(f) : Promise.resolve(null))),
+              );
               await createProduct({
                 name: form.name.trim(),
                 price: parseInt(form.price, 10),
@@ -35,6 +32,8 @@ const AdminAddProduct = () => {
                 category: form.category,
                 description: form.description.trim(),
                 image_url: imageUrl,
+                image_url_2: extra1,
+                image_url_3: extra2,
                 featured: form.featured,
                 specifications: form.specifications
                   .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))

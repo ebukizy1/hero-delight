@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ShieldCheck, Truck, Zap, Headset, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ShieldCheck, Truck, Zap, Headset, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { fetchProducts, type Product, formatNaira, discountPercent } from "@/lib/products";
+import { buildWhatsAppLink } from "@/lib/cart";
 
 import streetlightImg from "@/assets/products/streetlight.jpg";
 import inverterImg from "@/assets/products/inverter.jpg";
@@ -13,10 +14,10 @@ interface HeroProps {
 }
 
 const DUMMY: Product[] = [
-  { id: "d1", name: "Solar Streetlight 300W", price: 65000, bonusPrice: 80000, category: "Solar Streetlight", image: streetlightImg, description: "All-in-one solar streetlight", featured: true, specifications: [] },
-  { id: "d2", name: "Hybrid Solar Inverter", price: 240000, bonusPrice: 295000, category: "Solar Inverter", image: inverterImg, description: "Reliable hybrid inverter", featured: true, specifications: [] },
-  { id: "d3", name: "Portable Power Station", price: 185000, bonusPrice: 220000, category: "Solar Power Station", image: powerStationImg, description: "Portable backup power", featured: true, specifications: [] },
-  { id: "d4", name: "4G Solar Security Camera", price: 95000, bonusPrice: 120000, category: "Solar Camera", image: cameraImg, description: "Wireless solar camera", featured: true, specifications: [] },
+  { id: "d1", name: "Solar Streetlight 300W", price: 65000, bonusPrice: 80000, category: "Solar Streetlight", image: streetlightImg, images: [streetlightImg], description: "All-in-one solar streetlight", featured: true, specifications: [] },
+  { id: "d2", name: "Hybrid Solar Inverter", price: 240000, bonusPrice: 295000, category: "Solar Inverter", image: inverterImg, images: [inverterImg], description: "Reliable hybrid inverter", featured: true, specifications: [] },
+  { id: "d3", name: "Portable Power Station", price: 185000, bonusPrice: 220000, category: "Solar Power Station", image: powerStationImg, images: [powerStationImg], description: "Portable backup power", featured: true, specifications: [] },
+  { id: "d4", name: "4G Solar Security Camera", price: 95000, bonusPrice: 120000, category: "Solar Camera", image: cameraImg, images: [cameraImg], description: "Wireless solar camera", featured: true, specifications: [] },
 ];
 
 const TRUST = [
@@ -25,6 +26,10 @@ const TRUST = [
   { icon: Zap, label: "Reliable Performance" },
   { icon: Headset, label: "Expert Support" },
 ];
+
+const ENQUIRY_WHATSAPP_LINK = buildWhatsAppLink(
+  "Hello! I'd like to speak to an expert about solar products at Emax Solar Store.",
+);
 
 export function Hero({ onShopClick }: HeroProps = {}) {
   const [products, setProducts] = useState<Product[] | null>(null);
@@ -84,7 +89,7 @@ export function Hero({ onShopClick }: HeroProps = {}) {
           <div className="lg:col-span-6 relative z-10">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-bold uppercase tracking-wider border border-accent/20 animate-fade-up">
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              Smart Power Solutions
+              Nigeria's Trusted Solar Store
             </span>
 
             <h1 className="mt-5 font-display font-extrabold text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.05] tracking-tight animate-fade-up delay-100">
@@ -93,7 +98,7 @@ export function Hero({ onShopClick }: HeroProps = {}) {
             </h1>
 
             <p className="mt-5 text-base sm:text-lg text-white/65 max-w-xl leading-relaxed animate-fade-up delay-200">
-              Shop high-performance solar street lights, power stations, and security cameras built for reliability, efficiency, and long-term savings.
+              Shop high-performance solar street lights, inverters, power stations, and security cameras — built for reliability, backed by a 1-year warranty, and delivered nationwide.
             </p>
 
             <div className="mt-7 flex flex-wrap items-center gap-3 animate-fade-up delay-300">
@@ -110,18 +115,14 @@ export function Hero({ onShopClick }: HeroProps = {}) {
               >
                 Browse Products
               </a>
-            </div>
-
-            {/* Trust indicators */}
-            <div className="mt-9 grid grid-cols-2 sm:grid-cols-4 gap-3 animate-fade-up delay-400">
-              {TRUST.map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2.5">
-                  <span className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-center text-accent shrink-0">
-                    <Icon className="w-4 h-4" />
-                  </span>
-                  <span className="text-xs font-medium text-white/75 leading-tight">{label}</span>
-                </div>
-              ))}
+              <a
+                href={ENQUIRY_WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 h-12 px-5 rounded-xl text-white/75 hover:text-white font-semibold transition-colors text-sm"
+              >
+                <MessageCircle className="w-4 h-4" /> Chat with an expert
+              </a>
             </div>
           </div>
 
@@ -145,6 +146,7 @@ export function Hero({ onShopClick }: HeroProps = {}) {
                     src={current.image}
                     alt={current.name}
                     fetchPriority="high"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-contain p-6 sm:p-10 transition-transform duration-700 ease-out hover:scale-105 animate-fade-in"
                   />
 
@@ -220,6 +222,20 @@ export function Hero({ onShopClick }: HeroProps = {}) {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* Trust bar — full width, spans both columns for a storefront-grade footer to the hero */}
+        <div className="mt-12 lg:mt-16 pt-6 border-t border-white/10 animate-fade-up delay-400">
+          <div className="flex items-center gap-5 sm:gap-8 overflow-x-auto scrollbar-hide">
+            {TRUST.map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-2.5 shrink-0">
+                <span className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-center text-accent shrink-0">
+                  <Icon className="w-4 h-4" />
+                </span>
+                <span className="text-xs sm:text-sm font-medium text-white/75 leading-tight whitespace-nowrap">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

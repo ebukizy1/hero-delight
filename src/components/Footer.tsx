@@ -38,33 +38,33 @@ export function Footer() {
           <div className="lg:col-span-4">
             <h3 className="font-display font-bold text-sm uppercase tracking-wider mb-4">Reach us</h3>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2.5">
+              <li className="flex items-start gap-2.5">
                 <span className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-foreground shrink-0">
                   <MapPin className="w-3.5 h-3.5" />
                 </span>
-                Lagos, Nigeria
+                Shop D442, Ojo Alaba International Market, Lagos
               </li>
               <li className="flex items-center gap-2.5">
                 <span className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-foreground shrink-0">
                   <Phone className="w-3.5 h-3.5" />
                 </span>
-                <a href="tel:+2348141221934" className="hover:text-foreground transition-colors">+234 814 122 1934</a>
+                <a href="tel:+2348037477275" className="hover:text-foreground transition-colors">0803 747 7275</a>
               </li>
               <li className="flex items-center gap-2.5">
                 <span className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-foreground shrink-0">
                   <Mail className="w-3.5 h-3.5" />
                 </span>
-                <a href="mailto:hello@onlinesolarstore.com" className="hover:text-foreground transition-colors">hello@onlinesolarstore.com</a>
+                <a href="mailto:electricalemax@gmail.com" className="hover:text-foreground transition-colors">electricalemax@gmail.com</a>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} OnlineSolarStore. Smart Power. Reliable Future.</p>
+          <p>© {new Date().getFullYear()} Emax Solar Store. Smart Power. Reliable Future.</p>
           <div className="flex items-center gap-5">
-            <a href="#" className="hover:text-foreground transition-colors">Warranty</a>
-            <a href="#" className="hover:text-foreground transition-colors">Delivery</a>
+            <Link to="/insights" className="hover:text-foreground transition-colors">Solar Insights</Link>
+            <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
             <Link to="/admin/login" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
               <Shield className="w-3 h-3" /> Admin
             </Link>

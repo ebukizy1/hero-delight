@@ -15,16 +15,18 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
     setImgError(false);
+    setActiveImage(0);
     Promise.all([fetchProduct(id), fetchProducts().catch(() => [])]).then(([p, all]) => {
       setProduct(p);
       setAllProducts(all);
       setLoading(false);
-      if (p) document.title = `${p.name} — OnlineSolarStore`;
+      if (p) document.title = `${p.name} — Emax Solar Store`;
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
     });
   }, [id]);
@@ -68,29 +70,49 @@ const ProductDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 sm:px-6 py-6 lg:py-10">
+      <main className="container mx-auto px-4 sm:px-6 py-6 lg:py-10 pb-28 lg:pb-10">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to shop
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-14">
-          <div className="relative aspect-square rounded-3xl overflow-hidden bg-muted shadow-card">
-            {!imgError ? (
-              <img
-                src={product.image}
-                alt={product.name}
-                onError={() => setImgError(true)}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-secondary/50">
-                <span className="text-6xl">☀️</span>
+          <div>
+            <div className="relative aspect-square rounded-3xl overflow-hidden bg-muted shadow-card">
+              {!imgError ? (
+                <img
+                  src={product.images[activeImage] ?? product.image}
+                  alt={product.name}
+                  onError={() => setImgError(true)}
+                  fetchPriority="high"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-secondary/50">
+                  <span className="text-6xl">☀️</span>
+                </div>
+              )}
+              {hasBonus && (
+                <span className="absolute top-4 right-4 text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-destructive text-destructive-foreground shadow-soft">
+                  -{discount}% OFF
+                </span>
+              )}
+            </div>
+            {product.images.length > 1 && (
+              <div className="mt-3 grid grid-cols-4 sm:grid-cols-5 gap-2.5">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { setActiveImage(i); setImgError(false); }}
+                    className={`aspect-square rounded-xl overflow-hidden bg-muted ring-2 transition-all ${
+                      i === activeImage ? "ring-accent" : "ring-transparent hover:ring-border"
+                    }`}
+                    aria-label={`View image ${i + 1}`}
+                  >
+                    <img src={img} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                  </button>
+                ))}
               </div>
-            )}
-            {hasBonus && (
-              <span className="absolute top-4 right-4 text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-destructive text-destructive-foreground shadow-soft">
-                -{discount}% OFF
-              </span>
             )}
           </div>
 
@@ -192,6 +214,25 @@ const ProductDetail = () => {
         )}
       </main>
       <Footer />
+
+      {/* Sticky mobile action bar — keeps primary CTAs reachable without scrolling back up */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 flex gap-2 p-3 bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+        <button
+          onClick={handleAdd}
+          className="flex-1 inline-flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-primary-foreground font-semibold active:scale-[0.98] transition-all text-sm"
+        >
+          <ShoppingCart className="w-4 h-4" />
+          {added ? "Added!" : "Add to Cart"}
+        </button>
+        <a
+          href={whatsappHref()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 h-12 px-5 rounded-xl bg-whatsapp text-whatsapp-foreground font-semibold active:scale-[0.98] transition-all text-sm"
+        >
+          <MessageCircle className="w-4 h-4" />
+        </a>
+      </div>
     </div>
   );
 };

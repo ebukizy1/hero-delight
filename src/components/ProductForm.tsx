@@ -15,8 +15,9 @@ export interface ProductFormValue {
 interface Props {
   initialValue?: ProductFormValue;
   initialPreview?: string | null;
+  initialExtraPreviews?: Array<string | null>;
   submitLabel: string;
-  onSubmit: (value: ProductFormValue, imageFile: File | null) => Promise<void>;
+  onSubmit: (value: ProductFormValue, imageFile: File | null, extraFiles: Array<File | null>) => Promise<void>;
   onCancel?: () => void;
   imageRequired?: boolean;
 }
@@ -24,17 +25,24 @@ interface Props {
 export function ProductForm({
   initialValue,
   initialPreview = null,
+  initialExtraPreviews = [null, null],
   submitLabel,
   onSubmit,
   onCancel,
   imageRequired = false,
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const extraRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [preview, setPreview] = useState<string | null>(initialPreview);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [extraPreviews, setExtraPreviews] = useState<Array<string | null>>([
+    initialExtraPreviews[0] ?? null,
+    initialExtraPreviews[1] ?? null,
+  ]);
+  const [extraFiles, setExtraFiles] = useState<Array<File | null>>([null, null]);
 
   const [form, setForm] = useState<ProductFormValue>(
     initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "", featured: false, specifications: [] }
@@ -55,6 +63,13 @@ export function ProductForm({
     setPreview(URL.createObjectURL(file));
   };
 
+  const handleExtraImage = (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setExtraFiles((prev) => prev.map((f, i) => (i === idx ? file : f)));
+    setExtraPreviews((prev) => prev.map((p, i) => (i === idx ? URL.createObjectURL(file) : p)));
+  };
+
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (imageRequired && !imageFile && !initialPreview) {
@@ -70,7 +85,7 @@ export function ProductForm({
     setError("");
     setSaving(true);
     try {
-      await onSubmit(form, imageFile);
+      await onSubmit(form, imageFile, extraFiles);
       setDone(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save product");
@@ -115,6 +130,31 @@ export function ProductForm({
             Change image
           </button>
         )}
+      </div>
+
+      {/* Extra gallery images */}
+      <div>
+        <label className="text-sm font-medium block mb-1.5">Extra photos (optional)</label>
+        <div className="grid grid-cols-2 gap-3">
+          {[0, 1].map((idx) => (
+            <div
+              key={idx}
+              onClick={() => extraRefs[idx].current?.click()}
+              className="aspect-square flex flex-col items-center justify-center gap-1.5 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
+            >
+              {extraPreviews[idx] ? (
+                <img src={extraPreviews[idx]!} alt="Preview" className="w-full h-full object-cover" />
+              ) : (
+                <>
+                  <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Photo {idx + 2}</span>
+                </>
+              )}
+              <input ref={extraRefs[idx]} type="file" accept="image/*" className="hidden" onChange={handleExtraImage(idx)} />
+            </div>
+          ))}
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1.5">Shown as a gallery on the product page.</p>
       </div>
 
       <Field label="Product name *" value={form.name} onChange={(v) => set("name", v)} placeholder="e.g. Solar Streetlight 60W" />

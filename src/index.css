@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* OnlineSolarStore Design System — all tokens HSL
-   Brand: deep navy (#0A1B2E) + electric yellow (#FFC107) + soft gray (#E5E7EB) + neon green accent (#22C55E) */
+/* Emax Solar Store Design System — all tokens HSL
+   Brand: deep navy (#0A1B2E) + solar orange (#F97316) + soft gray (#E5E7EB) + neon green accent (#22C55E) */
 
 @layer base {
   :root {
@@ -26,13 +26,13 @@
     --muted: 220 14% 96%;
     --muted-foreground: 215 16% 40%;
 
-    --accent: 45 100% 51%;              /* #FFC107 electric yellow */
-    --accent-foreground: 215 60% 11%;
+    --accent: 24 95% 53%;                /* #F97316 solar orange */
+    --accent-foreground: 0 0% 100%;
 
     /* Brand gradient stops */
     --brand-from: 215 60% 11%;          /* navy */
-    --brand-to: 45 100% 51%;            /* yellow */
-    --brand-glow: 45 100% 60%;
+    --brand-to: 24 95% 53%;             /* orange */
+    --brand-glow: 32 95% 58%;
 
     --destructive: 0 75% 52%;
     --destructive-foreground: 0 0% 100%;
@@ -45,7 +45,7 @@
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 45 100% 51%;
+    --ring: 24 95% 53%;
 
     --radius: 0.875rem;
 
@@ -53,7 +53,7 @@
     --hero-bg: 215 60% 8%;
     --hero-surface: 215 50% 14%;
 
-    --gradient-brand: linear-gradient(135deg, hsl(var(--brand-to)) 0%, hsl(45 100% 60%) 100%);
+    --gradient-brand: linear-gradient(135deg, hsl(var(--brand-to)) 0%, hsl(32 95% 58%) 100%);
     --gradient-hero: radial-gradient(ellipse 80% 60% at 80% 30%, hsl(var(--accent) / 0.18), transparent 60%),
                      radial-gradient(ellipse 60% 50% at 10% 90%, hsl(142 71% 45% / 0.08), transparent 60%),
                      linear-gradient(180deg, hsl(215 60% 6%) 0%, hsl(215 55% 10%) 100%);

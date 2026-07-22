@@ -54,6 +54,7 @@ export function Header({ onShopClick }: HeaderProps = {}) {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="/#products" onClick={handleShop} className="hover:text-foreground transition-colors">Shop</a>
             <a href="/#browse" onClick={goSection("browse")} className="hover:text-foreground transition-colors">Categories</a>
+            <Link to="/insights" className="hover:text-foreground transition-colors">Solar Insights</Link>
             <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
           </nav>
 
@@ -100,6 +101,13 @@ export function Header({ onShopClick }: HeaderProps = {}) {
               >
                 Categories
               </a>
+              <Link
+                to="/insights"
+                onClick={() => setMobileOpen(false)}
+                className="py-3 px-2 text-sm font-semibold text-foreground hover:text-accent transition-colors border-b border-border/40"
+              >
+                Solar Insights
+              </Link>
               <Link
                 to="/about"
                 onClick={() => setMobileOpen(false)}
