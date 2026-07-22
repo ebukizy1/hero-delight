@@ -9,6 +9,7 @@ import { Categories } from "@/components/Categories";
 import { ProductCard } from "@/components/ProductCard";
 import { fetchProducts, CATEGORIES, type Category, type Product } from "@/lib/products";
 import { fetchArticlePreviews, type ArticlePreview } from "@/lib/articles";
+import { Seo } from "@/components/Seo";
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "Solar Streetlight": Lightbulb,
@@ -107,6 +108,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Emax Solar Store — Solar Street Lights, Inverters, Power Stations & Cameras"
+        description="Shop premium solar street lights, inverters, power stations and security cameras in Nigeria. 1-year warranty, nationwide delivery, Cash on Delivery available."
+        path="/"
+      />
       <Header onShopClick={() => handleSelectCategory("All")} />
       <Hero onShopClick={() => handleSelectCategory("All")} />
 

@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { formatNaira } from "@/lib/products";
 import { buildWhatsAppLink, checkoutOrderMessage } from "@/lib/cart";
+import { Seo } from "@/components/Seo";
 import type { DbOrder } from "@/lib/orders";
 
 const OrderSuccess = () => {
@@ -27,6 +28,7 @@ const OrderSuccess = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo title="Order placed — Emax Solar Store" description="Your order has been received." noindex />
       <Header />
       <main className="flex-1 flex items-center justify-center px-4 py-16">
         <div className="max-w-md w-full text-center">

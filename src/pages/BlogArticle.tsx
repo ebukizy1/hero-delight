@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { fetchArticleBySlug, fetchArticles, type Article } from "@/lib/articles";
 import { renderMarkdown } from "@/lib/markdown";
+import { Seo, SITE_URL } from "@/components/Seo";
 
 const BlogArticle = () => {
   const { slug = "" } = useParams<{ slug: string }>();
@@ -24,7 +25,6 @@ const BlogArticle = () => {
           setNotFound(true);
         } else {
           setArticle(a);
-          document.title = `${a.title} — Emax Solar Store`;
           setOthers(all.filter((x) => x.id !== a.id).slice(0, 3));
         }
         setLoading(false);
@@ -47,6 +47,7 @@ const BlogArticle = () => {
   if (notFound || !article) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <Seo title="Article not found — Emax Solar Store" description="This article could not be found." noindex />
         <h1 className="text-2xl font-bold">Article not found</h1>
         <Link to="/insights" className="text-accent underline">Back to Solar Insights</Link>
       </div>
@@ -60,6 +61,29 @@ const BlogArticle = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${article.title} — Emax Solar Store`}
+        description={article.meta_description || article.content.replace(/[#*_>`\n]/g, " ").slice(0, 160)}
+        path={`/insights/${article.slug}`}
+        image={article.featured_image ?? undefined}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: article.title,
+          description: article.meta_description ?? undefined,
+          image: article.featured_image ?? undefined,
+          datePublished: article.published_date ?? article.created_at,
+          dateModified: article.created_at,
+          author: { "@type": "Organization", name: "Emax Solar Store" },
+          publisher: {
+            "@type": "Organization",
+            name: "Emax Solar Store",
+            logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.png` },
+          },
+          mainEntityOfPage: `${SITE_URL}/insights/${article.slug}`,
+        }}
+      />
       <Header />
       <main>
         <article className="container mx-auto px-4 sm:px-6 py-6 lg:py-10 max-w-3xl">

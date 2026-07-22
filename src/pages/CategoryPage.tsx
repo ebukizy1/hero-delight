@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Pagination } from "@/pages/Index";
 import { fetchProducts, type Product } from "@/lib/products";
 import { slugToCategory } from "@/lib/categorySlug";
+import { Seo, SITE_URL } from "@/components/Seo";
 
 const PAGE_SIZE = 8;
 
@@ -24,10 +25,6 @@ const CategoryPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    if (category) document.title = `${category} — Emax Solar Store`;
-  }, [category]);
-
   useEffect(() => { setPage(1); }, [slug]);
 
   if (!category) return <Navigate to="/" replace />;
@@ -39,6 +36,19 @@ const CategoryPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title={`${category} in Nigeria — Emax Solar Store`}
+        description={`Shop quality ${category.toLowerCase()} in Nigeria with nationwide delivery and a 1-year warranty. ${items.length} product${items.length !== 1 ? "s" : ""} available.`}
+        path={`/category/${slug}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+            { "@type": "ListItem", position: 2, name: category, item: `${SITE_URL}/category/${slug}` },
+          ],
+        }}
+      />
       <Header />
       <main className="flex-1">
         <section className="relative overflow-hidden bg-hero-glow border-b border-border/60">

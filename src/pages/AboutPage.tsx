@@ -1,8 +1,8 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ShieldCheck, Lightbulb, HeartHandshake, Sparkles, Sun, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Seo } from "@/components/Seo";
 
 const VALUES = [
   { icon: ShieldCheck, title: "Quality first", body: "Every product is tested before it ships." },
@@ -17,10 +17,13 @@ const STATS = [
 ];
 
 const AboutPage = () => {
-  useEffect(() => { document.title = "About — Emax Solar Store"; }, []);
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title="About Us — Emax Solar Store"
+        description="Emax Solar Store sells premium solar street lights, power stations, inverters and security cameras across Nigeria — quality-tested products, honest prices, and friendly support."
+        path="/about"
+      />
       <Header />
       <main className="flex-1">
         {/* Hero */}

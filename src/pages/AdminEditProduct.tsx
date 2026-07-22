@@ -4,6 +4,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { AdminNav } from "@/components/AdminNav";
 import { ProductForm } from "@/components/ProductForm";
 import { fetchProduct, updateProduct, uploadProductImage, type Product } from "@/lib/products";
+import { Seo } from "@/components/Seo";
 
 const AdminEditProduct = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +24,7 @@ const AdminEditProduct = () => {
 
   return (
     <div className="min-h-screen bg-secondary/40">
+      <Seo title="Edit Product — Admin — Emax Solar Store" description="Admin" noindex />
       <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-2xl">

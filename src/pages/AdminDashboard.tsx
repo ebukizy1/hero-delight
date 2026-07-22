@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag, Star } from "lucide-react";
 import { AdminNav } from "@/components/AdminNav";
 import { fetchProducts, deleteProduct, updateProduct, formatNaira, type Product } from "@/lib/products";
+import { Seo } from "@/components/Seo";
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -53,6 +54,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-secondary/40">
+      <Seo title="Dashboard — Admin — Emax Solar Store" description="Admin" noindex />
       <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">

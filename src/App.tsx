@@ -6,6 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminGuard } from "@/components/AdminGuard";
+import { trackPageView } from "@/lib/analytics";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail.tsx"));
@@ -36,6 +37,16 @@ function ScrollToTop() {
   return null;
 }
 
+function RouteTracker() {
+  const { pathname, search } = useLocation();
+  useEffect(() => {
+    // Defer a tick so document.title (set by the page's <Seo>) is up to date before we report it.
+    const id = window.setTimeout(() => trackPageView(pathname + search), 0);
+    return () => window.clearTimeout(id);
+  }, [pathname, search]);
+  return null;
+}
+
 function PageFallback() {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -51,6 +62,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <RouteTracker />
         <Suspense fallback={<PageFallback />}>
           <Routes>
             <Route path="/" element={<Index />} />

@@ -2,12 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { AdminNav } from "@/components/AdminNav";
 import { ArticleForm } from "@/components/ArticleForm";
 import { createArticle, uploadArticleImage } from "@/lib/articles";
+import { Seo } from "@/components/Seo";
 
 const AdminAddArticle = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-secondary/40">
+      <Seo title="New Article — Admin — Emax Solar Store" description="Admin" noindex />
       <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-2xl">

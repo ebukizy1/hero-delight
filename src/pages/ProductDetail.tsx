@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { fetchProduct, fetchProducts, formatNaira, discountPercent, type Product } from "@/lib/products";
 import { categoryToSlug } from "@/lib/categorySlug";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
+import { Seo, SITE_URL } from "@/components/Seo";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,7 +27,6 @@ const ProductDetail = () => {
       setProduct(p);
       setAllProducts(all);
       setLoading(false);
-      if (p) document.title = `${p.name} — Emax Solar Store`;
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
     });
   }, [id]);
@@ -47,6 +47,7 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <Seo title="Product not found — Emax Solar Store" description="This product could not be found." noindex />
         <h1 className="text-2xl font-bold">Product not found</h1>
         <Link to="/" className="text-accent underline">Back to shop</Link>
       </div>
@@ -69,6 +70,28 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${product.name} — Emax Solar Store`}
+        description={product.description.slice(0, 160)}
+        path={`/product/${product.id}`}
+        image={product.image}
+        type="product"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: product.description,
+          image: product.images.length > 0 ? product.images : [product.image],
+          category: product.category,
+          offers: {
+            "@type": "Offer",
+            url: `${SITE_URL}/product/${product.id}`,
+            priceCurrency: "NGN",
+            price: product.price,
+            availability: "https://schema.org/InStock",
+          },
+        }}
+      />
       <Header />
       <main className="container mx-auto px-4 sm:px-6 py-6 lg:py-10 pb-28 lg:pb-10">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">

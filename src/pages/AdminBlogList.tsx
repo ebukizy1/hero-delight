@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Plus, Newspaper, Pencil, Trash2, AlertCircle, Eye, EyeOff, BookOpen, Scale } from "lucide-react";
 import { AdminNav } from "@/components/AdminNav";
 import { fetchArticles, deleteArticle, updateArticle, type Article } from "@/lib/articles";
+import { Seo } from "@/components/Seo";
 
 const AdminBlogList = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -49,6 +50,7 @@ const AdminBlogList = () => {
 
   return (
     <div className="min-h-screen bg-secondary/40">
+      <Seo title="Solar Insights — Admin — Emax Solar Store" description="Admin" noindex />
       <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">

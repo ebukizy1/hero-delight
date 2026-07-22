@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Pagination } from "@/pages/Index";
 import { fetchArticles, type Article, type ArticleType } from "@/lib/articles";
+import { Seo } from "@/components/Seo";
 
 const PAGE_SIZE = 9;
 
@@ -21,7 +22,6 @@ const BlogList = () => {
   const [tab, setTab] = useState<ArticleType | "all">("all");
 
   useEffect(() => {
-    document.title = "Solar Insights — Emax Solar Store";
     fetchArticles({ publishedOnly: true })
       .then(setArticles)
       .catch(console.error)
@@ -44,6 +44,11 @@ const BlogList = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo
+        title="Solar Insights — Buying Guides & Product Comparisons — Emax Solar Store"
+        description="Solar buying guides and side-by-side product comparisons to help you choose the right solar street light, inverter, power station or camera."
+        path="/insights"
+      />
       <Header />
       <main className="flex-1">
         <section className="relative overflow-hidden bg-hero-glow border-b border-border/60 text-white">

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Loader2, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Logo } from "@/components/Logo";
+import { Seo } from "@/components/Seo";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-hero-glow px-4 py-10">
+      <Seo title="Admin Sign In — Emax Solar Store" description="Admin" noindex />
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center mb-8">
           <Logo size="lg" />

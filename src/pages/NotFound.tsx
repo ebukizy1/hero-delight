@@ -2,17 +2,18 @@ import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { ArrowLeft, Sun } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { Seo } from "@/components/Seo";
 
 const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = "Page not found — Emax Solar Store";
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
   }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-hero-glow text-white px-4 py-16 text-center">
+      <Seo title="Page not found — Emax Solar Store" description="The page you're looking for doesn't exist." noindex />
       <div className="mb-8">
         <Logo variant="light" size="lg" />
       </div>

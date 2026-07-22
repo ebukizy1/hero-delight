@@ -8,6 +8,7 @@ import { formatNaira } from "@/lib/products";
 import { createOrder, markOrderPaid } from "@/lib/orders";
 import { isCardPaymentEnabled, payWithPaystack } from "@/lib/payments";
 import { getErrorMessage } from "@/lib/utils";
+import { Seo } from "@/components/Seo";
 import type { PaymentMethod } from "@/lib/orders";
 
 const Checkout = () => {
@@ -36,6 +37,7 @@ const Checkout = () => {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
+        <Seo title="Checkout — Emax Solar Store" description="Complete your order." noindex />
         <Header />
         <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 gap-3">
           <div className="text-5xl">🛒</div>
@@ -106,6 +108,7 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Seo title="Checkout — Emax Solar Store" description="Complete your order." noindex />
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 sm:px-6 py-6 lg:py-10">

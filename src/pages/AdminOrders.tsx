@@ -4,6 +4,7 @@ import { AdminNav } from "@/components/AdminNav";
 import { fetchOrders, updateOrderStatus, type DbOrder, type OrderStatus } from "@/lib/orders";
 import { formatNaira } from "@/lib/products";
 import { getErrorMessage } from "@/lib/utils";
+import { Seo } from "@/components/Seo";
 
 const STATUS_OPTIONS: OrderStatus[] = ["new", "processing", "delivered", "cancelled"];
 
@@ -60,6 +61,7 @@ const AdminOrders = () => {
 
   return (
     <div className="min-h-screen bg-secondary/40">
+      <Seo title="Orders — Admin — Emax Solar Store" description="Admin" noindex />
       <AdminNav />
 
       <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
