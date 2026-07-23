@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, AlertCircle, Truck, CreditCard, ShieldCheck } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -9,6 +9,8 @@ import { createOrder, markOrderPaid } from "@/lib/orders";
 import { isCardPaymentEnabled, payWithPaystack } from "@/lib/payments";
 import { getErrorMessage } from "@/lib/utils";
 import { Seo } from "@/components/Seo";
+import { fbTrack, generateEventId } from "@/lib/metaPixel";
+import { sendCapiEvent } from "@/lib/metaCapi";
 import type { PaymentMethod } from "@/lib/orders";
 
 const Checkout = () => {
@@ -33,6 +35,37 @@ const Checkout = () => {
     () => name.trim() && phone.trim() && address.trim() && (!emailRequired || email.trim()),
     [name, phone, address, email, emailRequired],
   );
+
+  const initiateTracked = useRef(false);
+  useEffect(() => {
+    if (initiateTracked.current || items.length === 0) return;
+    initiateTracked.current = true;
+    const eventId = generateEventId();
+    const customData = {
+      content_ids: items.map((i) => i.id),
+      value: total,
+      currency: "NGN",
+      num_items: items.reduce((s, i) => s + i.qty, 0),
+    };
+    fbTrack("InitiateCheckout", customData, eventId);
+    sendCapiEvent("InitiateCheckout", eventId, customData);
+  }, [items, total]);
+
+  const firePurchase = (orderId: string) => {
+    const eventId = generateEventId();
+    const customData = {
+      content_ids: items.map((i) => i.id),
+      value: total,
+      currency: "NGN",
+      num_items: items.reduce((s, i) => s + i.qty, 0),
+      order_id: orderId,
+    };
+    fbTrack("Purchase", customData, eventId);
+    sendCapiEvent("Purchase", eventId, customData, {
+      email: email.trim() || undefined,
+      phone: phone.trim() || undefined,
+    });
+  };
 
   if (items.length === 0) {
     return (
@@ -73,6 +106,7 @@ const Checkout = () => {
     try {
       if (method === "cod") {
         const order = await createOrder({ ...orderInput, paymentMethod: "cod" });
+        firePurchase(order.id);
         cart.clear();
         navigate(`/order-success/${order.id}`, { state: { order } });
         return;
@@ -87,6 +121,7 @@ const Checkout = () => {
           try {
             const order = await createOrder({ ...orderInput, paymentMethod: "card" });
             await markOrderPaid(order.id, ref);
+            firePurchase(order.id);
             cart.clear();
             navigate(`/order-success/${order.id}`, {
               state: { order: { ...order, payment_status: "paid", payment_reference: ref } },

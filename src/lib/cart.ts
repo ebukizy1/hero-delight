@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { formatNaira } from "./products";
+import { fbTrack, generateEventId } from "./metaPixel";
+import { sendCapiEvent } from "./metaCapi";
 
 export interface CartItem {
   id: string;
@@ -61,6 +63,11 @@ export const cart = {
       ? cache.map((i) => (i.id === p.id ? { ...i, qty: i.qty + 1 } : i))
       : [...cache, { ...p, qty: 1 }];
     commit(next);
+
+    const eventId = generateEventId();
+    const customData = { content_ids: [p.id], content_type: "product", value: p.price, currency: "NGN" };
+    fbTrack("AddToCart", customData, eventId);
+    sendCapiEvent("AddToCart", eventId, customData);
   },
   remove(id: string) {
     ensureHydrated();

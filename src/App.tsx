@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminGuard } from "@/components/AdminGuard";
 import { trackPageView } from "@/lib/analytics";
+import { fbTrack } from "@/lib/metaPixel";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail.tsx"));
@@ -39,9 +40,20 @@ function ScrollToTop() {
 
 function RouteTracker() {
   const { pathname, search } = useLocation();
+  const isFirst = useRef(true);
   useEffect(() => {
+    // The gtag/fbq base snippets in index.html already report the initial page load —
+    // skip it here so the first view isn't double-counted, and only track subsequent
+    // in-app (React Router) navigations, which those static snippets can't see.
+    if (isFirst.current) {
+      isFirst.current = false;
+      return;
+    }
     // Defer a tick so document.title (set by the page's <Seo>) is up to date before we report it.
-    const id = window.setTimeout(() => trackPageView(pathname + search), 0);
+    const id = window.setTimeout(() => {
+      trackPageView(pathname + search);
+      fbTrack("PageView");
+    }, 0);
     return () => window.clearTimeout(id);
   }, [pathname, search]);
   return null;

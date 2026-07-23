@@ -8,6 +8,8 @@ import { fetchProduct, fetchProducts, formatNaira, discountPercent, type Product
 import { categoryToSlug } from "@/lib/categorySlug";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 import { Seo, SITE_URL } from "@/components/Seo";
+import { fbTrack, generateEventId } from "@/lib/metaPixel";
+import { sendCapiEvent } from "@/lib/metaCapi";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +30,12 @@ const ProductDetail = () => {
       setAllProducts(all);
       setLoading(false);
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+      if (p) {
+        const eventId = generateEventId();
+        const customData = { content_ids: [p.id], content_name: p.name, content_type: "product", value: p.price, currency: "NGN" };
+        fbTrack("ViewContent", customData, eventId);
+        sendCapiEvent("ViewContent", eventId, customData);
+      }
     });
   }, [id]);
 
