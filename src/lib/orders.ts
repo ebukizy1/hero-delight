@@ -37,26 +37,45 @@ export interface OrderInput {
 }
 
 export async function createOrder(input: OrderInput): Promise<DbOrder> {
-  const { data, error } = await supabase
-    .from("orders")
-    .insert({
-      customer_name: input.customerName,
-      phone: input.phone,
-      email: input.email || null,
-      address: input.address,
-      city: input.city || null,
-      notes: input.notes || null,
-      items: input.items,
-      subtotal: input.subtotal,
-      total: input.total,
-      payment_method: input.paymentMethod,
-      payment_status: "pending",
-      status: "new",
-    })
-    .select()
-    .single();
+  // Generate the id client-side and skip .select() after insert: customers place orders
+  // anonymously and only admins have a SELECT policy on `orders`, so asking Postgres to
+  // return the inserted row (RETURNING) fails RLS even though the insert itself is allowed.
+  const order: DbOrder = {
+    id: crypto.randomUUID(),
+    created_at: new Date().toISOString(),
+    customer_name: input.customerName,
+    phone: input.phone,
+    email: input.email || null,
+    address: input.address,
+    city: input.city || null,
+    notes: input.notes || null,
+    items: input.items,
+    subtotal: input.subtotal,
+    total: input.total,
+    payment_method: input.paymentMethod,
+    payment_status: "pending",
+    payment_reference: null,
+    status: "new",
+  };
+
+  const { error } = await supabase.from("orders").insert({
+    id: order.id,
+    created_at: order.created_at,
+    customer_name: order.customer_name,
+    phone: order.phone,
+    email: order.email,
+    address: order.address,
+    city: order.city,
+    notes: order.notes,
+    items: order.items,
+    subtotal: order.subtotal,
+    total: order.total,
+    payment_method: order.payment_method,
+    payment_status: order.payment_status,
+    status: order.status,
+  });
   if (error) throw error;
-  return data as DbOrder;
+  return order;
 }
 
 export async function fetchOrder(id: string): Promise<DbOrder | null> {
