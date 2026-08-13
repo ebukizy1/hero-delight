@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Loader2, Newspaper, ShoppingBag, BookOpen, Scale } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Newspaper, ShoppingBag, BookOpen, Scale, Clock } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { fetchArticleBySlug, fetchArticles, type Article } from "@/lib/articles";
@@ -58,6 +58,7 @@ const BlogArticle = () => {
     ? new Date(article.published_date).toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" })
     : null;
   const isComparison = article.article_type === "comparison";
+  const readMinutes = Math.max(1, Math.round(article.content.trim().split(/\s+/).length / 200));
 
   return (
     <div className="min-h-screen bg-background">
@@ -100,13 +101,20 @@ const BlogArticle = () => {
             {isComparison ? "Comparison" : "Guide"}
           </span>
 
-          {date && <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-accent">{date}</p>}
-          <h1 className="mt-2 font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl leading-tight tracking-tight">
+          <h1 className="mt-3 font-display font-extrabold text-2xl sm:text-3xl lg:text-[2.75rem] leading-tight tracking-tight">
             {article.title}
           </h1>
 
+          <div className="mt-3 flex items-center flex-wrap gap-x-2.5 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+            {date && <span className="font-medium">{date}</span>}
+            {date && <span aria-hidden className="w-1 h-1 rounded-full bg-border" />}
+            <span className="inline-flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5" /> {readMinutes} min read
+            </span>
+          </div>
+
           {article.featured_image && (
-            <div className="mt-6 rounded-2xl overflow-hidden bg-muted aspect-video shadow-card">
+            <div className="mt-6 rounded-3xl overflow-hidden bg-muted aspect-video shadow-card ring-1 ring-border/60">
               <img
                 src={article.featured_image}
                 alt={article.title}
@@ -117,16 +125,30 @@ const BlogArticle = () => {
             </div>
           )}
 
-          <div
-            className="prose prose-slate max-w-none mt-8 prose-headings:font-display prose-headings:font-extrabold prose-a:text-accent prose-img:rounded-2xl"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
+          <div className="mt-8 rounded-3xl bg-card border border-border/60 shadow-soft p-6 sm:p-10">
+            <div
+              className="prose prose-slate sm:prose-lg max-w-none
+                prose-headings:font-display prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-foreground
+                prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border prose-h2:text-xl sm:prose-h2:text-2xl
+                prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-accent prose-h3:text-lg sm:prose-h3:text-xl
+                prose-p:leading-relaxed prose-p:text-foreground/80
+                [&>p:first-of-type]:text-lg sm:[&>p:first-of-type]:text-xl [&>p:first-of-type]:font-medium [&>p:first-of-type]:text-foreground/90 [&>p:first-of-type]:leading-relaxed
+                prose-strong:text-foreground prose-strong:font-bold
+                prose-a:text-accent prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-a:underline-offset-4
+                prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-accent/5 prose-blockquote:not-italic
+                prose-blockquote:rounded-r-xl prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:font-medium prose-blockquote:text-foreground
+                prose-ul:my-5 prose-ol:my-5 prose-li:marker:text-accent prose-li:my-1.5
+                prose-img:rounded-2xl prose-img:shadow-card prose-img:my-8
+                prose-hr:border-border prose-hr:my-10"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
 
-          {article.center_image && (
-            <div className="mt-8 rounded-2xl overflow-hidden bg-muted shadow-card">
-              <img src={article.center_image} alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
-            </div>
-          )}
+            {article.center_image && (
+              <div className="mt-8 rounded-2xl overflow-hidden bg-muted shadow-card ring-1 ring-border/60">
+                <img src={article.center_image} alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
+              </div>
+            )}
+          </div>
 
           <div className="mt-12 rounded-2xl bg-secondary/50 border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
