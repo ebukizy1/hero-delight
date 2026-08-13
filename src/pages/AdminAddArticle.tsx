@@ -33,6 +33,7 @@ const AdminAddArticle = () => {
                 center_image: centerUrl,
                 meta_description: form.metaDescription.trim() || null,
                 article_type: form.articleType,
+                sales_page_url: form.salesPageUrl.trim() || null,
                 published: form.published,
                 published_date: form.publishedDate || null,
               });

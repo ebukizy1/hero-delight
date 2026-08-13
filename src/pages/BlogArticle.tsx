@@ -130,15 +130,30 @@ const BlogArticle = () => {
 
           <div className="mt-12 rounded-2xl bg-secondary/50 border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <h2 className="font-display font-bold text-lg">Ready to shop?</h2>
-              <p className="text-sm text-muted-foreground mt-1">Browse our full solar catalogue with nationwide delivery.</p>
+              <h2 className="font-display font-bold text-lg">{article.sales_page_url ? "Ready to buy?" : "Ready to shop?"}</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {article.sales_page_url
+                  ? "Head to the product page to grab this deal."
+                  : "Browse our full solar catalogue with nationwide delivery."}
+              </p>
             </div>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors text-sm shrink-0"
-            >
-              <ShoppingBag className="w-4 h-4" /> Shop now
-            </Link>
+            {article.sales_page_url ? (
+              <a
+                href={article.sales_page_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors text-sm shrink-0"
+              >
+                <ShoppingBag className="w-4 h-4" /> Shop this deal
+              </a>
+            ) : (
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors text-sm shrink-0"
+              >
+                <ShoppingBag className="w-4 h-4" /> Shop now
+              </Link>
+            )}
           </div>
         </article>
 

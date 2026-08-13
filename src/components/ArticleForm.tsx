@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
-import { ImageIcon, Loader2, CheckCircle, AlertCircle, Link2, BookOpen, Scale } from "lucide-react";
+import { ImageIcon, Loader2, CheckCircle, AlertCircle, Link2, ExternalLink, BookOpen, Scale } from "lucide-react";
 import { slugify, type ArticleType } from "@/lib/articles";
 
 export interface ArticleFormValue {
@@ -8,6 +8,7 @@ export interface ArticleFormValue {
   content: string;
   metaDescription: string;
   articleType: ArticleType;
+  salesPageUrl: string;
   published: boolean;
   publishedDate: string;
 }
@@ -50,6 +51,7 @@ export function ArticleForm({
       content: "",
       metaDescription: "",
       articleType: "guide",
+      salesPageUrl: "",
       published: true,
       publishedDate: new Date().toISOString().slice(0, 10),
     },
@@ -201,6 +203,23 @@ export function ArticleForm({
           placeholder="Short summary shown on the blog list page and search engines."
           className="w-full px-3 py-2.5 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none text-sm"
         />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium block mb-1.5">Sales page link (optional)</label>
+        <div className="flex items-center gap-2">
+          <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
+          <input
+            type="url"
+            value={form.salesPageUrl}
+            onChange={(e) => set("salesPageUrl", e.target.value)}
+            placeholder="https://your-product-or-sales-page.com"
+            className="w-full h-11 px-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+          />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Shown as a "Shop this deal" button on the article — sends readers straight to this link instead of the homepage.
+        </p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">

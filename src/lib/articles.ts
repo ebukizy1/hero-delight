@@ -71,6 +71,7 @@ export interface ArticleInput {
   article_type?: ArticleType;
   published?: boolean;
   published_date?: string | null;
+  sales_page_url?: string | null;
 }
 
 export async function createArticle(input: ArticleInput): Promise<Article> {

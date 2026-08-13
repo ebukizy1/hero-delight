@@ -51,6 +51,7 @@ const AdminEditArticle = () => {
                 content: article.content,
                 metaDescription: article.meta_description ?? "",
                 articleType: article.article_type,
+                salesPageUrl: article.sales_page_url ?? "",
                 published: article.published,
                 publishedDate: article.published_date ?? new Date().toISOString().slice(0, 10),
               }}
@@ -66,6 +67,7 @@ const AdminEditArticle = () => {
                   center_image: centerUrl,
                   meta_description: form.metaDescription.trim() || null,
                   article_type: form.articleType,
+                  sales_page_url: form.salesPageUrl.trim() || null,
                   published: form.published,
                   published_date: form.publishedDate || null,
                 });
