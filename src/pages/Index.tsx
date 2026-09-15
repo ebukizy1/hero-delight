@@ -10,6 +10,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { fetchProducts, CATEGORIES, type Category, type Product } from "@/lib/products";
 import { fetchArticlePreviews, type ArticlePreview } from "@/lib/articles";
 import { Seo } from "@/components/Seo";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "Solar Streetlight": Lightbulb,
@@ -243,11 +244,12 @@ const Index = () => {
                   >
                     <div className="relative aspect-video overflow-hidden bg-muted">
                       {a.featured_image ? (
-                        <img
+                        <OptimizedImage
                           src={a.featured_image}
                           alt={a.title}
-                          loading="lazy"
-                          decoding="async"
+                          width={640}
+                          height={360}
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
                       ) : (

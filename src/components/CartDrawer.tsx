@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { cart, useCart } from "@/lib/cart";
 import { formatNaira } from "@/lib/products";
 import { useEffect } from "react";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface Props {
   open: boolean;
@@ -55,11 +56,12 @@ export function CartDrawer({ open, onClose }: Props) {
             <ul className="space-y-4">
               {items.map((item) => (
                 <li key={item.id} className="flex gap-3">
-                  <img
+                  <OptimizedImage
                     src={item.image}
                     alt={item.name}
-                    loading="lazy"
-                    decoding="async"
+                    width={80}
+                    height={80}
+                    sizes="80px"
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover bg-muted shrink-0"
                   />
                   <div className="flex-1 min-w-0">

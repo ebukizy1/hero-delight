@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Truck, Zap, Headset, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { fetchProducts, type Product, formatNaira, discountPercent } from "@/lib/products";
 import { buildWhatsAppLink } from "@/lib/cart";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 import streetlightImg from "@/assets/products/streetlight.jpg";
 import inverterImg from "@/assets/products/inverter.jpg";
@@ -141,12 +142,15 @@ export function Hero({ onShopClick }: HeroProps = {}) {
                   onClick={isDummy ? handleShop : undefined}
                   className="block relative aspect-[4/3] sm:aspect-[5/4] bg-gradient-to-br from-[hsl(45_50%_96%)] to-[hsl(215_20%_92%)] overflow-hidden"
                 >
-                  <img
+                  <OptimizedImage
                     key={current.id}
                     src={current.image}
                     alt={current.name}
-                    fetchPriority="high"
-                    decoding="async"
+                    width={800}
+                    height={600}
+                    fit="contain"
+                    priority
+                    sizes="(min-width: 1024px) 40vw, 90vw"
                     className="absolute inset-0 w-full h-full object-contain p-6 sm:p-10 transition-transform duration-700 ease-out hover:scale-105 animate-fade-in"
                   />
 

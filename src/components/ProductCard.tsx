@@ -4,6 +4,7 @@ import type { Product } from "@/lib/products";
 import { formatNaira, discountPercent } from "@/lib/products";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 import { useState } from "react";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface Props {
   product: Product;
@@ -33,11 +34,12 @@ export function ProductCard({ product }: Props) {
     <div className="group flex flex-col rounded-2xl bg-card overflow-hidden border border-border/60 hover:-translate-y-1 hover:shadow-card transition-all duration-300 shadow-soft">
       <Link to={`/product/${product.id}`} className="relative aspect-square overflow-hidden bg-muted block">
         {!imgError ? (
-          <img
+          <OptimizedImage
             src={product.image}
             alt={product.name}
-            loading="lazy"
-            decoding="async"
+            width={400}
+            height={400}
+            sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
             onError={() => setImgError(true)}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           />

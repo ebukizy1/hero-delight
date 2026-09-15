@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag, Star, Plus, Trash2 } from "lucide-react";
 import { CATEGORIES, formatNaira, discountPercent } from "@/lib/products";
+import { compressImageFile } from "@/lib/imageCompression";
 
 export interface ProductFormValue {
   name: string;
@@ -43,6 +44,7 @@ export function ProductForm({
     initialExtraPreviews[1] ?? null,
   ]);
   const [extraFiles, setExtraFiles] = useState<Array<File | null>>([null, null]);
+  const [compressing, setCompressing] = useState(false);
 
   const [form, setForm] = useState<ProductFormValue>(
     initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "", featured: false, specifications: [] }
@@ -56,18 +58,24 @@ export function ProductForm({
     set("specifications", form.specifications.map((s, idx) => (idx === i ? { ...s, [key]: v } : s)));
   const removeSpec = (i: number) => set("specifications", form.specifications.filter((_, idx) => idx !== i));
 
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setImageFile(file);
-    setPreview(URL.createObjectURL(file));
+    setCompressing(true);
+    const compressed = await compressImageFile(file);
+    setCompressing(false);
+    setImageFile(compressed);
+    setPreview(URL.createObjectURL(compressed));
   };
 
-  const handleExtraImage = (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExtraImage = (idx: number) => async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setExtraFiles((prev) => prev.map((f, i) => (i === idx ? file : f)));
-    setExtraPreviews((prev) => prev.map((p, i) => (i === idx ? URL.createObjectURL(file) : p)));
+    setCompressing(true);
+    const compressed = await compressImageFile(file);
+    setCompressing(false);
+    setExtraFiles((prev) => prev.map((f, i) => (i === idx ? compressed : f)));
+    setExtraPreviews((prev) => prev.map((p, i) => (i === idx ? URL.createObjectURL(compressed) : p)));
   };
 
   const submit = async (e: FormEvent) => {
@@ -110,13 +118,18 @@ export function ProductForm({
           className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
           style={{ minHeight: preview ? "auto" : "8rem" }}
         >
-          {preview ? (
+          {compressing ? (
+            <div className="flex flex-col items-center gap-2 py-8">
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Optimizing image…</span>
+            </div>
+          ) : preview ? (
             <img src={preview} alt="Preview" className="w-full max-h-56 object-cover" />
           ) : (
             <div className="flex flex-col items-center gap-2 py-8">
               <ImageIcon className="w-6 h-6 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">Click to upload image</span>
-              <span className="text-xs text-muted-foreground">JPG, PNG, WEBP up to 10MB</span>
+              <span className="text-xs text-muted-foreground">JPG, PNG, WEBP up to 10MB — auto-resized on upload</span>
             </div>
           )}
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImage} />
@@ -297,7 +310,7 @@ export function ProductForm({
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <button
           type="submit"
-          disabled={saving || done}
+          disabled={saving || done || compressing}
           className="flex-1 h-11 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
