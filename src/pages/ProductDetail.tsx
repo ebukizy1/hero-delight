@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
 import { fetchProduct, fetchProducts, formatNaira, discountPercent, type Product } from "@/lib/products";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { categoryToSlug } from "@/lib/categorySlug";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 import { Seo, SITE_URL } from "@/components/Seo";
@@ -110,12 +111,14 @@ const ProductDetail = () => {
           <div>
             <div className="relative aspect-square rounded-3xl overflow-hidden bg-muted shadow-card">
               {!imgError ? (
-                <img
+                <OptimizedImage
                   src={product.images[activeImage] ?? product.image}
                   alt={product.name}
+                  width={800}
+                  height={800}
+                  priority
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   onError={() => setImgError(true)}
-                  fetchPriority="high"
-                  decoding="async"
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -140,7 +143,14 @@ const ProductDetail = () => {
                     }`}
                     aria-label={`View image ${i + 1}`}
                   >
-                    <img src={img} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                    <OptimizedImage
+                      src={img}
+                      alt=""
+                      width={150}
+                      height={150}
+                      sizes="120px"
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>

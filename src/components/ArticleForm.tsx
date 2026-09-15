@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { ImageIcon, Loader2, CheckCircle, AlertCircle, Link2, ExternalLink, BookOpen, Scale } from "lucide-react";
 import { slugify, type ArticleType } from "@/lib/articles";
+import { compressImageFile } from "@/lib/imageCompression";
 
 export interface ArticleFormValue {
   title: string;
@@ -43,6 +44,7 @@ export function ArticleForm({
   const [featuredFile, setFeaturedFile] = useState<File | null>(null);
   const [centerPreview, setCenterPreview] = useState<string | null>(initialCenterPreview);
   const [centerFile, setCenterFile] = useState<File | null>(null);
+  const [compressing, setCompressing] = useState(false);
 
   const [form, setForm] = useState<ArticleFormValue>(
     initialValue ?? {
@@ -65,18 +67,24 @@ export function ArticleForm({
     if (!slugTouched) set("slug", slugify(v));
   };
 
-  const handleFeatured = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFeatured = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setFeaturedFile(file);
-    setFeaturedPreview(URL.createObjectURL(file));
+    setCompressing(true);
+    const compressed = await compressImageFile(file);
+    setCompressing(false);
+    setFeaturedFile(compressed);
+    setFeaturedPreview(URL.createObjectURL(compressed));
   };
 
-  const handleCenter = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCenter = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setCenterFile(file);
-    setCenterPreview(URL.createObjectURL(file));
+    setCompressing(true);
+    const compressed = await compressImageFile(file);
+    setCompressing(false);
+    setCenterFile(compressed);
+    setCenterPreview(URL.createObjectURL(compressed));
   };
 
   const submit = async (e: FormEvent) => {
@@ -112,13 +120,18 @@ export function ArticleForm({
           className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
           style={{ minHeight: featuredPreview ? "auto" : "8rem" }}
         >
-          {featuredPreview ? (
+          {compressing ? (
+            <div className="flex flex-col items-center gap-2 py-8">
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Optimizing image…</span>
+            </div>
+          ) : featuredPreview ? (
             <img src={featuredPreview} alt="Preview" className="w-full max-h-56 object-cover" />
           ) : (
             <div className="flex flex-col items-center gap-2 py-8">
               <ImageIcon className="w-6 h-6 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">Click to upload featured image</span>
-              <span className="text-xs text-muted-foreground">JPG, PNG, WEBP up to 10MB</span>
+              <span className="text-xs text-muted-foreground">JPG, PNG, WEBP up to 10MB — auto-resized on upload</span>
             </div>
           )}
           <input ref={featuredRef} type="file" accept="image/*" className="hidden" onChange={handleFeatured} />
@@ -182,7 +195,12 @@ export function ArticleForm({
           className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-secondary/50 transition-colors overflow-hidden"
           style={{ minHeight: centerPreview ? "auto" : "6rem" }}
         >
-          {centerPreview ? (
+          {compressing ? (
+            <div className="flex flex-col items-center gap-2 py-6">
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Optimizing image…</span>
+            </div>
+          ) : centerPreview ? (
             <img src={centerPreview} alt="Preview" className="w-full max-h-40 object-cover" />
           ) : (
             <div className="flex flex-col items-center gap-2 py-6">
@@ -252,7 +270,7 @@ export function ArticleForm({
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <button
           type="submit"
-          disabled={saving || done}
+          disabled={saving || done || compressing}
           className="flex-1 h-11 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}

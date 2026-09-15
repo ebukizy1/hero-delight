@@ -4,6 +4,7 @@ import { Plus, Package, Pencil, Trash2, AlertCircle, TrendingUp, DollarSign, Tag
 import { AdminNav } from "@/components/AdminNav";
 import { fetchProducts, deleteProduct, updateProduct, formatNaira, type Product } from "@/lib/products";
 import { Seo } from "@/components/Seo";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -103,10 +104,12 @@ const AdminDashboard = () => {
                 const hasBonus = p.bonusPrice && p.bonusPrice > p.price;
                 return (
                   <li key={p.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-secondary/40 transition-colors">
-                    <img
-                      src={p.image} alt={p.name}
-                      loading="lazy"
-                      decoding="async"
+                    <OptimizedImage
+                      src={p.image}
+                      alt={p.name}
+                      width={64}
+                      height={64}
+                      sizes="64px"
                       className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted shrink-0"
                     />
                     <div className="flex-1 min-w-0">

@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Pagination } from "@/pages/Index";
 import { fetchArticles, type Article, type ArticleType } from "@/lib/articles";
 import { Seo } from "@/components/Seo";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const PAGE_SIZE = 9;
 
@@ -124,11 +125,12 @@ function ArticleCard({ article }: { article: Article }) {
     >
       <div className="relative aspect-video overflow-hidden bg-muted">
         {article.featured_image ? (
-          <img
+          <OptimizedImage
             src={article.featured_image}
             alt={article.title}
-            loading="lazy"
-            decoding="async"
+            width={640}
+            height={360}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           />
         ) : (

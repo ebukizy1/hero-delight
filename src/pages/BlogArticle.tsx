@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { fetchArticleBySlug, fetchArticles, type Article } from "@/lib/articles";
 import { renderMarkdown } from "@/lib/markdown";
 import { Seo, SITE_URL } from "@/components/Seo";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const BlogArticle = () => {
   const { slug = "" } = useParams<{ slug: string }>();
@@ -115,11 +116,13 @@ const BlogArticle = () => {
 
           {article.featured_image && (
             <div className="mt-6 rounded-3xl overflow-hidden bg-muted aspect-video shadow-card ring-1 ring-border/60">
-              <img
+              <OptimizedImage
                 src={article.featured_image}
                 alt={article.title}
-                fetchPriority="high"
-                decoding="async"
+                width={800}
+                height={450}
+                priority
+                sizes="(min-width: 768px) 768px, 100vw"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -145,7 +148,14 @@ const BlogArticle = () => {
 
             {article.center_image && (
               <div className="mt-8 rounded-2xl overflow-hidden bg-muted shadow-card ring-1 ring-border/60">
-                <img src={article.center_image} alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
+                <OptimizedImage
+                  src={article.center_image}
+                  alt=""
+                  width={800}
+                  height={450}
+                  sizes="(min-width: 768px) 768px, 100vw"
+                  className="w-full h-auto object-cover"
+                />
               </div>
             )}
           </div>
@@ -192,11 +202,12 @@ const BlogArticle = () => {
                   >
                     <div className="relative aspect-video overflow-hidden bg-muted">
                       {a.featured_image ? (
-                        <img
+                        <OptimizedImage
                           src={a.featured_image}
                           alt={a.title}
-                          loading="lazy"
-                          decoding="async"
+                          width={640}
+                          height={360}
+                          sizes="(min-width: 768px) 33vw, 100vw"
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
                       ) : (

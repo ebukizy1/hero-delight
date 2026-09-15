@@ -9,6 +9,7 @@ import { createOrder, markOrderPaid } from "@/lib/orders";
 import { isCardPaymentEnabled, payWithPaystack } from "@/lib/payments";
 import { getErrorMessage } from "@/lib/utils";
 import { Seo } from "@/components/Seo";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { fbTrack, generateEventId } from "@/lib/metaPixel";
 import { sendCapiEvent } from "@/lib/metaCapi";
 import type { PaymentMethod } from "@/lib/orders";
@@ -229,7 +230,14 @@ const Checkout = () => {
                 <ul className="space-y-3 max-h-80 overflow-y-auto pr-1">
                   {items.map((i) => (
                     <li key={i.id} className="flex gap-3">
-                      <img src={i.image} alt={i.name} loading="lazy" decoding="async" className="w-14 h-14 rounded-lg object-cover bg-muted shrink-0" />
+                      <OptimizedImage
+                        src={i.image}
+                        alt={i.name}
+                        width={56}
+                        height={56}
+                        sizes="56px"
+                        className="w-14 h-14 rounded-lg object-cover bg-muted shrink-0"
+                      />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium line-clamp-2">{i.name}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">Qty {i.qty}</p>

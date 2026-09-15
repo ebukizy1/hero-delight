@@ -4,6 +4,7 @@ import { Plus, Newspaper, Pencil, Trash2, AlertCircle, Eye, EyeOff, BookOpen, Sc
 import { AdminNav } from "@/components/AdminNav";
 import { fetchArticles, deleteArticle, updateArticle, type Article } from "@/lib/articles";
 import { Seo } from "@/components/Seo";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const AdminBlogList = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -90,11 +91,12 @@ const AdminBlogList = () => {
             <ul className="divide-y divide-border">
               {articles.map((a) => (
                 <li key={a.id} className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-secondary/40 transition-colors">
-                  <img
+                  <OptimizedImage
                     src={a.featured_image || "/placeholder.svg"}
                     alt={a.title}
-                    loading="lazy"
-                    decoding="async"
+                    width={64}
+                    height={64}
+                    sizes="64px"
                     className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted shrink-0"
                   />
                   <div className="flex-1 min-w-0">
