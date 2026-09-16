@@ -7,7 +7,10 @@ interface Props {
   articles: ArticlePreview[];
 }
 
+const MAX_ARTICLES = 3;
+
 export function SolarInsightsSection({ articles }: Props) {
+  const shown = articles.slice(0, MAX_ARTICLES);
   return (
     <section className="py-14 lg:py-20 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 sm:px-6">
@@ -31,11 +34,11 @@ export function SolarInsightsSection({ articles }: Props) {
           </Link>
         </div>
 
-        {articles.length > 0 && (
+        {shown.length > 0 && (
           <>
             {/* Mobile — compact list rows */}
             <div className="sm:hidden space-y-3">
-              {articles.map((a) => {
+              {shown.map((a) => {
                 const isComparison = a.article_type === "comparison";
                 return (
                   <Link
@@ -60,7 +63,7 @@ export function SolarInsightsSection({ articles }: Props) {
 
             {/* sm and up — full image cards */}
             <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {articles.map((a) => {
+              {shown.map((a) => {
                 const isComparison = a.article_type === "comparison";
                 return (
                   <Link

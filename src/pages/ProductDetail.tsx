@@ -32,7 +32,7 @@ const DESKTOP_DESCRIPTION_MAX_LENGTH = 220;
 
 const TRUST_ITEMS = [
   { icon: Shield, title: "1-year warranty", sub: "faulty units replaced, not repaired" },
-  { icon: RotateCcw, title: "7-day returns", sub: "unopened, we cover the pickup" },
+  { icon: RotateCcw, title: "free delivery", sub: "within Lagos" },
   { icon: Wrench, title: "Installation available", sub: "ask on WhatsApp for a quote" },
 ];
 
@@ -71,10 +71,11 @@ const ProductDetail = () => {
     });
   }, [id]);
 
-  const related = useMemo(() => {
+  const relatedAll = useMemo(() => {
     if (!product) return [];
-    return allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, DESKTOP_RELATED);
+    return allProducts.filter((p) => p.category === product.category && p.id !== product.id);
   }, [product, allProducts]);
+  const related = relatedAll.slice(0, DESKTOP_RELATED);
 
   if (loading) {
     return (
@@ -419,7 +420,19 @@ const ProductDetail = () => {
 
         {related.length > 0 && (
           <section className="mt-14 lg:mt-16">
-            <h2 className="font-display font-extrabold text-xl sm:text-2xl mb-5">Related products</h2>
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <h2 className="font-display font-extrabold text-xl sm:text-2xl">Related products</h2>
+              {relatedAll.length > MOBILE_RELATED && (
+                <Link
+                  to={`/category/${categoryToSlug(product.category)}`}
+                  className={`text-sm font-semibold text-foreground hover:text-accent transition-colors shrink-0 ${
+                    relatedAll.length > DESKTOP_RELATED ? "" : "lg:hidden"
+                  }`}
+                >
+                  See all
+                </Link>
+              )}
+            </div>
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
               {related.map((p, i) => (
                 <div key={p.id} className={`h-full ${i >= MOBILE_RELATED ? "hidden lg:block" : ""}`}>
