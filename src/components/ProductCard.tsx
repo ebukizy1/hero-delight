@@ -10,6 +10,13 @@ interface Props {
   product: Product;
 }
 
+const DESCRIPTION_MAX_LENGTH = 65;
+
+function truncateDescription(text: string): string {
+  if (text.length <= DESCRIPTION_MAX_LENGTH) return text;
+  return `${text.slice(0, DESCRIPTION_MAX_LENGTH).trimEnd()}…`;
+}
+
 export function ProductCard({ product }: Props) {
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -31,7 +38,7 @@ export function ProductCard({ product }: Props) {
   };
 
   return (
-    <div className="group flex flex-col rounded-2xl bg-card overflow-hidden border border-border/60 hover:-translate-y-1 hover:shadow-card transition-all duration-300 shadow-soft">
+    <div className="group flex flex-col h-full rounded-2xl bg-card overflow-hidden border border-border/60 hover:-translate-y-1 hover:shadow-card transition-all duration-300 shadow-soft">
       <Link to={`/product/${product.id}`} className="relative aspect-square overflow-hidden bg-muted block">
         {!imgError ? (
           <OptimizedImage
@@ -52,7 +59,7 @@ export function ProductCard({ product }: Props) {
           {product.category.replace("Solar ", "")}
         </span>
         {hasBonus && (
-          <span className="absolute top-2 right-2 inline-flex items-center gap-1 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-destructive text-destructive-foreground shadow-lg ring-2 ring-background/80 animate-fade-up">
+          <span className="absolute top-2 right-2 inline-flex items-center gap-1 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-accent-strong text-white shadow-lg ring-2 ring-background/80 animate-fade-up">
             −{discount}%
           </span>
         )}
@@ -64,8 +71,8 @@ export function ProductCard({ product }: Props) {
             {product.name}
           </h3>
           {product.description && (
-            <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-              {product.description}
+            <p className="mt-1 text-xs text-muted-foreground line-clamp-1 leading-relaxed hidden md:block">
+              {truncateDescription(product.description)}
             </p>
           )}
           <div className="mt-2 flex items-baseline gap-2 flex-wrap">
@@ -73,13 +80,13 @@ export function ProductCard({ product }: Props) {
               {formatNaira(product.price)}
             </p>
             {hasBonus && (
-              <span className="text-sm font-semibold text-muted-foreground line-through decoration-destructive/70 leading-none">
+              <span className="text-sm font-semibold text-muted-foreground line-through leading-none">
                 {formatNaira(product.bonusPrice!)}
               </span>
             )}
           </div>
           {hasBonus && (
-            <span className="mt-1.5 inline-flex w-fit items-center text-[10px] font-bold text-success bg-success/15 px-2 py-1 rounded-md leading-none whitespace-nowrap">
+            <span className="mt-1.5 inline-flex w-fit items-center text-[10px] font-bold text-accent bg-accent/10 px-2 py-1 rounded-md leading-none whitespace-nowrap">
               Save {formatNaira(product.bonusPrice! - product.price)} ({discount}% off)
             </span>
           )}

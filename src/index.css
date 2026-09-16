@@ -8,46 +8,48 @@
 @layer base {
   :root {
     /* Light surface for product/content areas */
-    --background: 0 0% 100%;
-    --foreground: 215 60% 11%;          /* #0A1B2E navy */
+    --background: 40 33% 98%;           /* #FBFAF8 warm paper */
+    --foreground: 213 58% 14%;          /* #0E2138 ink navy */
 
     --card: 0 0% 100%;
-    --card-foreground: 215 60% 11%;
+    --card-foreground: 213 58% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 60% 11%;
+    --popover-foreground: 213 58% 14%;
 
-    --primary: 215 60% 11%;             /* navy = primary action */
+    --primary: 213 58% 14%;             /* ink navy = primary action */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;           /* soft gray surface */
-    --secondary-foreground: 215 60% 11%;
+    --secondary: 43 28% 95%;            /* #F6F4EF warm shade surface */
+    --secondary-foreground: 213 58% 14%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 16% 40%;
+    --muted: 43 28% 95%;
+    --muted-foreground: 213 16% 40%;
 
-    --accent: 24 95% 53%;                /* #F97316 solar orange */
+    --accent: 32 90% 44%;                /* #D97706 solar amber — price & savings text */
     --accent-foreground: 0 0% 100%;
+    --accent-strong: 25 76% 38%;         /* #B45309 amber as a solid ground behind white text */
+    --accent-light: 36 88% 59%;          /* #F2A93B amber on a navy ground */
 
     /* Brand gradient stops */
-    --brand-from: 215 60% 11%;          /* navy */
-    --brand-to: 24 95% 53%;             /* orange */
-    --brand-glow: 32 95% 58%;
+    --brand-from: 213 58% 14%;          /* navy */
+    --brand-to: 32 90% 44%;             /* amber */
+    --brand-glow: 36 88% 59%;
 
     --destructive: 0 75% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 71% 45%;             /* #22C55E neon green */
+    --success: 146 62% 39%;             /* #25A05A confirm green */
     --success-foreground: 0 0% 100%;
 
-    --whatsapp: 142 70% 45%;
+    --whatsapp: 146 62% 39%;
     --whatsapp-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 24 95% 53%;
+    --border: 43 15% 87%;               /* #E4E2DD hairline */
+    --input: 43 15% 87%;
+    --ring: 32 90% 44%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem;
 
     /* Dark hero surface tokens */
     --hero-bg: 215 60% 8%;
