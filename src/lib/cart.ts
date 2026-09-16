@@ -57,15 +57,18 @@ export const cart = {
   subscribe,
   getSnapshot,
   add(p: { id: string; name: string; price: number; image: string }) {
+    cart.addQty(p, 1);
+  },
+  addQty(p: { id: string; name: string; price: number; image: string }, qty: number) {
     ensureHydrated();
     const existing = cache.find((i) => i.id === p.id);
     const next = existing
-      ? cache.map((i) => (i.id === p.id ? { ...i, qty: i.qty + 1 } : i))
-      : [...cache, { ...p, qty: 1 }];
+      ? cache.map((i) => (i.id === p.id ? { ...i, qty: i.qty + qty } : i))
+      : [...cache, { ...p, qty }];
     commit(next);
 
     const eventId = generateEventId();
-    const customData = { content_ids: [p.id], content_type: "product", value: p.price, currency: "NGN" };
+    const customData = { content_ids: [p.id], content_type: "product", value: p.price * qty, currency: "NGN" };
     fbTrack("AddToCart", customData, eventId);
     sendCapiEvent("AddToCart", eventId, customData);
   },

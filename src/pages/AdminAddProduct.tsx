@@ -40,6 +40,9 @@ const AdminAddProduct = () => {
                 specifications: form.specifications
                   .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))
                   .filter((s) => s.label && s.value),
+                features: form.features.map((f) => f.trim()).filter(Boolean),
+                runs_on: form.runsOn.map((r) => r.trim()).filter(Boolean),
+                runs_on_note: form.runsOnNote.trim() || null,
               });
               setTimeout(() => navigate("/admin/dashboard"), 1200);
             }}
