@@ -25,6 +25,12 @@ export interface Product {
   description: string;
   featured: boolean;
   specifications: Array<{ label: string; value: string }>;
+  /** Short capability bullets shown on the product page's Features tab. */
+  features: string[];
+  /** Checklist of what the product can power/run, e.g. "1 fridge (medium)". */
+  runsOn: string[];
+  /** Free-text note under the "What this actually runs" checklist, e.g. runtime estimate. */
+  runsOnNote: string | null;
 }
 
 export function dbToProduct(p: DbProduct): Product {
@@ -42,6 +48,9 @@ export function dbToProduct(p: DbProduct): Product {
     specifications: Array.isArray(p.specifications)
       ? p.specifications.filter((s) => s && s.label && s.value)
       : [],
+    features: Array.isArray(p.features) ? p.features.filter(Boolean) : [],
+    runsOn: Array.isArray(p.runs_on) ? p.runs_on.filter(Boolean) : [],
+    runsOnNote: p.runs_on_note ?? null,
   };
 }
 
@@ -71,6 +80,9 @@ export interface ProductInput {
   image_url_3?: string | null;
   featured?: boolean;
   specifications?: Array<{ label: string; value: string }>;
+  features?: string[];
+  runs_on?: string[];
+  runs_on_note?: string | null;
 }
 
 function isMissingColumn(err: unknown, col: string): boolean {
@@ -88,7 +100,16 @@ async function safeWrite<T>(
   fn: (payload: Record<string, unknown>) => Promise<{ data: T | null; error: unknown }>,
   payload: Record<string, unknown>,
 ): Promise<T> {
-  const optional = ["bonus_price", "featured", "specifications", "image_url_2", "image_url_3"];
+  const optional = [
+    "bonus_price",
+    "featured",
+    "specifications",
+    "image_url_2",
+    "image_url_3",
+    "features",
+    "runs_on",
+    "runs_on_note",
+  ];
   let p = { ...payload };
   const stripped: string[] = [];
   for (let i = 0; i <= optional.length; i++) {
@@ -155,6 +176,11 @@ export const formatNaira = (n: number) =>
     currency: "NGN",
     maximumFractionDigits: 0,
   }).format(n);
+
+export const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trimEnd()}…`;
+};
 
 export const discountPercent = (price: number, bonus?: number | null) => {
   if (!bonus || bonus <= price) return 0;

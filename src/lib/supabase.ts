@@ -19,5 +19,8 @@ export type DbProduct = {
   image_url_3?: string | null;
   featured?: boolean | null;
   specifications?: Array<{ label: string; value: string }> | null;
+  features?: string[] | null;
+  runs_on?: string[] | null;
+  runs_on_note?: string | null;
   created_at: string;
 };

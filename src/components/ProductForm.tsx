@@ -11,6 +11,9 @@ export interface ProductFormValue {
   description: string;
   featured: boolean;
   specifications: Array<{ label: string; value: string }>;
+  features: string[];
+  runsOn: string[];
+  runsOnNote: string;
 }
 
 interface Props {
@@ -47,7 +50,18 @@ export function ProductForm({
   const [compressing, setCompressing] = useState(false);
 
   const [form, setForm] = useState<ProductFormValue>(
-    initialValue ?? { name: "", price: "", bonusPrice: "", category: "", description: "", featured: false, specifications: [] }
+    initialValue ?? {
+      name: "",
+      price: "",
+      bonusPrice: "",
+      category: "",
+      description: "",
+      featured: false,
+      specifications: [],
+      features: [],
+      runsOn: [],
+      runsOnNote: "",
+    }
   );
 
   const set = <K extends keyof ProductFormValue>(k: K, v: ProductFormValue[K]) =>
@@ -57,6 +71,12 @@ export function ProductForm({
   const updateSpec = (i: number, key: "label" | "value", v: string) =>
     set("specifications", form.specifications.map((s, idx) => (idx === i ? { ...s, [key]: v } : s)));
   const removeSpec = (i: number) => set("specifications", form.specifications.filter((_, idx) => idx !== i));
+
+  const addListItem = (key: "features" | "runsOn") => set(key, [...form[key], ""]);
+  const updateListItem = (key: "features" | "runsOn", i: number, v: string) =>
+    set(key, form[key].map((s, idx) => (idx === i ? v : s)));
+  const removeListItem = (key: "features" | "runsOn", i: number) =>
+    set(key, form[key].filter((_, idx) => idx !== i));
 
   const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -275,6 +295,97 @@ export function ProductForm({
               </div>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* Features */}
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-sm font-medium">Feature highlights</label>
+          <button
+            type="button"
+            onClick={() => addListItem("features")}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent/80 transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" /> Add feature
+          </button>
+        </div>
+        {form.features.length === 0 ? (
+          <p className="text-xs text-muted-foreground py-2">
+            Shown as a checklist on the product page's Features tab, e.g. "Pure sine wave output, safe for fridges and electronics".
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {form.features.map((f, i) => (
+              <div key={i} className="grid grid-cols-[1fr_auto] gap-2">
+                <input
+                  type="text"
+                  value={f}
+                  onChange={(e) => updateListItem("features", i, e.target.value)}
+                  placeholder="e.g. 80A MPPT controller built in"
+                  className="h-10 px-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeListItem("features", i)}
+                  className="h-10 w-10 inline-flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-destructive hover:border-destructive/40 transition-colors"
+                  aria-label="Remove feature"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* What this actually runs */}
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-sm font-medium">"What this actually runs" checklist</label>
+          <button
+            type="button"
+            onClick={() => addListItem("runsOn")}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent/80 transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" /> Add item
+          </button>
+        </div>
+        {form.runsOn.length === 0 ? (
+          <p className="text-xs text-muted-foreground py-2">
+            Only shown if you add at least one item, e.g. "1 fridge (medium)", "6 LED bulbs".
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {form.runsOn.map((item, i) => (
+              <div key={i} className="grid grid-cols-[1fr_auto] gap-2">
+                <input
+                  type="text"
+                  value={item}
+                  onChange={(e) => updateListItem("runsOn", i, e.target.value)}
+                  placeholder="e.g. 2 standing fans"
+                  className="h-10 px-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeListItem("runsOn", i)}
+                  className="h-10 w-10 inline-flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-destructive hover:border-destructive/40 transition-colors"
+                  aria-label="Remove item"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {form.runsOn.length > 0 && (
+          <input
+            type="text"
+            value={form.runsOnNote}
+            onChange={(e) => set("runsOnNote", e.target.value)}
+            placeholder='Optional note, e.g. "Roughly 8 hours on a full 48V battery bank."'
+            className="mt-2 w-full h-10 px-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+          />
         )}
       </div>
 

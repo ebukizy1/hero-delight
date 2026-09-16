@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, MessageCircle } from "lucide-react";
 import type { Product } from "@/lib/products";
-import { formatNaira, discountPercent } from "@/lib/products";
+import { formatNaira, discountPercent, truncateText } from "@/lib/products";
 import { cart, buildWhatsAppLink, productShareMessage } from "@/lib/cart";
 import { useState } from "react";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -11,11 +11,6 @@ interface Props {
 }
 
 const DESCRIPTION_MAX_LENGTH = 65;
-
-function truncateDescription(text: string): string {
-  if (text.length <= DESCRIPTION_MAX_LENGTH) return text;
-  return `${text.slice(0, DESCRIPTION_MAX_LENGTH).trimEnd()}…`;
-}
 
 export function ProductCard({ product }: Props) {
   const [added, setAdded] = useState(false);
@@ -72,7 +67,7 @@ export function ProductCard({ product }: Props) {
           </h3>
           {product.description && (
             <p className="mt-1 text-xs text-muted-foreground line-clamp-1 leading-relaxed hidden md:block">
-              {truncateDescription(product.description)}
+              {truncateText(product.description, DESCRIPTION_MAX_LENGTH)}
             </p>
           )}
           <div className="mt-2 flex items-baseline gap-2 flex-wrap">
