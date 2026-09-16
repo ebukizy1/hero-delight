@@ -10,6 +10,7 @@ import { trackPageView } from "@/lib/analytics";
 import { fbTrack } from "@/lib/metaPixel";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
+const Shop = lazy(() => import("./pages/Shop.tsx"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail.tsx"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage.tsx"));
 const AboutPage = lazy(() => import("./pages/AboutPage.tsx"));
@@ -78,6 +79,7 @@ const App = () => (
         <Suspense fallback={<PageFallback />}>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/shop" element={<Shop />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/category/:slug" element={<CategoryPage />} />
             <Route path="/product/:id" element={<ProductDetail />} />
