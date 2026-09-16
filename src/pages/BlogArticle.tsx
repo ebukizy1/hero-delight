@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Loader2, Newspaper, ShoppingBag, BookOpen, Scale, Clock } from "lucide-react";
+import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MobileTabBar } from "@/components/MobileTabBar";
 import { fetchArticleBySlug, fetchArticles, type Article } from "@/lib/articles";
 import { renderMarkdown } from "@/lib/markdown";
 import { Seo, SITE_URL } from "@/components/Seo";
@@ -62,7 +64,7 @@ const BlogArticle = () => {
   const readMinutes = Math.max(1, Math.round(article.content.trim().split(/\s+/).length / 200));
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16 lg:pb-0">
       <Seo
         title={`${article.title} — Emax Solar Store`}
         description={article.meta_description || article.content.replace(/[#*_>`\n]/g, " ").slice(0, 160)}
@@ -86,16 +88,30 @@ const BlogArticle = () => {
           mainEntityOfPage: `${SITE_URL}/insights/${article.slug}`,
         }}
       />
-      <Header />
+      <TopBar />
+      <div className="hidden lg:block">
+        <Header />
+      </div>
+      <div className="lg:hidden border-b border-border">
+        <div className="container mx-auto px-4 sm:px-6 h-12 flex items-center">
+          <Link to="/insights" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="w-4 h-4" /> All guides
+          </Link>
+        </div>
+      </div>
+
       <main>
         <article className="container mx-auto px-4 sm:px-6 py-6 lg:py-10 max-w-3xl">
-          <Link to="/insights" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+          <Link
+            to="/insights"
+            className="hidden lg:inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
+          >
             <ArrowLeft className="w-4 h-4" /> Back to Solar Insights
           </Link>
 
           <span
             className={`inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${
-              isComparison ? "bg-blue-500/15 text-blue-600" : "bg-accent/15 text-accent"
+              isComparison ? "bg-primary text-primary-foreground" : "bg-accent/15 text-accent-strong"
             }`}
           >
             {isComparison ? <Scale className="w-3.5 h-3.5" /> : <BookOpen className="w-3.5 h-3.5" />}
@@ -115,7 +131,7 @@ const BlogArticle = () => {
           </div>
 
           {article.featured_image && (
-            <div className="mt-6 rounded-3xl overflow-hidden bg-muted aspect-video shadow-card ring-1 ring-border/60">
+            <div className="mt-6 rounded-2xl lg:rounded-3xl overflow-hidden bg-muted aspect-video shadow-card ring-1 ring-border/60">
               <OptimizedImage
                 src={article.featured_image}
                 alt={article.title}
@@ -128,62 +144,54 @@ const BlogArticle = () => {
             </div>
           )}
 
-          <div className="mt-8 rounded-3xl bg-card border border-border/60 shadow-soft p-6 sm:p-10">
-            <div
-              className="prose prose-slate sm:prose-lg max-w-none
-                prose-headings:font-display prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-foreground
-                prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border prose-h2:text-xl sm:prose-h2:text-2xl
-                prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-accent prose-h3:text-lg sm:prose-h3:text-xl
-                prose-p:leading-relaxed prose-p:text-foreground/80
-                [&>p:first-of-type]:text-lg sm:[&>p:first-of-type]:text-xl [&>p:first-of-type]:font-medium [&>p:first-of-type]:text-foreground/90 [&>p:first-of-type]:leading-relaxed
-                prose-strong:text-foreground prose-strong:font-bold
-                prose-a:text-accent prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-a:underline-offset-4
-                prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-accent/5 prose-blockquote:not-italic
-                prose-blockquote:rounded-r-xl prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:font-medium prose-blockquote:text-foreground
-                prose-ul:my-5 prose-ol:my-5 prose-li:marker:text-accent prose-li:my-1.5
-                prose-img:rounded-2xl prose-img:shadow-card prose-img:my-8
-                prose-hr:border-border prose-hr:my-10"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
+          <div
+            className="mt-8 prose prose-slate sm:prose-lg max-w-none
+              prose-headings:font-display prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-foreground
+              prose-h2:mt-12 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border prose-h2:text-xl sm:prose-h2:text-2xl
+              prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-accent prose-h3:text-lg sm:prose-h3:text-xl
+              prose-p:leading-relaxed prose-p:text-muted-foreground
+              [&>p:first-of-type]:text-base sm:[&>p:first-of-type]:text-lg [&>p:first-of-type]:text-foreground/90
+              prose-strong:text-foreground prose-strong:font-bold
+              prose-a:text-accent prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-a:underline-offset-4
+              prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-accent/5 prose-blockquote:not-italic
+              prose-blockquote:rounded-r-xl prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:font-medium prose-blockquote:text-foreground
+              prose-ul:my-5 prose-ol:my-5 prose-li:marker:text-accent prose-li:my-1.5
+              prose-img:rounded-2xl prose-img:shadow-card prose-img:my-8
+              prose-hr:border-border prose-hr:my-10"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
 
-            {article.center_image && (
-              <div className="mt-8 rounded-2xl overflow-hidden bg-muted shadow-card ring-1 ring-border/60">
-                <OptimizedImage
-                  src={article.center_image}
-                  alt=""
-                  width={800}
-                  height={450}
-                  sizes="(min-width: 768px) 768px, 100vw"
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="mt-12 rounded-2xl bg-secondary/50 border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <h2 className="font-display font-bold text-lg">{article.sales_page_url ? "Ready to buy?" : "Ready to shop?"}</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {article.sales_page_url
-                  ? "Head to the product page to grab this deal."
-                  : "Browse our full solar catalogue with nationwide delivery."}
-              </p>
+          {article.center_image && (
+            <div className="mt-8 rounded-2xl overflow-hidden bg-muted shadow-card ring-1 ring-border/60">
+              <OptimizedImage
+                src={article.center_image}
+                alt=""
+                width={800}
+                height={450}
+                sizes="(min-width: 768px) 768px, 100vw"
+                className="w-full h-auto object-cover"
+              />
             </div>
+          )}
+
+          <div className="mt-10 rounded-2xl bg-primary text-primary-foreground p-6 sm:p-8">
+            <h2 className="font-display font-bold text-lg">Products in this guide</h2>
+            <p className="text-sm text-primary-foreground/70 mt-1">Everything mentioned above, in stock now.</p>
             {article.sales_page_url ? (
               <a
                 href={article.sales_page_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors text-sm shrink-0"
+                className="mt-4 w-full sm:w-fit inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-accent-strong text-white font-semibold hover:brightness-110 transition-all text-sm"
               >
                 <ShoppingBag className="w-4 h-4" /> Shop this deal
               </a>
             ) : (
               <Link
-                to="/"
-                className="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors text-sm shrink-0"
+                to="/shop"
+                className="mt-4 w-full sm:w-fit inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-accent-strong text-white font-semibold hover:brightness-110 transition-all text-sm"
               >
-                <ShoppingBag className="w-4 h-4" /> Shop now
+                Shop these products <ArrowRight className="w-4 h-4" />
               </Link>
             )}
           </div>
@@ -232,6 +240,7 @@ const BlogArticle = () => {
         )}
       </main>
       <Footer />
+      <MobileTabBar />
     </div>
   );
 };

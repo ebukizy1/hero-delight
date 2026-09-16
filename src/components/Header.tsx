@@ -141,7 +141,12 @@ export function Header() {
           <a href="/#browse" onClick={goSection("browse")} className="shrink-0 inline-flex items-center h-8 px-3.5 rounded-full text-xs font-semibold border border-border text-foreground">
             Categories
           </a>
-          <Link to="/insights" className="shrink-0 inline-flex items-center h-8 px-3.5 rounded-full text-xs font-semibold border border-border text-foreground">
+          <Link
+            to="/insights"
+            className={`shrink-0 inline-flex items-center h-8 px-3.5 rounded-full text-xs font-semibold transition-colors ${
+              location.pathname.startsWith("/insights") ? "bg-primary text-primary-foreground" : "border border-border text-foreground"
+            }`}
+          >
             Insights
           </Link>
           <Link to="/about" className="shrink-0 inline-flex items-center h-8 px-3.5 rounded-full text-xs font-semibold border border-border text-foreground">

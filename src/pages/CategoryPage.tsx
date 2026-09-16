@@ -51,18 +51,18 @@ const CategoryPage = () => {
       />
       <Header />
       <main className="flex-1">
-        <section className="relative overflow-hidden bg-hero-glow border-b border-border/60">
+        <section className="relative overflow-hidden bg-primary border-b border-border/60">
           <div className="container mx-auto px-4 sm:px-6 py-10 lg:py-14">
-            <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-5 transition-colors">
+            <Link to="/" className="inline-flex items-center gap-2 text-sm text-primary-foreground/70 hover:text-foreground mb-5 transition-colors">
               <ArrowLeft className="w-4 h-4" /> Back to home
             </Link>
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent animate-fade-up">
               <Sparkles className="w-3.5 h-3.5" /> Category
             </div>
-            <h1 className="mt-2 font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight animate-fade-up delay-100">
+            <h1 className="mt-2 font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-primary-foreground/70 tracking-tight animate-fade-up delay-100">
               {category}
             </h1>
-            <p className="mt-3 text-muted-foreground text-sm sm:text-base max-w-xl animate-fade-up delay-200">
+            <p className="mt-3 text-primary-foreground/70 text-sm sm:text-base max-w-xl animate-fade-up delay-200">
               {items.length} product{items.length !== 1 ? "s" : ""} available. Quality {category.toLowerCase()} delivered fast across Nigeria.
             </p>
           </div>

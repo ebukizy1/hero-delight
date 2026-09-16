@@ -11,6 +11,7 @@ export function MobileTabBar() {
   const location = useLocation();
   const onHome = location.pathname === "/";
   const onShop = location.pathname === "/shop";
+  const onInsights = location.pathname.startsWith("/insights");
 
   return (
     <>
@@ -27,7 +28,10 @@ export function MobileTabBar() {
             <Grid3x3 className="w-5 h-5" />
             Shop
           </Link>
-          <Link to="/insights" className="flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground">
+          <Link
+            to="/insights"
+            className={`flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${onInsights ? "text-accent" : "text-muted-foreground"}`}
+          >
             <Newspaper className="w-5 h-5" />
             Insights
           </Link>
