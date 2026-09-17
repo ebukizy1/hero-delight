@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, AlertCircle, Truck, CreditCard, ShieldCheck } from "lucide-react";
+import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useCart, cart } from "@/lib/cart";
 import { formatNaira } from "@/lib/products";
 import { createOrder, markOrderPaid } from "@/lib/orders";
+import { sendOrderConfirmationEmail } from "@/lib/orderEmail";
 import { isCardPaymentEnabled, payWithPaystack } from "@/lib/payments";
 import { getErrorMessage } from "@/lib/utils";
 import { Seo } from "@/components/Seo";
@@ -72,6 +74,7 @@ const Checkout = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Seo title="Checkout — Emax Solar Store" description="Complete your order." noindex />
+        <TopBar />
         <Header />
         <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 gap-3">
           <div className="text-5xl">🛒</div>
@@ -108,6 +111,7 @@ const Checkout = () => {
       if (method === "cod") {
         const order = await createOrder({ ...orderInput, paymentMethod: "cod" });
         firePurchase(order.id);
+        sendOrderConfirmationEmail(order);
         cart.clear();
         navigate(`/order-success/${order.id}`, { state: { order } });
         return;
@@ -123,6 +127,7 @@ const Checkout = () => {
             const order = await createOrder({ ...orderInput, paymentMethod: "card" });
             await markOrderPaid(order.id, ref);
             firePurchase(order.id);
+            sendOrderConfirmationEmail({ ...order, payment_status: "paid", payment_reference: ref });
             cart.clear();
             navigate(`/order-success/${order.id}`, {
               state: { order: { ...order, payment_status: "paid", payment_reference: ref } },
@@ -143,19 +148,29 @@ const Checkout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-24 lg:pb-0">
       <Seo title="Checkout — Emax Solar Store" description="Complete your order." noindex />
-      <Header />
+      <TopBar />
+      <div className="hidden lg:block">
+        <Header />
+      </div>
+      <div className="lg:hidden border-b border-border">
+        <div className="container mx-auto px-4 sm:px-6 h-12 flex items-center">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back
+          </Link>
+        </div>
+      </div>
       <main className="flex-1">
         <div className="container mx-auto px-4 sm:px-6 py-6 lg:py-10">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+          <Link to="/" className="hidden lg:inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to shop
           </Link>
 
           <h1 className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight mb-6">Checkout</h1>
 
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-10">
-            <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-5">
+            <form id="checkout-form" onSubmit={handleSubmit} className="lg:col-span-7 order-2 lg:order-1 space-y-5">
               <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-soft">
                 <h2 className="font-display font-bold text-base">Delivery details</h2>
                 <Field label="Full name *" value={name} onChange={setName} placeholder="e.g. Adaeze Okafor" />
@@ -168,6 +183,7 @@ const Checkout = () => {
                     type="email"
                     placeholder="you@example.com"
                     required={emailRequired}
+                    hint={emailRequired ? undefined : "Add this to get an order confirmation by email."}
                   />
                 </div>
                 <Field label="Delivery address *" value={address} onChange={setAddress} placeholder="Street, house number, landmark" />
@@ -205,7 +221,7 @@ const Checkout = () => {
               </div>
 
               {error && (
-                <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2.5">
+                <div className="hidden lg:flex items-start gap-2 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2.5">
                   <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" /> {error}
                 </div>
               )}
@@ -213,18 +229,18 @@ const Checkout = () => {
               <button
                 type="submit"
                 disabled={!canSubmit || submitting}
-                className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
+                className="hidden lg:flex w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 disabled:opacity-60 transition-colors items-center justify-center gap-2"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 {submitting ? "Placing order…" : method === "cod" ? "Place order" : `Pay ${formatNaira(total)}`}
               </button>
-              <p className="flex items-center gap-1.5 justify-center text-xs text-muted-foreground">
+              <p className="hidden lg:flex items-center gap-1.5 justify-center text-xs text-muted-foreground">
                 <ShieldCheck className="w-3.5 h-3.5" /> Your details are only used to fulfil this order.
               </p>
             </form>
 
             {/* Order summary */}
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-5 order-1 lg:order-2">
               <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-soft lg:sticky lg:top-24">
                 <h2 className="font-display font-bold text-base mb-4">Order summary</h2>
                 <ul className="space-y-3 max-h-80 overflow-y-auto pr-1">
@@ -256,15 +272,37 @@ const Checkout = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Sticky mobile submit bar */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-4px_16px_rgba(0,0,0,0.06)] p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+        {error && (
+          <div className="flex items-start gap-2 text-xs text-destructive bg-destructive/10 rounded-lg px-3 py-2 mb-2">
+            <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" /> {error}
+          </div>
+        )}
+        <div className="flex items-center justify-between mb-2 px-1">
+          <span className="text-xs text-muted-foreground">Total</span>
+          <span className="font-display font-extrabold text-lg">{formatNaira(total)}</span>
+        </div>
+        <button
+          type="submit"
+          form="checkout-form"
+          disabled={!canSubmit || submitting}
+          className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold disabled:opacity-60 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+        >
+          {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+          {submitting ? "Placing order…" : method === "cod" ? "Place order" : `Pay ${formatNaira(total)}`}
+        </button>
+      </div>
     </div>
   );
 };
 
 function Field({
-  label, value, onChange, type = "text", placeholder, required = true,
+  label, value, onChange, type = "text", placeholder, required = true, hint,
 }: {
   label: string; value: string; onChange: (v: string) => void;
-  type?: string; placeholder?: string; required?: boolean;
+  type?: string; placeholder?: string; required?: boolean; hint?: string;
 }) {
   return (
     <div>
@@ -277,6 +315,7 @@ function Field({
         placeholder={placeholder}
         className="w-full h-11 px-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm"
       />
+      {hint && <p className="text-[11px] text-muted-foreground mt-1">{hint}</p>}
     </div>
   );
 }

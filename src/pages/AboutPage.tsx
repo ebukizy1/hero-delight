@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, ShieldCheck, Lightbulb, HeartHandshake, Sparkles, Sun, ArrowRight } from "lucide-react";
+import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MobileTabBar } from "@/components/MobileTabBar";
 import { Seo } from "@/components/Seo";
 
 const VALUES = [
@@ -18,28 +20,28 @@ const STATS = [
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-16 lg:pb-0">
       <Seo
         title="About Us — Emax Solar Store"
         description="Emax Solar Store sells premium solar street lights, power stations, inverters and security cameras across Nigeria — quality-tested products, honest prices, and friendly support."
         path="/about"
       />
+      <TopBar />
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-hero-glow border-b border-border/60 text-white">
-          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-accent/30 blur-3xl animate-glow-pulse" aria-hidden />
-          <div className="container mx-auto px-4 sm:px-6 py-12 lg:py-16 relative">
-            <Link to="/" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white mb-6 transition-colors">
+        <section className="bg-primary text-primary-foreground">
+          <div className="container mx-auto px-4 sm:px-6 py-12 lg:py-16">
+            <Link to="/" className="inline-flex items-center gap-2 text-sm text-primary-foreground/70 hover:text-primary-foreground mb-6 transition-colors">
               <ArrowLeft className="w-4 h-4" /> Back to home
             </Link>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/15 text-accent text-xs font-bold uppercase tracking-wider border border-accent/30 animate-fade-up">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/15 text-accent-light text-xs font-bold uppercase tracking-wider border border-accent/30 animate-fade-up">
               <Sparkles className="w-3.5 h-3.5" /> About Emax Solar Store
             </span>
             <h1 className="mt-4 font-display font-extrabold text-3xl sm:text-5xl tracking-tight max-w-2xl leading-[1.05] animate-fade-up delay-100">
-              Smart power, <span className="text-gradient-brand">reliable future</span>.
+              Smart power, <span className="text-accent-light">reliable future</span>.
             </h1>
-            <p className="mt-4 text-base text-white/70 max-w-xl leading-relaxed animate-fade-up delay-200">
+            <p className="mt-4 text-base text-primary-foreground/70 max-w-xl leading-relaxed animate-fade-up delay-200">
               Premium solar street lights, power stations and security cameras — built for reliability, efficiency, and long-term savings.
             </p>
           </div>
@@ -84,13 +86,14 @@ const AboutPage = () => {
             </div>
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight">Ready to power your world?</h2>
             <p className="mt-2 text-sm text-muted-foreground">Browse our full catalogue of trusted solar products.</p>
-            <Link to="/#products" className="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:-translate-y-0.5 shadow-card">
+            <Link to="/shop" className="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-accent-strong text-white font-semibold hover:brightness-110 transition-all hover:-translate-y-0.5 shadow-card">
               Shop now <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </section>
       </main>
       <Footer />
+      <MobileTabBar />
     </div>
   );
 };
