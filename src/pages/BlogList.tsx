@@ -92,7 +92,7 @@ const BlogList = () => {
           </Link>
           <p className="text-xs font-bold uppercase tracking-widest text-accent-light">Solar Insights</p>
           <h1 className="mt-2 font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl leading-tight tracking-tight max-w-2xl">
-            Work out what you need before anyone sells you anything
+            Solar  tips & products comparisons
           </h1>
           <p className="mt-3 text-primary-foreground/70 text-sm sm:text-base max-w-xl leading-relaxed">
             Sizing walkthroughs, side-by-side comparisons and the maintenance nobody mentions at the point of sale. Written by the people who install this kit.
