@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Loader2, Newspaper, ShoppingBag, BookOpen, Scale, Clock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Newspaper, ShoppingBag, BookOpen, Scale, Clock } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobileTabBar } from "@/components/MobileTabBar";
+import { LogoLoader } from "@/components/LogoLoader";
 import { fetchArticleBySlug, fetchArticles, type Article } from "@/lib/articles";
 import { renderMarkdown } from "@/lib/markdown";
 import { Seo, SITE_URL } from "@/components/Seo";
@@ -40,11 +41,7 @@ const BlogArticle = () => {
   const html = useMemo(() => (article ? renderMarkdown(article.content) : ""), [article]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <LogoLoader />;
   }
 
   if (notFound || !article) {

@@ -3,19 +3,19 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Check,
-  Loader2,
   MessageCircle,
   Minus,
   Plus,
-  RotateCcw,
   Shield,
   ShoppingCart,
+  Truck,
   Wrench,
 } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
+import { LogoLoader } from "@/components/LogoLoader";
 import { fetchProduct, fetchProducts, formatNaira, discountPercent, truncateText, type Product } from "@/lib/products";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { categoryToSlug } from "@/lib/categorySlug";
@@ -29,11 +29,20 @@ type Tab = "description" | "features" | "specifications";
 const DESKTOP_RELATED = 5;
 const MOBILE_RELATED = 4;
 const DESKTOP_DESCRIPTION_MAX_LENGTH = 220;
+const MOBILE_DESCRIPTION_MAX_LENGTH = 200;
 
-const TRUST_ITEMS = [
-  { icon: Shield, title: "1-year warranty", sub: "faulty units replaced, not repaired" },
-  { icon: RotateCcw, title: "free delivery", sub: "within Lagos" },
-  { icon: Wrench, title: "Installation available", sub: "ask on WhatsApp for a quote" },
+type Tint = "accent" | "success" | "primary";
+
+const TINT_CLASSES: Record<Tint, string> = {
+  accent: "bg-accent/15 text-accent-strong",
+  success: "bg-success/15 text-success",
+  primary: "bg-primary/10 text-primary",
+};
+
+const TRUST_ITEMS: { icon: typeof Shield; title: string; sub: string; tint: Tint }[] = [
+  { icon: Shield, title: "1-year warranty", sub: "faulty units replaced, not repaired", tint: "accent" },
+  { icon: Truck, title: "Free delivery", sub: "within Lagos", tint: "success" },
+  { icon: Wrench, title: "Installation available", sub: "ask on WhatsApp for a quote", tint: "primary" },
 ];
 
 const ProductDetail = () => {
@@ -78,11 +87,7 @@ const ProductDetail = () => {
   const related = relatedAll.slice(0, DESKTOP_RELATED);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <LogoLoader />;
   }
 
   if (!product) {
@@ -129,11 +134,14 @@ const ProductDetail = () => {
   );
 
   const specsList = product.specifications.length > 0 && (
-    <div className="grid sm:grid-cols-2 gap-x-8">
+    <div className="grid sm:grid-cols-2 gap-3">
       {product.specifications.map((s, i) => (
-        <div key={i} className="flex items-center justify-between gap-3 py-3 border-b border-border text-sm">
+        <div
+          key={i}
+          className="flex items-center justify-between gap-3 rounded-xl bg-secondary/50 border border-border/60 px-4 py-3 text-sm"
+        >
           <span className="text-muted-foreground">{s.label}</span>
-          <span className="font-semibold text-foreground text-right">{s.value}</span>
+          <span className="font-bold text-accent-strong text-right">{s.value}</span>
         </div>
       ))}
     </div>
@@ -267,6 +275,27 @@ const ProductDetail = () => {
               )}
             </div>
 
+            {/* Mobile-only: quantity stepper */}
+            <div className="lg:hidden mt-4">
+              <div className="inline-flex items-center border border-border rounded-xl h-11">
+                <button
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  className="w-10 h-full flex items-center justify-center hover:bg-secondary rounded-l-xl transition-colors"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-10 text-center font-semibold text-sm">{qty}</span>
+                <button
+                  onClick={() => setQty((q) => q + 1)}
+                  className="w-10 h-full flex items-center justify-center hover:bg-secondary rounded-r-xl transition-colors"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
             {/* Desktop-only: description, runs-on card, quantity + CTAs, trust list */}
             <div className="hidden lg:block">
               {product.description && (
@@ -335,10 +364,12 @@ const ProductDetail = () => {
                 </a>
               </div>
 
-              <ul className="mt-6 pt-6 border-t border-border space-y-3">
-                {TRUST_ITEMS.map(({ icon: Icon, title, sub }) => (
-                  <li key={title} className="flex items-start gap-2.5 text-sm">
-                    <Icon className="w-4 h-4 mt-0.5 text-foreground shrink-0" />
+              <ul className="mt-6 pt-6 border-t border-border space-y-2.5">
+                {TRUST_ITEMS.map(({ icon: Icon, title, sub, tint }) => (
+                  <li key={title} className="flex items-center gap-3 rounded-xl bg-card border border-border/60 px-3.5 py-3 text-sm">
+                    <span className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${TINT_CLASSES[tint]}`}>
+                      <Icon className="w-4 h-4" />
+                    </span>
                     <span>
                       <span className="font-semibold text-foreground">{title}</span>{" "}
                       <span className="text-muted-foreground">— {sub}</span>
@@ -368,31 +399,33 @@ const ProductDetail = () => {
                 {tab === "description" && (
                   <>
                     <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                      {product.description}
+                      {descExpanded ? product.description : truncateText(product.description, MOBILE_DESCRIPTION_MAX_LENGTH)}
                     </p>
-                    <div className="mt-5 rounded-2xl border border-border bg-card p-4 space-y-3">
-                      {TRUST_ITEMS.map(({ icon: Icon, title, sub }) => (
-                        <div key={title} className="flex items-center gap-3">
-                          <span className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-foreground shrink-0">
-                            <Icon className="w-4 h-4" />
-                          </span>
-                          <p className="text-sm">
-                            <span className="font-semibold">{title}</span>{" "}
-                            <span className="text-muted-foreground">— {sub}</span>
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                    {product.description.length > MOBILE_DESCRIPTION_MAX_LENGTH && (
+                      <button
+                        onClick={() => setDescExpanded((v) => !v)}
+                        className="mt-1.5 text-sm font-semibold text-accent hover:text-accent-strong transition-colors"
+                      >
+                        {descExpanded ? "See less" : "See more"}
+                      </button>
+                    )}
+                
                   </>
                 )}
 
                 {tab === "features" && (
                   <>
                     {product.features.length > 0 ? (
-                      <ul className="space-y-3">
+                      <ul className="space-y-2.5">
                         {product.features.map((f, i) => (
-                          <li key={i} className="flex items-start gap-2.5 text-sm">
-                            <Check className="w-4 h-4 mt-0.5 text-success shrink-0" /> <span>{f}</span>
+                          <li
+                            key={i}
+                            className="flex items-center gap-3 rounded-xl bg-success/5 border border-success/15 px-3.5 py-2.5 text-sm"
+                          >
+                            <span className="w-6 h-6 rounded-full bg-success/15 text-success flex items-center justify-center shrink-0">
+                              <Check className="w-3.5 h-3.5" />
+                            </span>
+                            <span className="text-foreground">{f}</span>
                           </li>
                         ))}
                       </ul>
@@ -406,6 +439,20 @@ const ProductDetail = () => {
                 {tab === "specifications" && (
                   specsList || <p className="text-sm text-muted-foreground">No specifications added yet.</p>
                 )}
+
+                <div className="mt-5 space-y-2.5">
+                      {TRUST_ITEMS.map(({ icon: Icon, title, sub, tint }) => (
+                        <div key={title} className="flex items-center gap-3 rounded-xl bg-card border border-border/60 px-3.5 py-3">
+                          <span className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${TINT_CLASSES[tint]}`}>
+                            <Icon className="w-4 h-4" />
+                          </span>
+                          <p className="text-sm">
+                            <span className="font-semibold">{title}</span>{" "}
+                            <span className="text-muted-foreground">— {sub}</span>
+                          </p>
+                        </div>
+                      ))}
+                </div>
               </div>
             </div>
           </div>
@@ -453,7 +500,7 @@ const ProductDetail = () => {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => handleAdd(1)}
+            onClick={() => handleAdd(qty)}
             className="flex-1 inline-flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-primary-foreground font-semibold active:scale-[0.98] transition-all text-sm"
           >
             <ShoppingCart className="w-4 h-4" />
@@ -470,7 +517,7 @@ const ProductDetail = () => {
           </a>
         </div>
         <button
-          onClick={() => { cart.addQty(product, 1); navigate("/checkout"); }}
+          onClick={buyNow}
           className="mt-2 w-full h-12 rounded-xl border border-border font-semibold text-sm hover:bg-secondary active:scale-[0.98] transition-all"
         >
           Buy now — pay on delivery

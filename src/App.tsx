@@ -1,11 +1,11 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminGuard } from "@/components/AdminGuard";
+import { LogoLoader } from "@/components/LogoLoader";
 import { trackPageView } from "@/lib/analytics";
 import { fbTrack } from "@/lib/metaPixel";
 
@@ -61,11 +61,7 @@ function RouteTracker() {
 }
 
 function PageFallback() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-    </div>
-  );
+  return <LogoLoader />;
 }
 
 const App = () => (
