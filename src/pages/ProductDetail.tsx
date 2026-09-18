@@ -199,7 +199,7 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 sm:px-6 py-5 lg:py-10 pb-44 lg:pb-10">
+      <main className="container mx-auto px-4 sm:px-6 py-5 lg:py-10 pb-4 lg:pb-10">
         <nav className="hidden lg:flex items-center gap-1.5 text-xs text-muted-foreground mb-6">
           <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
           <span>/</span>
@@ -387,7 +387,7 @@ const ProductDetail = () => {
                     key={t}
                     onClick={() => setTab(t)}
                     className={`pb-3 text-sm font-semibold capitalize border-b-2 -mb-px transition-colors ${
-                      tab === t ? "text-foreground border-accent-strong" : "text-muted-foreground border-transparent"
+                      tab === t ? "text-accent-strong border-accent-strong" : "text-muted-foreground border-transparent"
                     }`}
                   >
                     {t}
