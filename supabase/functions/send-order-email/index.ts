@@ -104,6 +104,7 @@ Deno.serve(async (req: Request) => {
     });
   }
   if (!RESEND_API_KEY) {
+    console.error("send-order-email: RESEND_API_KEY secret is not set");
     return new Response(JSON.stringify({ error: "Email is not configured (missing RESEND_API_KEY secret)" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -121,6 +122,7 @@ Deno.serve(async (req: Request) => {
   }
 
   if (!body.email || !body.order_id || !Array.isArray(body.items)) {
+    console.error("send-order-email: invalid request body — missing email, order_id or items");
     return new Response(JSON.stringify({ error: "email, order_id and items are required" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -128,6 +130,7 @@ Deno.serve(async (req: Request) => {
   }
 
   const shortId = body.order_id.slice(0, 8).toUpperCase();
+  console.log(`send-order-email: sending order #${shortId} confirmation from "${FROM_EMAIL}"`);
 
   const resendRes = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -144,6 +147,12 @@ Deno.serve(async (req: Request) => {
   });
 
   const result = await resendRes.json();
+
+  if (resendRes.ok) {
+    console.log(`send-order-email: Resend accepted order #${shortId} (status ${resendRes.status}):`, JSON.stringify(result));
+  } else {
+    console.error(`send-order-email: Resend REJECTED order #${shortId} (status ${resendRes.status}):`, JSON.stringify(result));
+  }
 
   return new Response(JSON.stringify(result), {
     status: resendRes.status,
