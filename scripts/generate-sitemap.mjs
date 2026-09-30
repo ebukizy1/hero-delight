@@ -47,9 +47,12 @@ async function main() {
   for (const c of CATEGORIES) urls.push(urlEntry(`${SITE_URL}/category/${categoryToSlug(c)}`, today, "weekly", "0.7"));
 
   try {
-    const { data, error } = await supabase.from("products").select("id, created_at").order("created_at", { ascending: false });
+    const query = (cols) => supabase.from("products").select(cols).order("created_at", { ascending: false });
+    let { data, error } = await query("id, sku, created_at");
+    // `sku` column missing (supabase/migrations/0004_product_sku.sql not run yet) — fall back to UUID URLs.
+    if (error) ({ data, error } = await query("id, created_at"));
     if (error) throw error;
-    for (const p of data ?? []) urls.push(urlEntry(`${SITE_URL}/product/${p.id}`, (p.created_at ?? today).slice(0, 10), "weekly", "0.6"));
+    for (const p of data ?? []) urls.push(urlEntry(`${SITE_URL}/product/${p.sku || p.id}`, (p.created_at ?? today).slice(0, 10), "weekly", "0.6"));
     console.log(`[sitemap] Included ${data?.length ?? 0} products`);
   } catch (err) {
     console.warn(`[sitemap] Skipping products (${err?.message ?? err}) — sitemap will still build without them.`);

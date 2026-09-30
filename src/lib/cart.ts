@@ -5,6 +5,8 @@ import { sendCapiEvent } from "./metaCapi";
 
 export interface CartItem {
   id: string;
+  /** Optional: carts saved in localStorage before SKUs existed don't have one. */
+  sku?: string;
   name: string;
   price: number;
   image: string;
@@ -56,19 +58,20 @@ const subscribe = (l: () => void) => {
 export const cart = {
   subscribe,
   getSnapshot,
-  add(p: { id: string; name: string; price: number; image: string }) {
+  add(p: { id: string; sku: string; name: string; price: number; image: string }) {
     cart.addQty(p, 1);
   },
-  addQty(p: { id: string; name: string; price: number; image: string }, qty: number) {
+  addQty(p: { id: string; sku: string; name: string; price: number; image: string }, qty: number) {
     ensureHydrated();
     const existing = cache.find((i) => i.id === p.id);
+    const item = { id: p.id, sku: p.sku, name: p.name, price: p.price, image: p.image };
     const next = existing
-      ? cache.map((i) => (i.id === p.id ? { ...i, qty: i.qty + qty } : i))
-      : [...cache, { ...p, qty }];
+      ? cache.map((i) => (i.id === p.id ? { ...i, ...item, qty: i.qty + qty } : i))
+      : [...cache, { ...item, qty }];
     commit(next);
 
     const eventId = generateEventId();
-    const customData = { content_ids: [p.id], content_type: "product", value: p.price * qty, currency: "NGN" };
+    const customData = { content_ids: [p.sku], content_type: "product", value: p.price * qty, currency: "NGN" };
     fbTrack("AddToCart", customData, eventId);
     sendCapiEvent("AddToCart", eventId, customData);
   },
@@ -88,6 +91,9 @@ const getServerSnapshot = () => EMPTY;
 export function useCart(): CartItem[] {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
+
+/** SKU reported to Meta as the content_id; falls back to the UUID for pre-SKU cart items. */
+export const cartItemSku = (i: CartItem) => i.sku ?? i.id;
 
 export const buildWhatsAppLink = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;

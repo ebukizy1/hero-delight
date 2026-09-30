@@ -27,14 +27,14 @@ export function ProductCard({ product }: Props) {
 
   const whatsappHref = () => {
     const url = typeof window !== "undefined"
-      ? `${window.location.origin}/product/${product.id}`
-      : `/product/${product.id}`;
+      ? `${window.location.origin}/product/${product.sku}`
+      : `/product/${product.sku}`;
     return buildWhatsAppLink(productShareMessage(product, url));
   };
 
   return (
     <div className="group flex flex-col h-full rounded-2xl bg-card overflow-hidden border border-border/60 hover:-translate-y-1 hover:shadow-card transition-all duration-300 shadow-soft">
-      <Link to={`/product/${product.id}`} className="relative aspect-square overflow-hidden bg-muted block">
+      <Link to={`/product/${product.sku}`} className="relative aspect-square overflow-hidden bg-muted block">
         {!imgError ? (
           <OptimizedImage
             src={product.image}
@@ -61,7 +61,7 @@ export function ProductCard({ product }: Props) {
       </Link>
 
       <div className="flex flex-col flex-1 p-3 sm:p-4 gap-2.5">
-        <Link to={`/product/${product.id}`} className="flex-1 min-w-0 block">
+        <Link to={`/product/${product.sku}`} className="flex-1 min-w-0 block">
           <h3 className="font-semibold text-foreground text-sm leading-snug line-clamp-2 group-hover:text-accent transition-colors">
             {product.name}
           </h3>

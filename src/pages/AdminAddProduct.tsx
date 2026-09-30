@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { AdminNav } from "@/components/AdminNav";
 import { ProductForm } from "@/components/ProductForm";
-import { createProduct, uploadProductImage } from "@/lib/products";
+import { createProduct, uniqueSku, uploadProductImage } from "@/lib/products";
 import { Seo } from "@/components/Seo";
 
 const AdminAddProduct = () => {
@@ -28,6 +28,7 @@ const AdminAddProduct = () => {
                 extraFiles.map((f) => (f ? uploadProductImage(f) : Promise.resolve(null))),
               );
               await createProduct({
+                sku: await uniqueSku(form.sku.trim() || form.name),
                 name: form.name.trim(),
                 price: parseInt(form.price, 10),
                 bonus_price: form.bonusPrice ? parseInt(form.bonusPrice, 10) : null,

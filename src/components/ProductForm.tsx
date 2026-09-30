@@ -1,9 +1,10 @@
 import { useRef, useState, type FormEvent } from "react";
-import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag, Star, Plus, Trash2 } from "lucide-react";
-import { CATEGORIES, formatNaira, discountPercent } from "@/lib/products";
+import { ImageIcon, Loader2, CheckCircle, AlertCircle, Tag, Star, Plus, Trash2, Barcode } from "lucide-react";
+import { CATEGORIES, formatNaira, discountPercent, slugify } from "@/lib/products";
 import { compressImageFile } from "@/lib/imageCompression";
 
 export interface ProductFormValue {
+  sku: string;
   name: string;
   price: string;
   bonusPrice: string;
@@ -51,6 +52,7 @@ export function ProductForm({
 
   const [form, setForm] = useState<ProductFormValue>(
     initialValue ?? {
+      sku: "",
       name: "",
       price: "",
       bonusPrice: "",
@@ -66,6 +68,14 @@ export function ProductForm({
 
   const set = <K extends keyof ProductFormValue>(k: K, v: ProductFormValue[K]) =>
     setForm((p) => ({ ...p, [k]: v }));
+
+  // New products: SKU follows the name until the admin edits it by hand. Existing products
+  // keep their SKU when renamed, so links already shared (and Meta history) don't break.
+  const [skuTouched, setSkuTouched] = useState(Boolean(initialValue?.sku));
+  const handleNameChange = (v: string) => {
+    set("name", v);
+    if (!skuTouched) set("sku", v.trim() ? slugify(v) : "");
+  };
 
   const addSpec = () => set("specifications", [...form.specifications, { label: "", value: "" }]);
   const updateSpec = (i: number, key: "label" | "value", v: string) =>
@@ -190,7 +200,26 @@ export function ProductForm({
         <p className="text-[11px] text-muted-foreground mt-1.5">Shown as a gallery on the product page.</p>
       </div>
 
-      <Field label="Product name *" value={form.name} onChange={(v) => set("name", v)} placeholder="e.g. Solar Streetlight 60W" />
+      <Field label="Product name *" value={form.name} onChange={handleNameChange} placeholder="e.g. Solar Streetlight 60W" />
+
+      <div>
+        <label className="text-sm font-medium block mb-1.5">SKU</label>
+        <div className="flex items-center gap-2">
+          <Barcode className="w-4 h-4 text-muted-foreground shrink-0" />
+          <input
+            type="text"
+            value={form.sku}
+            onChange={(e) => { setSkuTouched(true); set("sku", e.target.value); }}
+            onBlur={() => form.sku.trim() && set("sku", slugify(form.sku))}
+            placeholder="solar-streetlight-60w"
+            className="w-full h-11 px-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+          />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Filled in from the name. Product page will be at /product/{form.sku || "your-sku"}, and this is the ID Meta ads see.
+          Avoid changing it once the product is live, or links shared with the old SKU stop working.
+        </p>
+      </div>
 
       {/* Pricing */}
       <div className="grid sm:grid-cols-2 gap-4">

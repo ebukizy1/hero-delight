@@ -2,127 +2,181 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.onlinesolarstore.store/</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/about</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/insights</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/category/streetlight</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/category/floodlight</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/category/led-light</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/category/power-station</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/category/inverter</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/category/fan</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.onlinesolarstore.store/category/camera</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/d369c938-02b4-48b3-8a6a-87c959029123</loc>
+    <loc>https://www.onlinesolarstore.store/product/al4000-4000w-all-aluminium-solar-street-light</loc>
+    <lastmod>2026-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/al33000-3000w-all-aluminium-solar-street-light</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/al22000-2000w-all-aluminium-solar-street-light</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/al8000-8000w-all-aluminium-solar-street-light</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/s38-single-lens-solar-ptz-security-camera</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/p6a-dual-lens-solar-security-camera</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/t30-solar-security-camera-2-manual-cameras-free-glo-sim</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/cec-t33-3-view-3-ptz-solar-security-camera-with-red-alarm</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/cec-t34-3-view-3-ptz-solar-security-camera</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/cec-t40-solar-4-lens-ptz-security-camera</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.onlinesolarstore.store/product/portable-solar-led-work-light-with-usb-charging</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/0f479078-3d38-42c2-b3dd-bfd288b05c31</loc>
+    <loc>https://www.onlinesolarstore.store/product/cecfl04-200-premium-solar-flood-light</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/61fb77e1-a264-4036-bf13-94f6f56316df</loc>
+    <loc>https://www.onlinesolarstore.store/product/cecfl04-400-premium-solar-flood-light</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/43c7c7d5-cffe-4cab-85a0-272878110a73</loc>
+    <loc>https://www.onlinesolarstore.store/product/cecfl04-1000-premium-solar-flood-light</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/83eac488-bd43-463c-b814-68031e7d1245</loc>
+    <loc>https://www.onlinesolarstore.store/product/cecfl04-600-premium-solar-flood-light</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/ef755847-2ee7-4c17-8325-0c208eab96a6</loc>
+    <loc>https://www.onlinesolarstore.store/product/cec-sl92000-premium-solar-street-light</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/90513bc4-4221-4156-8b53-b57d62ae1880</loc>
+    <loc>https://www.onlinesolarstore.store/product/cec-sl152000-premium-solar-street-light</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/34109c09-42ae-4190-aae4-a54407ad99e4</loc>
-    <lastmod>2026-07-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.onlinesolarstore.store/product/9d1cd404-f001-4652-bd4c-bbd6b1c9ed1b</loc>
+    <loc>https://www.onlinesolarstore.store/product/24-eye-solar-street-light-4000w</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/product/7aa4da3b-a95b-42b2-952f-84501aa0969d</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://www.onlinesolarstore.store/insights/2000w-solar-street-light-price-in-nigeria</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.onlinesolarstore.store/insights/bright-solar-street-light-30-hour-battery</loc>
-    <lastmod>2026-08-13</lastmod>
+    <loc>https://www.onlinesolarstore.store/insights/why-solar-street-light-dies-before-midnight</loc>
+    <lastmod>2026-09-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
