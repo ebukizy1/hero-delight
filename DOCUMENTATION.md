@@ -42,6 +42,7 @@ npm run dev
   1. `0001_orders.sql` — the `orders` table checkout writes to.
   2. `0002_articles.sql` — the `articles` table behind Solar Insights.
   3. `0003_product_features.sql` — adds `features`, `runs_on`, `runs_on_note` columns to `products` (Product Detail page's Features tab and "What this actually runs" card). The app degrades gracefully if this hasn't been run yet (see §8.4), so it's not launch-blocking, but content added through the admin won't persist until it is.
+  4. `0004_product_sku.sql` — adds a human-readable `sku` to `products` (e.g. `solar-streetlight-60w`), used in product URLs and as the `content_ids` sent to Meta Pixel/CAPI. Until it runs, the app falls back to the product's UUID.
 - **Creating an admin user**: there's no signup flow. Create a user directly in Supabase Dashboard → Authentication → Users (email + password), then sign in at `/admin/login`. Any authenticated Supabase user can access `/admin/*` — see §12.
 - **Supabase Edge Functions** (`supabase/functions/`) are deployed separately via the Supabase CLI, not by `npm run build` — see §10.
 
@@ -125,7 +126,7 @@ This mobile-vs-desktop split (`hidden lg:block` / `lg:hidden` pairs, not separat
 | `/` | `Index` | Home: hero, deals carousel, categories, best sellers, Solar Insights teaser |
 | `/shop` | `Shop` | Full paginated catalog with category filter pills |
 | `/category/:slug` | `CategoryPage` | Products in one category (slug via `categorySlug.ts`) |
-| `/product/:id` | `ProductDetail` | Gallery, price, specs/features tabs (mobile) / sections (desktop), related products |
+| `/product/:id` | `ProductDetail` | Looked up by SKU (old UUID links redirect to the SKU URL). Gallery, price, specs/features tabs (mobile) / sections (desktop), related products |
 | `/about` | `AboutPage` | Static brand/values page |
 | `/checkout` | `Checkout` | Delivery details + payment method; redirects to cart-empty state if cart is empty |
 | `/order-success/:id` | `OrderSuccess` | Reads the just-placed order from router state |
@@ -146,7 +147,8 @@ Three domain types, each with a Supabase table behind it and a `lib/*.ts` file a
 ### Product (`src/lib/products.ts`, table `products`)
 ```ts
 interface Product {
-  id: string;
+  id: string;                 // UUID — internal only (admin edit links, cart keys)
+  sku: string;                // readable, e.g. "solar-streetlight-60w" — public URLs + Meta content_ids
   name: string;
   price: number;              // what the customer pays
   bonusPrice?: number | null; // "was" price, shown struck-through when set
@@ -230,6 +232,7 @@ Hand-written SQL in `supabase/migrations/`, run manually and in order via the Su
 | `0001_orders.sql` | `orders` table + RLS (anonymous insert, admin-only read) |
 | `0002_articles.sql` | `articles` table + RLS (public read of published articles, admin-only write) |
 | `0003_product_features.sql` | `features`, `runs_on`, `runs_on_note` columns on `products` |
+| `0004_product_sku.sql` | Readable, unique `sku` on `products` (backfilled from each name), plus a trigger that fills it in on insert |
 
 When you need a new column or table, add a new numbered file rather than editing an old one — that keeps the history honest about what's actually been run in production.
 

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Loader2, AlertCircle } from "lucide-react";
 import { AdminNav } from "@/components/AdminNav";
 import { ProductForm } from "@/components/ProductForm";
-import { fetchProduct, updateProduct, uploadProductImage, type Product } from "@/lib/products";
+import { fetchProduct, uniqueSku, updateProduct, uploadProductImage, type Product } from "@/lib/products";
 import { Seo } from "@/components/Seo";
 
 const AdminEditProduct = () => {
@@ -46,6 +46,8 @@ const AdminEditProduct = () => {
               initialPreview={product.image}
               initialExtraPreviews={[product.images[1] ?? null, product.images[2] ?? null]}
               initialValue={{
+                // sku === id means the SKU migration hasn't been run; start blank so one is generated.
+                sku: product.sku === product.id ? "" : product.sku,
                 name: product.name,
                 price: product.price.toString(),
                 bonusPrice: product.bonusPrice ? product.bonusPrice.toString() : "",
@@ -67,6 +69,7 @@ const AdminEditProduct = () => {
                   extraFiles[1] ? uploadProductImage(extraFiles[1]) : Promise.resolve(existingExtra2),
                 ]);
                 await updateProduct(product.id, {
+                  sku: await uniqueSku(form.sku.trim() || form.name, product.id),
                   name: form.name.trim(),
                   price: parseInt(form.price, 10),
                   bonus_price: form.bonusPrice ? parseInt(form.bonusPrice, 10) : null,

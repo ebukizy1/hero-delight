@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, AlertCircle, Truck, CreditCard, ShieldCheck } from 
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useCart, cart } from "@/lib/cart";
+import { useCart, cart, cartItemSku } from "@/lib/cart";
 import { formatNaira } from "@/lib/products";
 import { createOrder, markOrderPaid } from "@/lib/orders";
 import { sendOrderConfirmationEmail } from "@/lib/orderEmail";
@@ -45,7 +45,7 @@ const Checkout = () => {
     initiateTracked.current = true;
     const eventId = generateEventId();
     const customData = {
-      content_ids: items.map((i) => i.id),
+      content_ids: items.map(cartItemSku),
       value: total,
       currency: "NGN",
       num_items: items.reduce((s, i) => s + i.qty, 0),
@@ -57,7 +57,7 @@ const Checkout = () => {
   const firePurchase = (orderId: string) => {
     const eventId = generateEventId();
     const customData = {
-      content_ids: items.map((i) => i.id),
+      content_ids: items.map(cartItemSku),
       value: total,
       currency: "NGN",
       num_items: items.reduce((s, i) => s + i.qty, 0),

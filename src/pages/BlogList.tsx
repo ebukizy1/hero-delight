@@ -175,7 +175,7 @@ const BlogList = () => {
                     <ul className="space-y-3">
                       {popularProducts.map((p) => (
                         <li key={p.id}>
-                          <Link to={`/product/${p.id}`} className="flex items-center gap-3 group">
+                          <Link to={`/product/${p.sku}`} className="flex items-center gap-3 group">
                             <OptimizedImage
                               src={p.image}
                               alt={p.name}

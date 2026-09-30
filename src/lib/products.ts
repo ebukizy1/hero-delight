@@ -14,6 +14,12 @@ export type Category = (typeof CATEGORIES)[number];
 
 export interface Product {
   id: string;
+  /**
+   * Human-readable identifier derived from the name, e.g. "solar-streetlight-60w". Used in
+   * product URLs and as the content_id reported to Meta. Falls back to `id` until
+   * supabase/migrations/0004_product_sku.sql has been run.
+   */
+  sku: string;
   name: string;
   /** Sale / current selling price */
   price: number;
@@ -37,6 +43,7 @@ export function dbToProduct(p: DbProduct): Product {
   const images = [p.image_url, p.image_url_2, p.image_url_3].filter((u): u is string => Boolean(u));
   return {
     id: p.id,
+    sku: p.sku || p.id,
     name: p.name,
     price: p.price,
     bonusPrice: p.bonus_price ?? null,
@@ -63,13 +70,46 @@ export async function fetchProducts(): Promise<Product[]> {
   return (data as DbProduct[]).map(dbToProduct);
 }
 
-export async function fetchProduct(id: string): Promise<Product | null> {
-  const { data, error } = await supabase.from("products").select("*").eq("id", id).single();
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Looks a product up by SKU, or by UUID for old links shared before SKUs existed. */
+export async function fetchProduct(idOrSku: string): Promise<Product | null> {
+  const column = UUID_RE.test(idOrSku) ? "id" : "sku";
+  const { data, error } = await supabase.from("products").select("*").eq(column, idOrSku).single();
   if (error) return null;
   return dbToProduct(data as DbProduct);
 }
 
+export const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/[\s-]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "product";
+
+/**
+ * Turns `sku` (or the product name) into a SKU not used by any other product, appending
+ * -2, -3, … on collisions. `excludeId` is the product being edited, so it doesn't collide
+ * with itself.
+ */
+export async function uniqueSku(raw: string, excludeId?: string): Promise<string> {
+  const base = slugify(raw);
+  const { data, error } = await supabase.from("products").select("id, sku").like("sku", `${base}%`);
+  // Column missing (migration not run yet) — safeWrite will strip `sku` anyway.
+  if (error) return base;
+  const taken = new Set(
+    (data as Array<{ id: string; sku: string | null }>)
+      .filter((r) => r.id !== excludeId && r.sku)
+      .map((r) => r.sku),
+  );
+  let candidate = base;
+  for (let n = 2; taken.has(candidate); n++) candidate = `${base}-${n}`;
+  return candidate;
+}
+
 export interface ProductInput {
+  sku?: string;
   name: string;
   price: number;
   bonus_price?: number | null;
@@ -101,6 +141,7 @@ async function safeWrite<T>(
   payload: Record<string, unknown>,
 ): Promise<T> {
   const optional = [
+    "sku",
     "bonus_price",
     "featured",
     "specifications",

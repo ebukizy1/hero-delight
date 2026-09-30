@@ -46,6 +46,7 @@ const TRUST_ITEMS: { icon: typeof Shield; title: string; sub: string; tint: Tint
 ];
 
 const ProductDetail = () => {
+  // Either a SKU (current links) or a UUID (links shared before SKUs existed).
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
@@ -67,18 +68,24 @@ const ProductDetail = () => {
     setQty(1);
     setDescExpanded(false);
     Promise.all([fetchProduct(id), fetchProducts().catch(() => [])]).then(([p, all]) => {
+      // Old UUID link: swap to the canonical SKU URL. That re-runs this effect, which does
+      // the render + ViewContent tracking, so it isn't reported twice.
+      if (p && id !== p.sku) {
+        navigate(`/product/${p.sku}`, { replace: true });
+        return;
+      }
       setProduct(p);
       setAllProducts(all);
       setLoading(false);
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
       if (p) {
         const eventId = generateEventId();
-        const customData = { content_ids: [p.id], content_name: p.name, content_type: "product", value: p.price, currency: "NGN" };
+        const customData = { content_ids: [p.sku], content_name: p.name, content_type: "product", value: p.price, currency: "NGN" };
         fbTrack("ViewContent", customData, eventId);
         sendCapiEvent("ViewContent", eventId, customData);
       }
     });
-  }, [id]);
+  }, [id, navigate]);
 
   const relatedAll = useMemo(() => {
     if (!product) return [];
@@ -168,19 +175,20 @@ const ProductDetail = () => {
       <Seo
         title={`${product.name} — Emax Solar Store`}
         description={product.description.slice(0, 160)}
-        path={`/product/${product.id}`}
+        path={`/product/${product.sku}`}
         image={product.image}
         type="product"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Product",
           name: product.name,
+          sku: product.sku,
           description: product.description,
           image: product.images.length > 0 ? product.images : [product.image],
           category: product.category,
           offers: {
             "@type": "Offer",
-            url: `${SITE_URL}/product/${product.id}`,
+            url: `${SITE_URL}/product/${product.sku}`,
             priceCurrency: "NGN",
             price: product.price,
             availability: "https://schema.org/InStock",

@@ -9,6 +9,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 
 export type DbProduct = {
   id: string;
+  sku?: string | null;
   name: string;
   price: number;
   bonus_price?: number | null;

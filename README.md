@@ -10,6 +10,7 @@
    - `0001_orders.sql` — creates the `orders` table the checkout flow writes to. Until this runs, checkout and `/admin/orders` fail with a 404 ("relation \"orders\" does not exist").
    - `0002_articles.sql` — creates the `articles` table behind Solar Insights (guides + comparisons) on the public site and `/admin/insights`.
    - `0003_product_features.sql` — adds the `features`/`runs_on`/`runs_on_note` columns behind the Product Detail page's Features tab and "What this actually runs" card.
+   - `0004_product_sku.sql` — gives every product a readable SKU from its name (e.g. `solar-streetlight-60w`), used in product URLs (`/product/solar-streetlight-60w`) and as the product ID Meta ads see. Old UUID links keep working and redirect.
 4. `npm run dev`
 
 ## Order confirmation emails (optional but recommended)

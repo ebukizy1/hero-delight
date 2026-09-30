@@ -114,7 +114,10 @@ const AdminDashboard = () => {
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm truncate">{p.name}</p>
-                      <p className="text-xs text-muted-foreground">{p.category}</p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {p.category}
+                        {p.sku !== p.id && <span className="font-mono"> · {p.sku}</span>}
+                      </p>
                       <div className="flex items-baseline gap-2 mt-0.5">
                         <p className="text-sm font-semibold">{formatNaira(p.price)}</p>
                         {hasBonus && (
