@@ -5,9 +5,18 @@ import { supabase } from "@/lib/supabase";
 import { Logo } from "@/components/Logo";
 import { Seo } from "@/components/Seo";
 
+// Supabase Auth identifies users by email, so a plain username (no "@") is mapped to
+// <username>@<this domain>. Create that email as the user in Supabase Dashboard → Authentication.
+const USERNAME_EMAIL_DOMAIN = "onlinesolarstore.store";
+
+const loginToEmail = (login: string) => {
+  const v = login.trim().toLowerCase();
+  return v.includes("@") ? v : `${v}@${USERNAME_EMAIL_DOMAIN}`;
+};
+
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,13 +33,14 @@ const AdminLogin = () => {
     setLoading(true);
     try {
       const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email: loginToEmail(login),
         password,
       });
       if (authError) throw authError;
       if (data.session) navigate("/admin/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Invalid credentials");
+      const msg = err instanceof Error ? err.message : "";
+      setError(/invalid login credentials/i.test(msg) || !msg ? "Wrong username/email or password" : msg);
     } finally {
       setLoading(false);
     }
@@ -50,11 +60,12 @@ const AdminLogin = () => {
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="text-sm font-medium block mb-1.5" htmlFor="email">Email</label>
+              <label className="text-sm font-medium block mb-1.5" htmlFor="login">Username or email</label>
               <input
-                id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email"
+                id="login" type="text" value={login} onChange={(e) => setLogin(e.target.value)} required
+                autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false}
                 className="w-full h-11 px-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm"
-                placeholder="admin@example.com"
+                placeholder="Username or admin@example.com"
               />
             </div>
             <div>
