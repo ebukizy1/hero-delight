@@ -43,7 +43,7 @@ npm run dev
   2. `0002_articles.sql` — the `articles` table behind Solar Insights.
   3. `0003_product_features.sql` — adds `features`, `runs_on`, `runs_on_note` columns to `products` (Product Detail page's Features tab and "What this actually runs" card). The app degrades gracefully if this hasn't been run yet (see §8.4), so it's not launch-blocking, but content added through the admin won't persist until it is.
   4. `0004_product_sku.sql` — adds a human-readable `sku` to `products` (e.g. `solar-streetlight-60w`), used in product URLs and as the `content_ids` sent to Meta Pixel/CAPI. Until it runs, the app falls back to the product's UUID.
-- **Creating an admin user**: there's no signup flow. Create a user directly in Supabase Dashboard → Authentication → Users (email + password), then sign in at `/admin/login`. Any authenticated Supabase user can access `/admin/*` — see §12.
+- **Creating an admin user**: there's no signup flow. Create a user directly in Supabase Dashboard → Authentication → Users → Add user (email + password, tick "Auto Confirm User"), then sign in at `/admin/login`. The login form also accepts a plain **username**: anything without an `@` is treated as `<username>@onlinesolarstore.store` (see `loginToEmail` in `AdminLogin.tsx`), so to give someone the username `jane`, create the user `jane@onlinesolarstore.store`. Any authenticated Supabase user can access `/admin/*` — see §12 — so keep **"Allow new users to sign up" turned off** in Authentication → Sign In / Providers.
 - **Supabase Edge Functions** (`supabase/functions/`) are deployed separately via the Supabase CLI, not by `npm run build` — see §10.
 
 ---
@@ -132,7 +132,7 @@ This mobile-vs-desktop split (`hidden lg:block` / `lg:hidden` pairs, not separat
 | `/order-success/:id` | `OrderSuccess` | Reads the just-placed order from router state |
 | `/insights` | `BlogList` | Guides & comparisons list, filterable |
 | `/insights/:slug` | `BlogArticle` | Full article (Markdown → HTML via `marked`) |
-| `/admin/login` | `AdminLogin` | Supabase Auth email/password |
+| `/admin/login` | `AdminLogin` | Supabase Auth — username or email + password |
 | `/admin/dashboard`, `/admin/add-product`, `/admin/edit-product/:id`, `/admin/orders`, `/admin/insights`, `/admin/insights/add`, `/admin/insights/edit/:id` | Admin pages | All wrapped in `<AdminGuard>` |
 | `*` | `NotFound` | Catch-all 404 |
 
